@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		6BC774C62D76144F00EBC59B /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 6BC774C52D76144F00EBC59B /* SnapKit */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		6BD3A27F2D74A9C500034C10 /* OnlineStore-2nd-Challenge.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "OnlineStore-2nd-Challenge.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -36,6 +40,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6BC774C62D76144F00EBC59B /* SnapKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,6 +83,7 @@
 			);
 			name = "OnlineStore-2nd-Challenge";
 			packageProductDependencies = (
+				6BC774C52D76144F00EBC59B /* SnapKit */,
 			);
 			productName = "OnlineStore-2nd-Challenge";
 			productReference = 6BD3A27F2D74A9C500034C10 /* OnlineStore-2nd-Challenge.app */;
@@ -107,6 +113,9 @@
 			);
 			mainGroup = 6BD3A2762D74A9C500034C10;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				6BC774C42D76144F00EBC59B /* XCLocalSwiftPackageReference "../../SnapKit-develop" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 6BD3A2802D74A9C500034C10 /* Products */;
 			projectDirPath = "";
@@ -343,6 +352,20 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		6BC774C42D76144F00EBC59B /* XCLocalSwiftPackageReference "../../SnapKit-develop" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = "../../SnapKit-develop";
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		6BC774C52D76144F00EBC59B /* SnapKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SnapKit;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 6BD3A2772D74A9C500034C10 /* Project object */;
 }
