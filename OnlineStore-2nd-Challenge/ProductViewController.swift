@@ -9,19 +9,19 @@ import UIKit
 
 final class ProductViewController: UIViewController {
     
-    private let priceLabel = UILabel.makeLabel(font: UIFont.systemFont(ofSize: 26, weight: .bold), textColor: .black)
-    private let descriptionLabel = UILabel.makeLabel(font: UIFont.systemFont(ofSize: 15, weight: .regular), textColor: .black)
-    private let variationsLabel = UILabel.makeLabel(font: UIFont.systemFont(ofSize: 20, weight: .bold), textColor: .black)
+    private let priceLabel = UILabel.makeLabel(text: "17", font: UIFont.systemFont(ofSize: 26, weight: .bold), textColor: .black)
+    private let descriptionLabel = UILabel.makeLabel(text: "descriptionLabeldescriptionLabeldescriptionLabeldescriptionLabeldescriptionLabel", font: UIFont.systemFont(ofSize: 15, weight: .regular), textColor: .black)
+    private let variationsLabel = UILabel.makeLabel(text: "Variations", font: UIFont.systemFont(ofSize: 20, weight: .bold), textColor: .black)
     
     private let buttonLike = UIButton()
-    private let buttonBuy = UIButton.makeButton(text: "Buy now", font: UIFont.systemFont(ofSize: 16, weight: .light), textColor: .white, cornerRadius: 16, colorBackground: .blue)
-    private let buttonAddCart = UIButton.makeButton(text: "Add to cart", font: UIFont.systemFont(ofSize: 16, weight: .light), textColor: .white, cornerRadius: 16, colorBackground: .black)
+    private let buttonBuy = CustomButton(title: "Buy now", backgroundColor: .blue, textColor: .white, fontSize: .big)
+    private let buttonAddCart = CustomButton(title: "Add to cart", backgroundColor: .black, textColor: .white, fontSize: .big)
     private let stackForButton = UIStackView()
     
     private let mainImage = UIImageView()
-    private let imageVariations1 = UIImageView.makeImage(cornerRadius: 4, heightAnchor: 75, widthAnchor: 75)
-    private let imageVariations2 = UIImageView.makeImage(cornerRadius: 4, heightAnchor: 75, widthAnchor: 75)
-    private let imageVariations3 = UIImageView.makeImage(cornerRadius: 4, heightAnchor: 75, widthAnchor: 75)
+    private let imageVariations1 = UIImageView.makeImage(named: "Image", cornerRadius: 4, heightAnchor: 75, widthAnchor: 75)
+    private let imageVariations2 = UIImageView.makeImage(named: "Image", cornerRadius: 4, heightAnchor: 75, widthAnchor: 75)
+    private let imageVariations3 = UIImageView.makeImage(named: "Image", cornerRadius: 4, heightAnchor: 75, widthAnchor: 75)
     private let stackForImage = UIStackView()
     
     override func viewDidLoad() {
@@ -47,17 +47,19 @@ private extension ProductViewController {
     }
     
     func setupMainImage() {
-        mainImage.heightAnchor.constraint(equalToConstant: 300).isActive = true
+        mainImage.heightAnchor.constraint(equalToConstant: 400).isActive = true
+        mainImage.image = UIImage(named: "Image")
         mainImage.layer.masksToBounds = true
         mainImage.contentMode = .scaleAspectFill
         mainImage.translatesAutoresizingMaskIntoConstraints = false
     }
     
     func setupStackForButton() {
+        stackForButton.addArrangedSubview(buttonAddCart)
         stackForButton.addArrangedSubview(buttonBuy)
-        stackForButton.addArrangedSubview(buttonLike)
         stackForButton.axis = .horizontal
-        stackForButton.spacing = 4
+        stackForButton.distribution = .fillEqually
+        stackForButton.spacing = 16
         stackForButton.translatesAutoresizingMaskIntoConstraints = false
     }
     
@@ -66,7 +68,7 @@ private extension ProductViewController {
         stackForImage.addArrangedSubview(imageVariations2)
         stackForImage.addArrangedSubview(imageVariations3)
         stackForImage.axis = .horizontal
-        stackForImage.spacing = 4
+        stackForImage.spacing = 6
         stackForImage.translatesAutoresizingMaskIntoConstraints = false
     }
 }
@@ -75,9 +77,32 @@ private extension ProductViewController {
 private extension ProductViewController {
     private func setupLayout() {
         NSLayoutConstraint.activate([
-            mainImage.topAnchor.constraint(equalTo: view.topAnchor),
+            mainImage.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             mainImage.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             mainImage.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            
+            priceLabel.topAnchor.constraint(equalTo: mainImage.bottomAnchor, constant: 18),
+            priceLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            priceLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            priceLabel.heightAnchor.constraint(equalToConstant: 31),
+            
+            descriptionLabel.topAnchor.constraint(equalTo: priceLabel.bottomAnchor, constant: 14),
+            descriptionLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            descriptionLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            descriptionLabel.heightAnchor.constraint(equalToConstant: 40),
+            
+            variationsLabel.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 20),
+            variationsLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            variationsLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            variationsLabel.heightAnchor.constraint(equalToConstant: 26),
+            
+            stackForImage.topAnchor.constraint(equalTo: variationsLabel.bottomAnchor, constant: 12),
+            stackForImage.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            
+            stackForButton.topAnchor.constraint(equalTo: stackForImage.bottomAnchor, constant: 40),
+            stackForButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            stackForButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            
         ])
     }
 }
