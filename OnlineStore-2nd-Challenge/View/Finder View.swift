@@ -99,7 +99,7 @@ final class FinderView: UIView {
         return collection
     }()
     
-    // MARK: - Initialization
+    // MARK: - Init
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
