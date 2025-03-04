@@ -16,7 +16,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
 //        let auth = UserDefaults.standard.bool(forKey: UserDefaultsStorageKeys.authIsTrue.label) //Добавить реализацию что был пропуск экрана, если пользователь авторизирован
         window = UIWindow(windowScene: windowScene)
-        window?.rootViewController = UINavigationController(rootViewController: StartViewController())
+        window?.rootViewController = UINavigationController(rootViewController: CategoryViewController())
         window?.makeKeyAndVisible()
     }
 

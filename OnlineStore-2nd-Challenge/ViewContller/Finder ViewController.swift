@@ -52,7 +52,7 @@ final class FinderViewController: UIViewController {
         finderView.historyCollection.register(HistoryCell.self, forCellWithReuseIdentifier: "HistoryCell")
     }
     
-    // MARK: - Private Methods
+    // MARK: - Private Method
     private func performSearch() {
         if let searchText = finderView.searchField.text, !searchText.isEmpty {
             searchHistoryModel.addItem(searchText)
@@ -171,6 +171,6 @@ extension FinderViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView,
                        layout collectionViewLayout: UICollectionViewLayout,
                        minimumLineSpacing: Int) -> CGFloat {
-        return 4
+        return 8
     }
 }
