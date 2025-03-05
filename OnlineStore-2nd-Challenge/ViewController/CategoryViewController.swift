@@ -83,8 +83,8 @@ extension CategoryViewController: UICollectionViewDelegate {
             categories[indexPath.section].isExpanded.toggle()
             collectionView.reloadSections(IndexSet(integer: indexPath.section))
         } else {
-            let category = categories[indexPath.section]
-            let subcategory = category.subcategories![indexPath.item - 1]
+//            let category = categories[indexPath.section]
+//            let subcategory = category.subcategories![indexPath.item - 1]
 //            let subcategoryVC = SubcategoryViewController(
 //                category: category.title,
 //                subcategory: subcategory
@@ -104,6 +104,14 @@ extension CategoryViewController: UICollectionViewDelegateFlowLayout {
         let width = collectionView.bounds.width
         return indexPath.item == 0
             ? CGSize(width: width, height: 60)
-            : CGSize(width: (width - 16) / 2, height: 44)
+            : CGSize(width: (width - 10) / 2, height: 44) // Изменено с 16 на 10
+    }
+    
+    func collectionView(
+        _ collectionView: UICollectionView,
+        layout collectionViewLayout: UICollectionViewLayout,
+        insetForSectionAt section: Int
+    ) -> UIEdgeInsets {
+        return UIEdgeInsets(top: 0, left: 0, bottom: 16, right: 0) // Отступ между секциями
     }
 }

@@ -25,11 +25,6 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		3A058E4B2D7731EC0057AF3D /* Category */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = Category;
-			sourceTree = "<group>";
-		};
 		6BD3A2812D74A9C600034C10 /* OnlineStore-2nd-Challenge */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
@@ -57,7 +52,6 @@
 			children = (
 				6BD3A2812D74A9C600034C10 /* OnlineStore-2nd-Challenge */,
 				6BD3A2802D74A9C500034C10 /* Products */,
-				3A058E4B2D7731EC0057AF3D /* Category */,
 			);
 			sourceTree = "<group>";
 		};
@@ -85,7 +79,6 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				3A058E4B2D7731EC0057AF3D /* Category */,
 				6BD3A2812D74A9C600034C10 /* OnlineStore-2nd-Challenge */,
 			);
 			name = "OnlineStore-2nd-Challenge";
