@@ -15,7 +15,7 @@ final class ShopCollectionViewCell: UICollectionViewCell {
     private let priceLabel = UILabel.makeLabel(text: "$17,00", font: UIFont.systemFont(ofSize: 17, weight: .bold), textColor: .black)
     private let buttonLike = UIButton()
     private let buttonBuy = CustomButton(title: "Add to cart", backgroundColor: .blue, textColor: .white, fontSize: .small)
-    private let isSelect = Bool()
+    private var isSelect = Bool()
     
     
     //MARK: - Init
@@ -27,6 +27,11 @@ final class ShopCollectionViewCell: UICollectionViewCell {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    func configure(model: Product) {
+        imageView.image = UIImage(named: model.image)
+        descriptionLabel.text = model.description
+        priceLabel.text = model.price.formatted()
     }
     
 }
@@ -43,6 +48,19 @@ private extension ShopCollectionViewCell {
         
         viewBg.backgroundColor = .white
         setupLayout()
+        setupButtonLike()
+    }
+    
+    func setupButtonLike() {
+        buttonLike.setImage(UIImage(resource: .heart), for: .normal)
+        buttonLike.widthAnchor.constraint(equalToConstant: 24).isActive = true
+        buttonLike.heightAnchor.constraint(equalToConstant: 24).isActive = true
+        
+        buttonLike.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
+    }
+    
+    @objc func buttonTapped() {
+        isSelect.toggle()
     }
 }
 
@@ -71,7 +89,11 @@ private extension ShopCollectionViewCell {
             
             buttonBuy.topAnchor.constraint(equalTo: priceLabel.bottomAnchor, constant: 8),
             buttonBuy.leadingAnchor.constraint(equalTo: viewBg.leadingAnchor),
-            buttonBuy.trailingAnchor.constraint(equalTo: viewBg.trailingAnchor),
+            buttonBuy.widthAnchor.constraint(equalToConstant: 120),
+            
+            buttonLike.topAnchor.constraint(equalTo: buttonBuy.topAnchor),
+            buttonLike.leadingAnchor.constraint(equalTo: buttonBuy.trailingAnchor, constant: -4),
+            buttonLike.trailingAnchor.constraint(equalTo: viewBg.trailingAnchor),
             
         ])
     }
