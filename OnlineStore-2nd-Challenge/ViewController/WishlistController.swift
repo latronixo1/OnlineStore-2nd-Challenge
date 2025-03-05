@@ -11,21 +11,31 @@ final class WishlistViewController: UIViewController {
     
     private var collectionView: UICollectionView!
     private let reuseIdentifier = "wishlist"
+    private let navigation = UINavigationBar()
     
-    init(collectionView: UICollectionView!) {
-        self.collectionView = collectionView
-        super.init(nibName: nil, bundle: nil)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+    lazy var titleOfLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Wishlist"
+        label.textColor = .black
+        label.textAlignment = .center
+        label.font = .systemFont(ofSize: 28, weight: .bold)
+        return label
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
         setupView()
+        setupNavigationBar()
+        setupLayout()
         configureCollectionView()
+    }
+    
+    func setupNavigationBar() {
+        navigation.barTintColor = .white
+        navigation.addSubview(titleOfLabel)
+        view.addSubview(navigation)
+        
     }
 }
 
@@ -110,5 +120,22 @@ extension WishlistViewController: UICollectionViewDelegate {
        // let item = self.contentDataManager.getModelData()[indexPath.row]
        // self.contentDataManager.toggleSelected(item)
         //cell.cellTapped()
+    }
+}
+
+private extension WishlistViewController {
+    func setupLayout() {
+        navigation.translatesAutoresizingMaskIntoConstraints = false
+        titleOfLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            navigation.topAnchor.constraint(equalTo: view.topAnchor, constant: 50),
+            navigation.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            navigation.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            navigation.heightAnchor.constraint(equalToConstant: 80),
+            
+            titleOfLabel.centerXAnchor.constraint(equalTo: navigation.centerXAnchor),
+            titleOfLabel.centerYAnchor.constraint(equalTo: navigation.centerYAnchor),
+        ])
     }
 }

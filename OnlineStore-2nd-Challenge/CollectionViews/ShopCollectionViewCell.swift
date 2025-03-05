@@ -15,7 +15,7 @@ final class ShopCollectionViewCell: UICollectionViewCell {
     private let priceLabel = UILabel.makeLabel(text: "$17,00", font: UIFont.systemFont(ofSize: 17, weight: .bold), textColor: .black)
     private let buttonLike = UIButton()
     private let buttonBuy = CustomButton(title: "Add to cart", backgroundColor: .blue, textColor: .white, fontSize: .small)
-    private var isSelect = Bool()
+    private var isSelect: Bool = true
     
     
     //MARK: - Init
@@ -33,7 +33,6 @@ final class ShopCollectionViewCell: UICollectionViewCell {
         descriptionLabel.text = model.description
         priceLabel.text = model.price.formatted()
     }
-    
 }
 
 
@@ -52,7 +51,7 @@ private extension ShopCollectionViewCell {
     }
     
     func setupButtonLike() {
-        buttonLike.setImage(UIImage(resource: .heart), for: .normal)
+        buttonLike.setImage(UIImage(resource: .heartFill), for: .normal)
         buttonLike.widthAnchor.constraint(equalToConstant: 24).isActive = true
         buttonLike.heightAnchor.constraint(equalToConstant: 24).isActive = true
         
@@ -60,7 +59,14 @@ private extension ShopCollectionViewCell {
     }
     
     @objc func buttonTapped() {
-        isSelect.toggle()
+        if isSelect {
+            buttonLike.setImage(UIImage(resource: .heart), for: .normal)
+            isSelect.toggle()
+        } else {
+            buttonLike.setImage(UIImage(resource: .heartFill), for: .normal)
+            isSelect.toggle()
+        }
+        print("Like tapped")
     }
 }
 
@@ -92,7 +98,7 @@ private extension ShopCollectionViewCell {
             buttonBuy.widthAnchor.constraint(equalToConstant: 120),
             
             buttonLike.topAnchor.constraint(equalTo: buttonBuy.topAnchor),
-            buttonLike.leadingAnchor.constraint(equalTo: buttonBuy.trailingAnchor, constant: -4),
+            buttonLike.leadingAnchor.constraint(equalTo: buttonBuy.trailingAnchor, constant: 16),
             buttonLike.trailingAnchor.constraint(equalTo: viewBg.trailingAnchor),
             
         ])
