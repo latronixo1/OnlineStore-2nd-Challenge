@@ -31,7 +31,7 @@ class SubcategoryCell: UICollectionViewCell {
         contentView.backgroundColor = .white
         contentView.layer.cornerRadius = 8
         contentView.layer.borderWidth = 1
-        contentView.layer.borderColor = UIColor.systemGray5.cgColor
+        contentView.layer.borderColor = UIColor.systemRed.withAlphaComponent(0.2).cgColor // Красная граница
         
         contentView.addSubview(titleLabel)
     }

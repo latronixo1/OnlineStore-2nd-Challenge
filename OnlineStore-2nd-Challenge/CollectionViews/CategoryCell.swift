@@ -45,8 +45,18 @@ class CategoryCell: UICollectionViewCell {
     private func setupUI() {
         contentView.backgroundColor = .white
         contentView.layer.cornerRadius = 8
-        contentView.layer.borderWidth = 1
-        contentView.layer.borderColor = UIColor.systemGray5.cgColor
+        
+        // Добавляем тень
+        layer.shadowColor = UIColor.black.cgColor
+        layer.shadowOffset = CGSize(width: 0, height: 2)
+        layer.shadowRadius = 4
+        layer.shadowOpacity = 0.1
+        layer.masksToBounds = false
+        
+        // Настройка imageView
+        iconImageView.contentMode = .scaleAspectFill
+        iconImageView.layer.cornerRadius = 8
+        iconImageView.clipsToBounds = true
         
         contentView.addSubview(iconImageView)
         contentView.addSubview(titleLabel)
@@ -57,16 +67,16 @@ class CategoryCell: UICollectionViewCell {
         NSLayoutConstraint.activate([
             iconImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             iconImageView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            iconImageView.widthAnchor.constraint(equalToConstant: 40),
-            iconImageView.heightAnchor.constraint(equalToConstant: 40),
+            iconImageView.widthAnchor.constraint(equalToConstant: 48), // Увеличен размер
+            iconImageView.heightAnchor.constraint(equalToConstant: 48), // Увеличен размер
             
-            titleLabel.leadingAnchor.constraint(equalTo: iconImageView.trailingAnchor, constant: 16),
+            titleLabel.leadingAnchor.constraint(equalTo: iconImageView.trailingAnchor, constant: 12),
             titleLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             
             chevronImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             chevronImageView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            chevronImageView.widthAnchor.constraint(equalToConstant: 20),
-            chevronImageView.heightAnchor.constraint(equalToConstant: 20)
+            chevronImageView.widthAnchor.constraint(equalToConstant: 24),
+            chevronImageView.heightAnchor.constraint(equalToConstant: 24)
         ])
     }
     
