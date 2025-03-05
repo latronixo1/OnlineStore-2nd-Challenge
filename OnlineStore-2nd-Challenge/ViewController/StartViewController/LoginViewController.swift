@@ -39,6 +39,7 @@ class LoginViewController: UIViewController {
                 self.catchError(error: error)
                 self.showAlert(message: self.alertMessage )
             } else {
+                self.goNextView()
                 print("авторизацию успешна надо прописать пуш на след вью")
             }
         }
@@ -67,5 +68,8 @@ class LoginViewController: UIViewController {
     }
     @objc func cancelButtonTapped() {
         navigationController?.popViewController(animated: true)
+    }
+    func goNextView(){
+        navigationController?.pushViewController(HomeViewController(), animated: true)
     }
 }
