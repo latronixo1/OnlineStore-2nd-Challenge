@@ -9,13 +9,17 @@ import UIKit
 
 final class ShopCollectionViewCell: UICollectionViewCell {
     //MARK: - Private Property
+    static let identifier = "ShopCell"
+    private let favoriteManager = FavoriteManager.shared
+    
     private let viewBg = UIView()
     private let imageView = UIImageView.makeImage(named: "Image", cornerRadius: 4, heightAnchor: 170, widthAnchor: 160)
     private let descriptionLabel = UILabel.makeLabel(text: "Lorem ipsum dolor sit amet consectetur", font: UIFont.systemFont(ofSize: 12, weight: .regular), textColor: .black)
     private let priceLabel = UILabel.makeLabel(text: "$17,00", font: UIFont.systemFont(ofSize: 17, weight: .bold), textColor: .black)
     private let buttonLike = UIButton()
     private let buttonBuy = CustomButton(title: "Add to cart", backgroundColor: .blue, textColor: .white, fontSize: .small)
-    private var isSelect: Bool = true
+    var isSelect: Bool = true
+    var currentProduct: Product?
     
     
     //MARK: - Init
@@ -59,13 +63,15 @@ private extension ShopCollectionViewCell {
     }
     
     @objc func buttonTapped() {
+        guard let product = currentProduct else {return}
         if isSelect {
             buttonLike.setImage(UIImage(resource: .heart), for: .normal)
-            isSelect.toggle()
+            favoriteManager.removeFromFavorite(product: product)
         } else {
             buttonLike.setImage(UIImage(resource: .heartFill), for: .normal)
-            isSelect.toggle()
+            favoriteManager.addToFavorite(product: product)
         }
+        isSelect.toggle()
         print("Like tapped")
     }
 }

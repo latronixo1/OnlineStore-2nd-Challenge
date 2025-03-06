@@ -16,6 +16,8 @@ class HomeViewController: UIViewController {
     private var favoriteItems: [Product] = []
     private var  makeImageForCategory: [String: [String]] = [:]
     
+    private let favoriteManager = FavoriteManager.shared
+    
     override func loadView() {
         self.view = mainView
     }
@@ -170,6 +172,13 @@ extension HomeViewController: UICollectionViewDataSource {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HomeJustForUCell.reuseIdentifier, for: indexPath) as? HomeJustForUCell else {
                 return UICollectionViewCell()
             }
+            
+                ///нужно использовать ячейку такую же как на экране избранных
+//            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ShopCollectionViewCell.identifier, for: indexPath) as? ShopCollectionViewCell else {return UICollectionViewCell()}
+            
+//            let selectedProduct = items[indexPath.row]
+//            cell.isSelect = favoriteManager.isFavorite(product: selectedProduct)
+
             return cell
             
         default:
