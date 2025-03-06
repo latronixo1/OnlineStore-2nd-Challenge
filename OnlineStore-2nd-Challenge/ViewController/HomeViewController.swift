@@ -181,7 +181,7 @@ extension HomeViewController: UICollectionViewDelegateFlowLayout {
     func setupCollectionViewLayout() {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
-        let spacing: CGFloat = 8 // Отступ между ячейками
+        let spacing: CGFloat = 8
         let itemsPerRow: CGFloat = 2 // Количество ячеек в строке
         let totalSpacing = (itemsPerRow - 1) * spacing + layout.sectionInset.left + layout.sectionInset.right
         let itemWidth = (view.bounds.width - totalSpacing) / itemsPerRow

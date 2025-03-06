@@ -9,13 +9,11 @@ import UIKit
 class HomeCategoryCell: UICollectionViewCell {
     static let reuseIdentifier = "HomeCategoryCell"
     
-    // ImageView's
     let firstImageView = UIImageView()
     let secondImageView = UIImageView()
     let thirdImageView = UIImageView()
     let fourthImageView = UIImageView()
     
-    // Stack Views
     let imageStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
