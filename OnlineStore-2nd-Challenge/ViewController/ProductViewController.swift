@@ -9,8 +9,11 @@ import UIKit
 
 final class ProductViewController: UIViewController {
     
+    var product: Product
+    var favoriteManager = FavoriteManager.shared
+    
     private let priceLabel = UILabel.makeLabel(text: "17", font: UIFont.systemFont(ofSize: 26, weight: .bold), textColor: .black)
-    private let descriptionLabel = UILabel.makeLabel(text: "descriptionLabeldescriptionLabeldescriptionLabeldescriptionLabeldescriptionLabel", font: UIFont.systemFont(ofSize: 15, weight: .regular), textColor: .black)
+    private let descriptionLabel = UILabel.makeLabel(text: "descriptionLabel", font: UIFont.systemFont(ofSize: 15, weight: .regular), textColor: .black)
     private let variationsLabel = UILabel.makeLabel(text: "Variations", font: UIFont.systemFont(ofSize: 20, weight: .bold), textColor: .black)
     
     private let buttonLike = UIButton()
@@ -23,6 +26,15 @@ final class ProductViewController: UIViewController {
     private let imageVariations2 = UIImageView.makeImage(named: "Image", cornerRadius: 4, heightAnchor: 75, widthAnchor: 75)
     private let imageVariations3 = UIImageView.makeImage(named: "Image", cornerRadius: 4, heightAnchor: 75, widthAnchor: 75)
     private let stackForImage = UIStackView()
+    
+    init(product: Product) {
+        self.product = product
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()

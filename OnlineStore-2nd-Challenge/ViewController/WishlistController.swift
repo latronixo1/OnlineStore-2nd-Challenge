@@ -9,9 +9,12 @@ import UIKit
 
 final class WishlistViewController: UIViewController {
     
+    private var product: [Product] = []
+    
     private var collectionView: UICollectionView!
     private let reuseIdentifier = "wishlist"
     private let navigation = UINavigationBar()
+    let favoriteManager = FavoriteManager.shared
     
     lazy var titleOfLabel: UILabel = {
         let label = UILabel()
@@ -31,11 +34,20 @@ final class WishlistViewController: UIViewController {
         configureCollectionView()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        reloadFavorite()
+    }
+    
+    func reloadFavorite() {
+        product = favoriteManager.favoriteArray
+        collectionView.reloadData()
+    }
+    
     func setupNavigationBar() {
         navigation.barTintColor = .white
         navigation.addSubview(titleOfLabel)
         view.addSubview(navigation)
-        
     }
 }
 
@@ -98,16 +110,15 @@ private extension WishlistViewController {
 extension WishlistViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        // передаем из сохраненных в юзер дефолтс
-        4
+        favoriteManager.favoriteArray.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
        
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as? ShopCollectionViewCell else {return UICollectionViewCell()}
         
-        //let content = //здесь метод который будет отдавать избранные
-        //cell.configure(model: content)
+        let content = favoriteManager.favoriteArray[indexPath.row]
+        cell.configure(model: content)
         return cell
     }
 }
@@ -115,11 +126,11 @@ extension WishlistViewController: UICollectionViewDataSource {
 
 extension WishlistViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard let cell = collectionView.cellForItem(at: indexPath) as? ShopCollectionViewCell else { return }
-        
-       // let item = self.contentDataManager.getModelData()[indexPath.row]
-       // self.contentDataManager.toggleSelected(item)
-        //cell.cellTapped()
+        if product.count > 0 {
+            let selectedCell = product[indexPath.item]
+            let productVC = ProductViewController(product: selectedCell)
+            navigationController?.pushViewController(productVC, animated: true)
+        }
     }
 }
 
