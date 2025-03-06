@@ -23,6 +23,7 @@ enum UserDefaultsStorageKeys: String {
     }
 }
 
+
 final class FavoriteManager {
     static let shared = FavoriteManager()
     
