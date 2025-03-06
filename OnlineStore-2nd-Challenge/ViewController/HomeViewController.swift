@@ -8,11 +8,13 @@
 import UIKit
 
 class HomeViewController: UIViewController {
+    private let productURLString = "https://fakestoreapi.com/products"
     let mainView: HomeView = .init()
     private var items: [Product] = []
     private var categories: [String] = []
     private var sortedPopularItems: [Product] = []
     private var favoriteItems: [Product] = []
+    private var  makeImageForCategory: [String: [String]] = [:]
     
     override func loadView() {
         self.view = mainView
@@ -23,6 +25,7 @@ class HomeViewController: UIViewController {
         mainView.backgroundColor = .white
         setupCollectionViews()
         makeProduct()
+        setupCollectionViewLayout()
     }
     
     private func setupCollectionViews() {
@@ -43,19 +46,29 @@ class HomeViewController: UIViewController {
     }
     
     private func makeProduct() {
-        NetworkService.shared.fetchProducts { result in
+        NetworkService.shared.fetchProducts(from: productURLString) { result in
             switch result {
             case .success(let products):
                 self.items = products
                 let newCategories = products.map { $0.category }
                 self.categories = Array(Set(newCategories)).sorted()
                 UserDefaults.standard.set(self.categories, forKey: UserDefaultsStorageKeys.category.label)
+                var imageLinksByCategory: [String: [String]] = [:]
+
+                for product in self.items {
+                    if var links = imageLinksByCategory[product.category] {
+                        links.append(product.image)
+                        imageLinksByCategory[product.category] = links
+                    } else {
+                        imageLinksByCategory[product.category] = [product.image]
+                    }
+                }
+                self.makeImageForCategory = imageLinksByCategory
                 self.sortedPopularItems = self.items.sorted { $0.rating.rate > $1.rating.rate }
                 
             case .failure(let error):
                 print("Ошибка: \(error.localizedDescription)")
             }
-            
             DispatchQueue.main.async {
                 self.mainView.categoryCollectionView.reloadData()
                 self.mainView.popularCollectionView.reloadData()
@@ -64,6 +77,7 @@ class HomeViewController: UIViewController {
             
             print("Категории: \(self.categories)")
             print("Продукты загружены: \(self.items.count)")
+            print("Словарь изображений: \(self.makeImageForCategory)")
         }
     }
     
@@ -88,34 +102,31 @@ class HomeViewController: UIViewController {
     @objc func justForUHeaderTapped() {
         // Handle just for you header tap
     }
-}
-
-// MARK: UICollectionViewDelegate
-extension HomeViewController: UICollectionViewDelegate {
-    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        guard kind == UICollectionView.elementKindSectionHeader,
-              let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: HeaderHomeCollectionView.reuseIdentifier, for: indexPath) as? HeaderHomeCollectionView else {
-            return UICollectionReusableView()
+    private func loadImages(from urls: [String], into imageViews: [UIImageView]) {
+        for (index, url) in urls.enumerated() {
+            guard index < imageViews.count else { break }
+            NetworkService.shared.fetchImage(from: url) { result in
+                DispatchQueue.main.async {
+                    switch result {
+                    case .success(let image):
+                        imageViews[index].image = image
+                    case .failure:
+                        imageViews[index].image = UIImage(systemName: "xmark.circle")
+                    }
+                }
+            }
         }
-        
-        if collectionView == mainView.categoryCollectionView {
-            header.labelForHomeCollectionView.text = "Category"
-            header.buttonForHomeCollectionView.addTarget(self, action: #selector(categoryHeaderTapped), for: .touchUpInside)
-        } else if collectionView == mainView.popularCollectionView {
-            header.labelForHomeCollectionView.text = "Popular"
-            header.buttonForHomeCollectionView.addTarget(self, action: #selector(popularHeaderTapped), for: .touchUpInside)
-        } else if collectionView == mainView.justForYouCollectionView {
-            header.labelForHomeCollectionView.text = "Just For You"
-            header.buttonForHomeCollectionView.addTarget(self, action: #selector(justForUHeaderTapped), for: .touchUpInside)
-        }
-        
-        return header
     }
 }
 
+
+extension HomeViewController: UICollectionViewDelegate {
+    
+}
 // MARK: UICollectionViewDataSource
 extension HomeViewController: UICollectionViewDataSource {
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func collectionView(_ collectionView: UICollectionView,
+                        numberOfItemsInSection section: Int) -> Int {
         switch collectionView {
         case mainView.categoryCollectionView:
             return categories.count
@@ -128,14 +139,23 @@ extension HomeViewController: UICollectionViewDataSource {
         }
     }
     
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    func collectionView(_ collectionView: UICollectionView,
+                        cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         switch collectionView {
         case mainView.categoryCollectionView:
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HomeCategoryCell.reuseIdentifier, for: indexPath) as? HomeCategoryCell else {
                 return UICollectionViewCell()
             }
-            cell.labelOfCategory.text = categories[indexPath.row]
-            cell.quantityOfProducts.text = "\(items.filter { $0.category == categories[indexPath.row] }.count)"
+            let category = categories[indexPath.row]
+            cell.labelOfCategory.text = category
+            cell.quantityOfProducts.text = "\(items.filter { $0.category == category }.count)"
+            if let imageLinks = makeImageForCategory[category], imageLinks.count >= 4 {
+                       loadImages(from: Array(imageLinks.prefix(4)), into: [cell.firstImageView, cell.secondImageView, cell.thirdImageView, cell.fourthImageView])
+            } else {
+                [cell.firstImageView, cell.secondImageView, cell.thirdImageView, cell.fourthImageView].forEach {
+                    $0.image = UIImage(systemName: "plus")
+                }
+            }
             return cell
             
         case mainView.popularCollectionView:
@@ -155,5 +175,22 @@ extension HomeViewController: UICollectionViewDataSource {
         default:
             fatalError("Unknown collection view")
         }
+    }
+}
+extension HomeViewController: UICollectionViewDelegateFlowLayout {
+    func setupCollectionViewLayout() {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .vertical
+        let spacing: CGFloat = 8 // Отступ между ячейками
+        let itemsPerRow: CGFloat = 2 // Количество ячеек в строке
+        let totalSpacing = (itemsPerRow - 1) * spacing + layout.sectionInset.left + layout.sectionInset.right
+        let itemWidth = (view.bounds.width - totalSpacing) / itemsPerRow
+        let itemHeight: CGFloat = 190 
+        
+        layout.itemSize = CGSize(width: itemWidth, height: itemHeight)
+        layout.minimumInteritemSpacing = spacing
+        layout.minimumLineSpacing = spacing
+        
+        mainView.categoryCollectionView.collectionViewLayout = layout
     }
 }
