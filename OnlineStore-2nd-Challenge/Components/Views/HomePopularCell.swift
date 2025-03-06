@@ -17,17 +17,22 @@ class HomePopularCell: UICollectionViewCell {
     }()
     let discriptionLabel: UILabel = {
         let label = UILabel()
+        label.text = "БЛАБАЛАБАЛА"
+        label.textColor = .black
         label.numberOfLines = 2
         return label
     }()
     let priceLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .left
+        label.textColor = .black
+        label.font = .systemFont(ofSize: 17, weight: .bold)
+        label.text = "100"
         return label
     }()
     var containerView: UIView = {
         let view = UIView()
-        view.backgroundColor = .white
+        view.backgroundColor = .green
         return view
     }()
     
@@ -48,6 +53,12 @@ class HomePopularCell: UICollectionViewCell {
         
     }
     func setConstraint() {
+        NSLayoutConstraint.activate([
+            containerView.topAnchor.constraint(equalTo: contentView.topAnchor),
+            containerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            containerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            containerView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
+        ])
         
     }
     
