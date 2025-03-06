@@ -6,23 +6,22 @@
 //
 
 import UIKit
-
-class HeaderHomeCollection: UICollectionReusableView {
+class HeaderHomeCollectionView: UICollectionReusableView {
     static let reuseIdentifier = "HeaderHomeCollection"
-    lazy var labelForPopularCollectionView: UILabel = {
+    lazy var labelForHomeCollectionView: UILabel = {
         let label = UILabel()
-        label.text = "Popular"
+        label.text = "Category"
         label.textColor = .black
         return label
     }()
-    lazy var buttonForPopularCollectionView: UIButton = {
+    lazy var buttonForHomeCollectionView: UIButton = {
         let button = UIButton()
         button.setImage(UIImage(systemName: "chevron.compact.down"), for: .normal)
         button.tintColor = .black
         return button
     }()
-    lazy var stackForPopularCollectionView: UIStackView = {
-        let stackView = UIStackView(arrangedSubviews: [labelForPopularCollectionView, buttonForPopularCollectionView])
+    lazy var stackForHomeCollectionView: UIStackView = {
+        let stackView = UIStackView(arrangedSubviews: [labelForHomeCollectionView, buttonForHomeCollectionView])
         stackView.axis = .horizontal
         stackView.distribution = .fillProportionally
         stackView.spacing = 8
@@ -30,29 +29,24 @@ class HeaderHomeCollection: UICollectionReusableView {
     }()
     override init(frame: CGRect) {
         super.init(frame: frame)
-        buttonForPopularCollectionView.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
         setViews()
         setConstraints()
         }
     
     func setViews() {
-        addSubview(stackForPopularCollectionView)
-        stackForPopularCollectionView.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(stackForHomeCollectionView)
+        stackForHomeCollectionView.translatesAutoresizingMaskIntoConstraints = false
     }
     func setConstraints(){
         NSLayoutConstraint.activate([
-            stackForPopularCollectionView.leftAnchor.constraint(equalTo: leftAnchor, constant: 10),
-            stackForPopularCollectionView.rightAnchor.constraint(equalTo: rightAnchor, constant: -10),
-            stackForPopularCollectionView.topAnchor.constraint(equalTo: topAnchor),
-            stackForPopularCollectionView.bottomAnchor.constraint(equalTo: bottomAnchor)
+            stackForHomeCollectionView.leftAnchor.constraint(equalTo: leftAnchor, constant: 10),
+            stackForHomeCollectionView.rightAnchor.constraint(equalTo: rightAnchor, constant: -10),
+            stackForHomeCollectionView.topAnchor.constraint(equalTo: topAnchor),
+            stackForHomeCollectionView.bottomAnchor.constraint(equalTo: bottomAnchor)
             
         ])
     }
     required init?(coder: NSCoder) {
             fatalError("init(coder:) has not been implemented")
         }
-    @objc func buttonTapped() {
-//        let vc = CategoryViewController()
-//        NavigationController.pushViewController(vc, animated: true)
-    }
 }
