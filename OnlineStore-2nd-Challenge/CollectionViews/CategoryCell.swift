@@ -3,7 +3,7 @@
 //  OnlineStore-2nd-Challenge
 //
 //  Created by Александр Семёнов on 04.03.2025.
-//
+// UserDefaults.standard.set(self.category, forKey: UserDefaultsStoragesKeys.category.label)
 
 import UIKit
 
