@@ -46,4 +46,13 @@ class SubcategoryCell: UICollectionViewCell {
     func configure(with title: String) {
         titleLabel.text = title
     }
+    
+    override var isHighlighted: Bool {
+        didSet {
+            UIView.animate(withDuration: 0.1) {
+                self.contentView.alpha = self.isHighlighted ? 0.7 : 1.0
+                self.transform = self.isHighlighted ? CGAffineTransform(scaleX: 0.98, y: 0.98) : .identity
+            }
+        }
+    }
 }

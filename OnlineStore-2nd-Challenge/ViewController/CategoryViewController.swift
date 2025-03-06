@@ -39,9 +39,15 @@ final class CategoryViewController: UIViewController {
         }
     
     // MARK: - Actions
-        @objc private func closeButtonTapped() {
-            dismiss(animated: true)
-        }
+    @objc private func closeButtonTapped() {
+           // Переход на HomeViewController
+           if let homeVC = navigationController?.viewControllers.first(where: { $0 is HomeViewController }) {
+               navigationController?.popToViewController(homeVC, animated: true)
+           } else {
+               let homeVC = HomeViewController()
+               navigationController?.setViewControllers([homeVC], animated: true)
+           }
+       }
     }
     
 // MARK: - UICollectionViewDataSource
@@ -80,16 +86,22 @@ extension CategoryViewController: UICollectionViewDataSource {
 extension CategoryViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if indexPath.item == 0 {
+            // Закрываем предыдущую открытую категорию
+            for (index, _) in categories.enumerated() where index != indexPath.section && categories[index].isExpanded {
+                categories[index].isExpanded = false
+                collectionView.reloadSections(IndexSet(integer: index))
+            }
+            
+            // Открываем/закрываем выбранную категорию
             categories[indexPath.section].isExpanded.toggle()
             collectionView.reloadSections(IndexSet(integer: indexPath.section))
         } else {
-//            let category = categories[indexPath.section]
-//            let subcategory = category.subcategories![indexPath.item - 1]
-//            let subcategoryVC = SubcategoryViewController(
-//                category: category.title,
-//                subcategory: subcategory
-//            )
-//            navigationController?.pushViewController(subcategoryVC, animated: true)
+            // Переход на HomeViewController при выборе подкатегории
+            let homeVC = HomeViewController()
+            navigationController?.pushViewController(homeVC, animated: true)
+            
+            // Снимаем выделение с ячейки
+            collectionView.deselectItem(at: indexPath, animated: true)
         }
     }
 }

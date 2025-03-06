@@ -10,14 +10,6 @@ import UIKit
 final class CategoryView: UIView {
     
     // MARK: - UI Elements
-    lazy var backView: UIView = {
-        let backView = UIView()
-        backView.backgroundColor = .white
-        backView.contentMode = .scaleAspectFill
-        backView.translatesAutoresizingMaskIntoConstraints = false
-        return backView
-    }()
-    
     lazy var closeButton: UIButton = {
         let closeButton = UIButton(type: .system)
         closeButton.setImage(UIImage(systemName: "xmark"), for: .normal)
@@ -36,11 +28,11 @@ final class CategoryView: UIView {
     
     private(set) lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
-        layout.minimumLineSpacing = 10 // Изменено с 16 на 10
-        layout.minimumInteritemSpacing = 10 // Изменено с 16 на 10
+        layout.minimumLineSpacing = 10
+        layout.minimumInteritemSpacing = 10
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.backgroundColor = .white // Изменено с .systemGray6 на .white
+        collectionView.backgroundColor = .white
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.register(CategoryCell.self, forCellWithReuseIdentifier: CategoryCell.reuseIdentifier)
         collectionView.register(SubcategoryCell.self, forCellWithReuseIdentifier: SubcategoryCell.reuseIdentifier)
@@ -62,28 +54,22 @@ final class CategoryView: UIView {
     private func setupUI() {
         backgroundColor = .white
         
-        addSubview(backView)
-        backView.addSubview(closeButton)
-        backView.addSubview(allCategoriesLabel)
-        backView.addSubview(collectionView)
+        addSubview(closeButton)
+        addSubview(allCategoriesLabel)
+        addSubview(collectionView)
     }
     
     private func setupConstraints() {
         NSLayoutConstraint.activate([
-            backView.topAnchor.constraint(equalTo: topAnchor),
-            backView.bottomAnchor.constraint(equalTo: bottomAnchor),
-            backView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            backView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            
             closeButton.heightAnchor.constraint(equalToConstant: 14),
             closeButton.widthAnchor.constraint(equalToConstant: 14),
-            closeButton.topAnchor.constraint(equalTo: backView.safeAreaLayoutGuide.topAnchor, constant: 11),
-            closeButton.trailingAnchor.constraint(equalTo: backView.trailingAnchor, constant: -20),
+            closeButton.topAnchor.constraint(equalTo: topAnchor, constant: 90),
+            closeButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
             
             allCategoriesLabel.heightAnchor.constraint(equalToConstant: 36),
             allCategoriesLabel.widthAnchor.constraint(equalToConstant: 185),
-            allCategoriesLabel.topAnchor.constraint(equalTo: backView.safeAreaLayoutGuide.topAnchor, constant: 4),
-            allCategoriesLabel.leadingAnchor.constraint(equalTo: backView.leadingAnchor, constant: 20),
+            allCategoriesLabel.topAnchor.constraint(equalTo: topAnchor, constant: 78),
+            allCategoriesLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
             
             collectionView.topAnchor.constraint(equalTo: allCategoriesLabel.bottomAnchor, constant: 24),
             collectionView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
