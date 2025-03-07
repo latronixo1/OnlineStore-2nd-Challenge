@@ -18,10 +18,10 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="LaunchScreenImage" translatesAutoresizingMaskIntoConstraints="NO" id="2aH-Cu-QbO">
-                                <rect key="frame" x="121.66666666666669" y="351" width="150" height="150"/>
+                                <rect key="frame" x="121.66666666666669" y="280" width="150" height="150"/>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" usesAttributedText="YES" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JcT-1p-oxd">
-                                <rect key="frame" x="105" y="511" width="183" height="61"/>
+                                <rect key="frame" x="105" y="440" width="183" height="61"/>
                                 <attributedString key="attributedText">
                                     <fragment content="Shoppe">
                                         <attributes>
@@ -36,7 +36,7 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="JcT-1p-oxd" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="8qf-fd-PRw"/>
-                            <constraint firstItem="2aH-Cu-QbO" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="QgN-BT-qGf"/>
+                            <constraint firstItem="2aH-Cu-QbO" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" multiplier="5:6" id="QgN-BT-qGf"/>
                             <constraint firstItem="2aH-Cu-QbO" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="VDm-xX-r4U"/>
                             <constraint firstItem="JcT-1p-oxd" firstAttribute="top" secondItem="2aH-Cu-QbO" secondAttribute="bottom" constant="10" id="sxY-lH-XvG"/>
                         </constraints>
