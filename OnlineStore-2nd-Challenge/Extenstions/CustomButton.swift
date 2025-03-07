@@ -30,15 +30,16 @@ extension CustomButton {
     private func setupButton(_ title: String, _ backgroundColor: UIColor,  _ textColor: UIColor, _ fontSize: FontSize) {
         
         setTitle(title, for: .normal)
-        layer.cornerRadius = 12
         layer.masksToBounds = false
         self.backgroundColor = backgroundColor
         
         switch fontSize {
         case .big:
             titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
+            layer.cornerRadius = 12
         case .small:
             titleLabel?.font = .systemFont(ofSize: 12, weight: .regular)
+            layer.cornerRadius = 4
         }
     }
 }

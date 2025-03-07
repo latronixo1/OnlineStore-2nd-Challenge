@@ -9,23 +9,45 @@ import UIKit
 
 final class WishlistViewController: UIViewController {
     
+    private var product: [Product] = []
+    
     private var collectionView: UICollectionView!
     private let reuseIdentifier = "wishlist"
+    private let navigation = UINavigationBar()
+    let favoriteManager = FavoriteManager.shared
     
-    init(collectionView: UICollectionView!) {
-        self.collectionView = collectionView
-        super.init(nibName: nil, bundle: nil)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+    lazy var titleOfLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Wishlist"
+        label.textColor = .black
+        label.textAlignment = .center
+        label.font = .systemFont(ofSize: 28, weight: .bold)
+        return label
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
         setupView()
+        setupNavigationBar()
+        setupLayout()
         configureCollectionView()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        reloadFavorite()
+    }
+    
+    func reloadFavorite() {
+        product = favoriteManager.favoriteArray
+        collectionView.reloadData()
+    }
+    
+    func setupNavigationBar() {
+        navigation.barTintColor = .white
+        navigation.addSubview(titleOfLabel)
+        view.addSubview(navigation)
     }
 }
 
@@ -88,16 +110,15 @@ private extension WishlistViewController {
 extension WishlistViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        // передаем из сохраненных в юзер дефолтс
-        4
+        favoriteManager.favoriteArray.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
        
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as? ShopCollectionViewCell else {return UICollectionViewCell()}
         
-        //let content = //здесь метод который будет отдавать избранные
-        //cell.configure(model: content)
+        let content = favoriteManager.favoriteArray[indexPath.row]
+        cell.configure(model: content)
         return cell
     }
 }
@@ -105,10 +126,27 @@ extension WishlistViewController: UICollectionViewDataSource {
 
 extension WishlistViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard let cell = collectionView.cellForItem(at: indexPath) as? ShopCollectionViewCell else { return }
+        if product.count > 0 {
+            let selectedCell = product[indexPath.item]
+            let productVC = ProductViewController(product: selectedCell)
+            navigationController?.pushViewController(productVC, animated: true)
+        }
+    }
+}
+
+private extension WishlistViewController {
+    func setupLayout() {
+        navigation.translatesAutoresizingMaskIntoConstraints = false
+        titleOfLabel.translatesAutoresizingMaskIntoConstraints = false
         
-       // let item = self.contentDataManager.getModelData()[indexPath.row]
-       // self.contentDataManager.toggleSelected(item)
-        //cell.cellTapped()
+        NSLayoutConstraint.activate([
+            navigation.topAnchor.constraint(equalTo: view.topAnchor, constant: 50),
+            navigation.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            navigation.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            navigation.heightAnchor.constraint(equalToConstant: 80),
+            
+            titleOfLabel.centerXAnchor.constraint(equalTo: navigation.centerXAnchor),
+            titleOfLabel.centerYAnchor.constraint(equalTo: navigation.centerYAnchor),
+        ])
     }
 }

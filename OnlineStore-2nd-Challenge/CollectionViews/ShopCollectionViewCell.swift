@@ -9,13 +9,17 @@ import UIKit
 
 final class ShopCollectionViewCell: UICollectionViewCell {
     //MARK: - Private Property
+    static let identifier = "ShopCell"
+    private let favoriteManager = FavoriteManager.shared
+    
     private let viewBg = UIView()
     private let imageView = UIImageView.makeImage(named: "Image", cornerRadius: 4, heightAnchor: 170, widthAnchor: 160)
     private let descriptionLabel = UILabel.makeLabel(text: "Lorem ipsum dolor sit amet consectetur", font: UIFont.systemFont(ofSize: 12, weight: .regular), textColor: .black)
     private let priceLabel = UILabel.makeLabel(text: "$17,00", font: UIFont.systemFont(ofSize: 17, weight: .bold), textColor: .black)
     private let buttonLike = UIButton()
     private let buttonBuy = CustomButton(title: "Add to cart", backgroundColor: .blue, textColor: .white, fontSize: .small)
-    private var isSelect = Bool()
+    var isSelect: Bool = true
+    var currentProduct: Product?
     
     
     //MARK: - Init
@@ -33,7 +37,6 @@ final class ShopCollectionViewCell: UICollectionViewCell {
         descriptionLabel.text = model.description
         priceLabel.text = model.price.formatted()
     }
-    
 }
 
 
@@ -52,7 +55,7 @@ private extension ShopCollectionViewCell {
     }
     
     func setupButtonLike() {
-        buttonLike.setImage(UIImage(resource: .heart), for: .normal)
+        buttonLike.setImage(UIImage(resource: .heartFill), for: .normal)
         buttonLike.widthAnchor.constraint(equalToConstant: 24).isActive = true
         buttonLike.heightAnchor.constraint(equalToConstant: 24).isActive = true
         
@@ -60,7 +63,16 @@ private extension ShopCollectionViewCell {
     }
     
     @objc func buttonTapped() {
+        guard let product = currentProduct else {return}
+        if isSelect {
+            buttonLike.setImage(UIImage(resource: .heart), for: .normal)
+            favoriteManager.removeFromFavorite(product: product)
+        } else {
+            buttonLike.setImage(UIImage(resource: .heartFill), for: .normal)
+            favoriteManager.addToFavorite(product: product)
+        }
         isSelect.toggle()
+        print("Like tapped")
     }
 }
 
@@ -92,7 +104,7 @@ private extension ShopCollectionViewCell {
             buttonBuy.widthAnchor.constraint(equalToConstant: 120),
             
             buttonLike.topAnchor.constraint(equalTo: buttonBuy.topAnchor),
-            buttonLike.leadingAnchor.constraint(equalTo: buttonBuy.trailingAnchor, constant: -4),
+            buttonLike.leadingAnchor.constraint(equalTo: buttonBuy.trailingAnchor, constant: 16),
             buttonLike.trailingAnchor.constraint(equalTo: viewBg.trailingAnchor),
             
         ])
