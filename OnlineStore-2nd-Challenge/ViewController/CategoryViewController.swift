@@ -80,7 +80,7 @@ final class CategoryViewController: UIViewController {
     
     // MARK: - Method
     private func fetchCategories() {
-        NetworkService.shared.fetchProducts { [weak self] result in
+        NetworkService.shared.fetchProducts(from: "https://fakestoreapi.com/products") { [weak self] result in
             DispatchQueue.main.async {
                 guard let self = self else { return }
                 
@@ -209,6 +209,6 @@ extension CategoryViewController: UICollectionViewDelegateFlowLayout {
         layout collectionViewLayout: UICollectionViewLayout,
         insetForSectionAt section: Int
     ) -> UIEdgeInsets {
-        return UIEdgeInsets(top: 0, left: 0, bottom: 16, right: 0)
+        return UIEdgeInsets(top: 0, left: 0, bottom: 16, right: 0) // Отступ между секциями
     }
 }
