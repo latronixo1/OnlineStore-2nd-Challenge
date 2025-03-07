@@ -10,11 +10,13 @@ enum UserDefaultsStorageKeys: String {
     case name
     case authIsTrue
     case favoriteProducts
+    case category
     var label: String {
         switch self {
         case .name: return "Name"
         case .authIsTrue: return "AuthIsTrue"
         case .favoriteProducts: return "FavoriteProducts"
+        case .category: return "Сategory"
         }
     }
 }
