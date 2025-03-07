@@ -11,15 +11,21 @@ class PaymentViewController: UIViewController {
 
     // MARK: - UI Components
     
-    private let navigation = UINavigationBar()
+    private let navigation: UINavigationBar = {
+        let element = UINavigationBar()
+        element.barTintColor = .white
+        element.translatesAutoresizingMaskIntoConstraints = false
+        return element
+    }()
     
-    lazy var titleOfLabel: UILabel = {
+    let titleOfLabel: UILabel = {
         let label = UILabel()
         label.text = "Payment"
         label.textColor = .black
         label.textAlignment = .center
         label.font = .systemFont(ofSize: 28, weight: .bold)
-        return label
+        label.translatesAutoresizingMaskIntoConstraints = false
+       return label
     }()
 
     private let scrollView: UIScrollView = {
@@ -33,32 +39,14 @@ class PaymentViewController: UIViewController {
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
+    
+    private let mainStackView: UIStackView = {
+        let element = UIStackView()
+        element.axis = .vertical
+        element.spacing = 30
 
-    private let shippingAddressLabel: UILabel = {
-        let label = UILabel()
-        label.text = "Shipping Address\n26, Duong So 2, Thao Dien Ward, An Phu, District 2, Ho Chi Minh city"
-        label.numberOfLines = 0
-        label.font = UIFont.systemFont(ofSize: 16)
-        label.textColor = .darkGray
-        return label
-    }()
-
-    private let contactInfoLabel: UILabel = {
-        let label = UILabel()
-        label.text = "Contact Information\n+84932000000\namandamorgan@example.com"
-        label.numberOfLines = 0
-        label.font = UIFont.systemFont(ofSize: 16)
-        label.textColor = .darkGray
-        return label
-    }()
-
-    private let itemsLabel: UILabel = {
-        let label = UILabel()
-        label.text = "Items 2\n1. Lorem ipsum dolor sit amet consectetur.\n   $17,00\n\n1. Lorem ipsum dolor sit amet consectetur.\n   $17,00"
-        label.numberOfLines = 0
-        label.font = UIFont.systemFont(ofSize: 16)
-        label.textColor = .darkGray
-        return label
+        element.translatesAutoresizingMaskIntoConstraints = false
+        return element
     }()
 
     private let shippingOptionsLabel: UILabel = {
@@ -102,86 +90,73 @@ class PaymentViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupUI()
-        setupNavigationBar()
-        setupLayout()
+        view.backgroundColor = .white
+        
+        setupViews()
+        setConstraints()
     }
 
     // MARK: - UI Setup
-//
-//    private lazy var titleLabel: UILabel = {
-//        let element = UILabel()
-//        
-//        element.translatesAutoresizingMaskIntoConstraints = false
-//        return element
-//    }()
-//
     
-    func setupNavigationBar() {
-        navigation.barTintColor = .white
-        navigation.addSubview(titleOfLabel)
+    private func setupViews() {
+        
+        navigationItem.hidesBackButton = false
         view.addSubview(navigation)
-    }
+        navigation.addSubview(titleOfLabel)
+        
+        let backButton = UIBarButtonItem(
+            image: UIImage(systemName: "chevron.left"),
+            style: .plain,
+            target: self,
+            action: #selector(goBack)
+        )
+        backButton.tintColor = .black
 
-    private func setupTitle() {
-        
-        
-        //title = "Payment"
-        // Создаем UILabel для title
-        let titleLabel = UILabel()
-        titleLabel.text = "Payment3"
-        titleLabel.font = UIFont.boldSystemFont(ofSize: 20)
-        titleLabel.textColor = .black
-        titleLabel.sizeToFit()
-        
-        navigationItem.titleView = titleLabel
-        
-        titleLabel.textAlignment = .left
-        
-        //let leftTitleLabelItem = UIBarButtonItem(customView: <#T##UIView#>)
+//        let backButton = UIBarButtonItem(title: "Back", style: .plain, target: self, action: #selector(goBack))
+//        backButton.
+        navigationItem.leftBarButtonItem = backButton
 
-    }
 
-    
-    private func setupUI() {
-        view.backgroundColor = .white
 
         // Добавляем ScrollView
         view.addSubview(scrollView)
         scrollView.addSubview(contentView)
-
+        
         // Добавляем компоненты в contentView
-        let stackView = UIStackView(arrangedSubviews: [
-            createSectionTitle("Shipping Address"),
-            shippingAddressLabel,
-            createSeparator(),
-            createSectionTitle("Contact Information"),
-            contactInfoLabel,
-            createSeparator(),
-            createSectionTitle("Items 2"),
-            itemsLabel,
-            createSeparator(),
-            createSectionTitle("Shipping Options"),
-            shippingOptionsLabel,
-            createSeparator(),
-            createSectionTitle("Payment Method"),
-            paymentMethodLabel,
-            createSeparator(),
-            totalLabel,
-            payButton
-        ])
-        stackView.axis = .vertical
-        stackView.spacing = 16
-        stackView.translatesAutoresizingMaskIntoConstraints = false
+        mainStackView.addArrangedSubview(createGrayView(title: "Shipping Address", text: "26, Duong So 2, Thao Dien Ward, An Phu, District 2, Ho Chi Minh city"))
+        mainStackView.addArrangedSubview(createGrayView(title: "Contact Information", text: "+84932000000\namandamorgan@example.com"))
+        mainStackView.addArrangedSubview(itemsView)
+        itemsView.addSubview(itemsLabel)
+        mainStackView.addArrangedSubview(createSectionTitle("Items 2"))
+        mainStackView.addArrangedSubview(itemsLabel)
+        mainStackView.addArrangedSubview(createSeparator())
+        mainStackView.addArrangedSubview(createSectionTitle("Shipping Options"))
+        mainStackView.addArrangedSubview(shippingOptionsLabel)
+        mainStackView.addArrangedSubview(createSeparator())
+        mainStackView.addArrangedSubview(createSectionTitle("Payment Method"))
+        mainStackView.addArrangedSubview(paymentMethodLabel)
+        mainStackView.addArrangedSubview(createSeparator())
+        mainStackView.addArrangedSubview(totalLabel)
+        mainStackView.addArrangedSubview(payButton)
+        
+        contentView.addSubview(mainStackView)
 
-        contentView.addSubview(stackView)
-
-        // Настройка констрейнтов
+        // Добавляем действие для кнопки Pay
+        payButton.addTarget(self, action: #selector(payButtonTapped), for: .touchUpInside)
+    }
+    
+    @objc func goBack() {
+        navigationController?.popViewController(animated: true)
+    }
+    
+    // MARK: - Set Constraints
+    
+    private func setConstraints(){
         NSLayoutConstraint.activate([
             navigation.topAnchor.constraint(equalTo: view.topAnchor, constant: 50),
             navigation.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             navigation.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            navigation.heightAnchor.constraint(equalToConstant: 80),
+            navigation.heightAnchor.constraint(equalToConstant: 60),
             
             titleOfLabel.leadingAnchor.constraint(equalTo: navigation.leadingAnchor, constant: 16),
             titleOfLabel.centerYAnchor.constraint(equalTo: navigation.centerYAnchor),
@@ -198,16 +173,13 @@ class PaymentViewController: UIViewController {
             contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
             contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
 
-            stackView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 16),
-            stackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            stackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            stackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16),
+            mainStackView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 16),
+            mainStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            mainStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            mainStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16),
 
             payButton.heightAnchor.constraint(equalToConstant: 50)
         ])
-
-        // Добавляем действие для кнопки Pay
-        payButton.addTarget(self, action: #selector(payButtonTapped), for: .touchUpInside)
     }
 
     // MARK: - Helper Methods
@@ -219,12 +191,100 @@ class PaymentViewController: UIViewController {
         label.textColor = .black
         return label
     }
+    private func createGrayView(title: String, text: String) -> UIView{
+        let grayView: UIView = {
+            let element = UIView()
+            element.backgroundColor = #colorLiteral(red: 0.97647053, green: 0.97647053, blue: 0.97647053, alpha: 1)
+            element.layer.cornerRadius = 2
+            
+            element.translatesAutoresizingMaskIntoConstraints = false
+            return element
+        }()
+        let stackView: UIStackView = {
+            let element = UIStackView()
+            element.axis = .vertical
+            element.spacing = 5
+            element.translatesAutoresizingMaskIntoConstraints = false
+            return element
+        }()
+        let titleLabel: UILabel = {
+            let element = UILabel()
+            element.text = title
+            element.numberOfLines = 1
+            element.font = UIFont.boldSystemFont(ofSize: 16)
+            element.textColor = .black
+            return element
+        }()
+        let textLabel: UILabel = {
+            let element = UILabel()
+            element.text = text
+            element.numberOfLines = 0
+            element.font = UIFont.boldSystemFont(ofSize: 10)
+            element.textColor = .darkGray
+            return element
+        }()
+        let editShippingButton: RoundButton = {
+            let element = RoundButton()
+            // Создаем конфигурацию для увеличения размера изображения
+            let largeConfig = UIImage.SymbolConfiguration(pointSize: 20, weight: .regular, scale: .default)
+            let pencilImage = UIImage(systemName: "pencil", withConfiguration: largeConfig)
+            
+            element.setImage(pencilImage, for: .normal)
+            element.backgroundColor = #colorLiteral(red: 0, green: 0.2947360277, blue: 0.9967841506, alpha: 1)
+            element.tintColor = .white
+            element.translatesAutoresizingMaskIntoConstraints = false
+            return element
+        }()
 
+        grayView.addSubview(stackView)
+        grayView.addSubview(editShippingButton)
+        stackView.addArrangedSubview(titleLabel)
+        stackView.addArrangedSubview(textLabel)
+        
+        NSLayoutConstraint.activate([
+            stackView.topAnchor.constraint(equalTo: grayView.topAnchor),
+            stackView.leadingAnchor.constraint(equalTo: grayView.leadingAnchor, constant: 7),
+            stackView.bottomAnchor.constraint(equalTo: grayView.bottomAnchor),
+            stackView.widthAnchor.constraint(equalTo: grayView.widthAnchor, multiplier: 0.8),
+            stackView.heightAnchor.constraint(equalToConstant: 70),
+
+            editShippingButton.trailingAnchor.constraint(equalTo: grayView.trailingAnchor),
+            editShippingButton.bottomAnchor.constraint(equalTo: grayView.bottomAnchor),
+            editShippingButton.widthAnchor.constraint(equalTo: grayView.widthAnchor, multiplier: 0.1),
+            editShippingButton.heightAnchor.constraint(equalTo: grayView.widthAnchor, multiplier: 0.1),
+            
+        ])
+        return grayView
+    }
     private func createSeparator() -> UIView {
         let separator = UIView()
         separator.backgroundColor = .lightGray
         separator.heightAnchor.constraint(equalToConstant: 1).isActive = true
         return separator
+    }
+    
+    private func createItemsView() -> UIView {
+        let itemsView: UIView = {
+            let element = UIView()
+            
+            element.translatesAutoresizingMaskIntoConstraints = false
+            return element
+        }()
+        
+        let itemsLabel: UILabel = {
+            let label = UILabel()
+            label.text = "Items"
+            
+            //1. Lorem ipsum dolor sit amet consectetur.\n   $17,00\n\n1. Lorem ipsum dolor sit amet consectetur.\n   $17,00"
+            label.numberOfLines = 0
+            label.font = UIFont.systemFont(ofSize: 16)
+            label.textColor = .darkGray
+            return label
+        }()
+
+
+        
+        return itemsView
     }
 
     // MARK: - Actions
@@ -235,12 +295,11 @@ class PaymentViewController: UIViewController {
     }
 }
 
-private extension PaymentViewController {
-    func setupLayout() {
-        navigation.translatesAutoresizingMaskIntoConstraints = false
-        titleOfLabel.translatesAutoresizingMaskIntoConstraints = false
-        
-        NSLayoutConstraint.activate([
-        ])
+//следующий код необходим, чтобы сделать кнопку круглой, если мы не знаем ее размеров
+class RoundButton: UIButton {
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        layer.cornerRadius = bounds.height / 2
+        layer.masksToBounds = true  //обрезаем содержимое по границам
     }
 }
