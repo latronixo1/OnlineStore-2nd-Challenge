@@ -5,6 +5,7 @@
 //  Created by Евгений on 04.03.2025.
 //
 
+import Foundation
 import UIKit
 
 class HomeViewController: UIViewController {
@@ -14,7 +15,7 @@ class HomeViewController: UIViewController {
     private var categories: [String] = []
     private var sortedPopularItems: [Product] = []
     private var favoriteItems: [Product] = []
-    private var  makeImageForCategory: [String: [String]] = [:]
+    private var makeImageForCategory: [String: [String]] = [:]
     
     override func loadView() {
         self.view = mainView
@@ -22,27 +23,17 @@ class HomeViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        mainView.backgroundColor = .white
+        mainView.backgroundColor = .systemGray6
         setupCollectionViews()
         makeProduct()
-        setupCollectionViewLayout()
     }
     
     private func setupCollectionViews() {
         mainView.categoryCollectionView.delegate = self
         mainView.categoryCollectionView.dataSource = self
-        mainView.categoryCollectionView.register(HomeCategoryCell.self, forCellWithReuseIdentifier: HomeCategoryCell.reuseIdentifier)
-        mainView.categoryCollectionView.register(HeaderHomeCollectionView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: HeaderHomeCollectionView.reuseIdentifier)
         
         mainView.popularCollectionView.delegate = self
         mainView.popularCollectionView.dataSource = self
-        mainView.popularCollectionView.register(HomePopularCell.self, forCellWithReuseIdentifier: HomePopularCell.reuseIdentifier)
-        mainView.popularCollectionView.register(HeaderHomeCollectionView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: HeaderHomeCollectionView.reuseIdentifier)
-        
-        mainView.justForYouCollectionView.delegate = self
-        mainView.justForYouCollectionView.dataSource = self
-        mainView.justForYouCollectionView.register(HomeJustForUCell.self, forCellWithReuseIdentifier: HomeJustForUCell.reuseIdentifier)
-        mainView.justForYouCollectionView.register(HeaderHomeCollectionView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: HeaderHomeCollectionView.reuseIdentifier)
     }
     
     private func makeProduct() {
@@ -53,8 +44,8 @@ class HomeViewController: UIViewController {
                 let newCategories = products.map { $0.category }
                 self.categories = Array(Set(newCategories)).sorted()
                 UserDefaults.standard.set(self.categories, forKey: UserDefaultsStorageKeys.category.label)
+                
                 var imageLinksByCategory: [String: [String]] = [:]
-
                 for product in self.items {
                     if var links = imageLinksByCategory[product.category] {
                         links.append(product.image)
@@ -64,7 +55,9 @@ class HomeViewController: UIViewController {
                     }
                 }
                 self.makeImageForCategory = imageLinksByCategory
+                
                 self.sortedPopularItems = self.items.sorted { $0.rating.rate > $1.rating.rate }
+                print("отсортированный массив\(self.sortedPopularItems)")
                 
             case .failure(let error):
                 print("Ошибка: \(error.localizedDescription)")
@@ -72,12 +65,7 @@ class HomeViewController: UIViewController {
             DispatchQueue.main.async {
                 self.mainView.categoryCollectionView.reloadData()
                 self.mainView.popularCollectionView.reloadData()
-                self.mainView.justForYouCollectionView.reloadData()
             }
-            
-            print("Категории: \(self.categories)")
-            print("Продукты загружены: \(self.items.count)")
-            print("Словарь изображений: \(self.makeImageForCategory)")
         }
     }
     
@@ -90,18 +78,6 @@ class HomeViewController: UIViewController {
         }
     }
     
-    // MARK: Navigation
-    @objc func categoryHeaderTapped() {
-        // Handle category header tap
-    }
-    
-    @objc func popularHeaderTapped() {
-        // Handle popular header tap
-    }
-    
-    @objc func justForUHeaderTapped() {
-        // Handle just for you header tap
-    }
     private func loadImages(from urls: [String], into imageViews: [UIImageView]) {
         for (index, url) in urls.enumerated() {
             guard index < imageViews.count else { break }
@@ -110,7 +86,8 @@ class HomeViewController: UIViewController {
                     switch result {
                     case .success(let image):
                         imageViews[index].image = image
-                    case .failure:
+                    case .failure(let error):
+                        print("Ошибка загрузки изображения: \(error.localizedDescription)")
                         imageViews[index].image = UIImage(systemName: "xmark.circle")
                     }
                 }
@@ -119,11 +96,8 @@ class HomeViewController: UIViewController {
     }
 }
 
+extension HomeViewController: UICollectionViewDelegate {}
 
-extension HomeViewController: UICollectionViewDelegate {
-    
-}
-// MARK: UICollectionViewDataSource
 extension HomeViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView,
                         numberOfItemsInSection section: Int) -> Int {
@@ -132,8 +106,6 @@ extension HomeViewController: UICollectionViewDataSource {
             return categories.count
         case mainView.popularCollectionView:
             return sortedPopularItems.count
-        case mainView.justForYouCollectionView:
-            return items.count
         default:
             return 0
         }
@@ -162,14 +134,23 @@ extension HomeViewController: UICollectionViewDataSource {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HomePopularCell.reuseIdentifier, for: indexPath) as? HomePopularCell else {
                 return UICollectionViewCell()
             }
-            cell.discriptionLabel.text = sortedPopularItems[indexPath.row].description
-            cell.priceLabel.text = "\(sortedPopularItems[indexPath.row].price) ₽"
-            return cell
-            
-        case mainView.justForYouCollectionView:
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HomeJustForUCell.reuseIdentifier, for: indexPath) as? HomeJustForUCell else {
-                return UICollectionViewCell()
+            cell.discriptionOfProduct.text = sortedPopularItems[indexPath.row].description
+            cell.priceOfProducts.text = "\(sortedPopularItems[indexPath.row].price) ₽"
+            let urlOfImage = self.sortedPopularItems[indexPath.row].image
+            cell.photoOfProduct.image = nil
+            NetworkService.shared.fetchImage(from: urlOfImage) { result in
+                DispatchQueue.main.async {
+                    switch result {
+                    case .success(let makeImage) :
+                        cell.photoOfProduct.image = makeImage
+                        print("Фотка для ячейки готова")
+                    case .failure(let error):
+                        print(error)
+                        print("Очибка")
+                    }
+                }
             }
+                
             return cell
             
         default:
@@ -177,20 +158,15 @@ extension HomeViewController: UICollectionViewDataSource {
         }
     }
 }
+
 extension HomeViewController: UICollectionViewDelegateFlowLayout {
-    func setupCollectionViewLayout() {
-        let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .vertical
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        sizeForItemAt indexPath: IndexPath) -> CGSize {
         let spacing: CGFloat = 8
-        let itemsPerRow: CGFloat = 2 // Количество ячеек в строке
-        let totalSpacing = (itemsPerRow - 1) * spacing + layout.sectionInset.left + layout.sectionInset.right
-        let itemWidth = (view.bounds.width - totalSpacing) / itemsPerRow
-        let itemHeight: CGFloat = 190 
-        
-        layout.itemSize = CGSize(width: itemWidth, height: itemHeight)
-        layout.minimumInteritemSpacing = spacing
-        layout.minimumLineSpacing = spacing
-        
-        mainView.categoryCollectionView.collectionViewLayout = layout
+        let itemsPerRow: CGFloat = 2
+        let totalSpacing = (itemsPerRow - 1) * spacing
+        let itemWidth = (collectionView.bounds.width - totalSpacing) / itemsPerRow
+        return CGSize(width: itemWidth, height: 190)
     }
 }

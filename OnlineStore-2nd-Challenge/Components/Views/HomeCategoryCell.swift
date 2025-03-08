@@ -14,11 +14,11 @@ class HomeCategoryCell: UICollectionViewCell {
     let thirdImageView = UIImageView()
     let fourthImageView = UIImageView()
     
-    let imageStackView: UIStackView = {
+    let firstImageStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
         stackView.distribution = .fillEqually
-        stackView.spacing = 8
+        stackView.spacing = 4
         stackView.alignment = .fill
         return stackView
     }()
@@ -27,7 +27,15 @@ class HomeCategoryCell: UICollectionViewCell {
         let stackView = UIStackView()
         stackView.axis = .horizontal
         stackView.distribution = .fillEqually
-        stackView.spacing = 8
+        stackView.spacing = 4
+        stackView.alignment = .fill
+        return stackView
+    }()
+    let thirdStackFOrImage: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        stackView.distribution = .fillEqually
+        stackView.spacing = 4
         stackView.alignment = .fill
         return stackView
     }()
@@ -35,8 +43,8 @@ class HomeCategoryCell: UICollectionViewCell {
     let stackOfCategory: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
-        stackView.distribution = .fillProportionally
-        stackView.spacing = 8
+        stackView.distribution = .fill
+        stackView.spacing = 4
         return stackView
     }()
     
@@ -70,6 +78,7 @@ class HomeCategoryCell: UICollectionViewCell {
         setupViews()
         setupConstraints()
         configureImageViews()
+        setupShadow()
     }
     
     required init?(coder: NSCoder) {
@@ -77,17 +86,19 @@ class HomeCategoryCell: UICollectionViewCell {
     }
     
     private func setupViews() {
-        imageStackView.addArrangedSubview(firstImageView)
-        imageStackView.addArrangedSubview(secondImageView)
+        firstImageStackView.addArrangedSubview(firstImageView)
+        firstImageStackView.addArrangedSubview(secondImageView)
         
         secondStackFOrImage.addArrangedSubview(thirdImageView)
         secondStackFOrImage.addArrangedSubview(fourthImageView)
         
+        thirdStackFOrImage.addArrangedSubview(secondStackFOrImage)
+        thirdStackFOrImage.addArrangedSubview(firstImageStackView)
+        
         stackOfCategory.addArrangedSubview(labelOfCategory)
         stackOfCategory.addArrangedSubview(quantityOfProducts)
         
-        stackforelements.addArrangedSubview(imageStackView)
-        stackforelements.addArrangedSubview(secondStackFOrImage)
+        stackforelements.addArrangedSubview(thirdStackFOrImage)
         stackforelements.addArrangedSubview(stackOfCategory)
         
         contentView.addSubview(stackforelements)
@@ -100,7 +111,10 @@ class HomeCategoryCell: UICollectionViewCell {
             stackforelements.topAnchor.constraint(equalTo: contentView.topAnchor),
             stackforelements.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             stackforelements.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            stackforelements.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
+            stackforelements.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            
+            stackOfCategory.leftAnchor.constraint(equalTo: stackforelements.leftAnchor, constant: 8),
+            stackOfCategory.rightAnchor.constraint(equalTo: stackforelements.rightAnchor, constant: -8),
         ])
     }
     
@@ -108,10 +122,22 @@ class HomeCategoryCell: UICollectionViewCell {
         let imageViews = [firstImageView, secondImageView, thirdImageView, fourthImageView]
         for imageView in imageViews {
             imageView.image = UIImage(systemName: "plus")
-            imageView.contentMode = .scaleAspectFill
+            imageView.contentMode = .scaleAspectFit
             imageView.clipsToBounds = true
             imageView.tintColor = .black
             imageView.translatesAutoresizingMaskIntoConstraints = false
+            imageView.widthAnchor.constraint(equalToConstant: 75).isActive = true
+            imageView.heightAnchor.constraint(equalToConstant: 75).isActive = true
         }
+    }
+    private func setupShadow() {
+        // Настройка тени
+        contentView.layer.shadowColor = UIColor.black.cgColor
+        contentView.layer.shadowOpacity = 0.3 // Прозрачность тени
+        contentView.layer.shadowOffset = CGSize(width: 0, height: 2) // Смещение тени
+        contentView.layer.shadowRadius = 4 // Радиус размытия тени
+        contentView.layer.masksToBounds = false
+        contentView.layer.cornerRadius = 8
+        contentView.layer.backgroundColor = UIColor.white.cgColor // Фон для contentView
     }
 }
