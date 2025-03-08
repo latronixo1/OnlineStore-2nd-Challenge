@@ -52,7 +52,10 @@ class CreatAccountViewController: UIViewController {
                 self.showAlert(message: self.messageForAlert)
                 print("\(error.localizedDescription)")
             } else {
-                UserDefaults.standard.set(self.name, forKey: UserDefaultsStorageKeys.name.label)
+                
+            UserDefaults.standard.set(self.name, forKey: UserDefaultsStorageKeys.name.label)
+                UserDefaults.standard.set(self.email, forKey: UserDefaultsStorageKeys.email.label)
+                UserDefaults.standard.set(self.password, forKey: UserDefaultsStorageKeys.password.label)
                 self.goToLoginView()
             }
             

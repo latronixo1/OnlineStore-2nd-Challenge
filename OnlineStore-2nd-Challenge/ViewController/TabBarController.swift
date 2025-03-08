@@ -53,7 +53,7 @@ final class TabBarController: UITabBarController {
             case .wishlist: return self.wrappedInNavigationController(with: WishlistViewController(), title: $0.title)
             case .categories: return self.wrappedInNavigationController(with: CategoryViewController(), title: $0.title)
             case .cart: return self.wrappedInNavigationController(with: TestCartViewController(), title: $0.title)
-            case .settings: return self.wrappedInNavigationController(with: TestSettingsViewController(), title: $0.title)
+            case .settings: return self.wrappedInNavigationController(with: SettingViewController(), title: $0.title)
             }
         }
         

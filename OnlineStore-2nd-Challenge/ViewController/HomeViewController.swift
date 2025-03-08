@@ -53,6 +53,7 @@ class HomeViewController: UIViewController {
             case .success(let products):
                 self.items = products
                 let newCategories = products.map { $0.category }
+                UserDefaultsManager.shared.saveProducts(products)
                 self.categories = Array(Set(newCategories)).sorted()
                 UserDefaults.standard.set(self.categories, forKey: UserDefaultsStorageKeys.category.label)
                 var imageLinksByCategory: [String: [String]] = [:]
