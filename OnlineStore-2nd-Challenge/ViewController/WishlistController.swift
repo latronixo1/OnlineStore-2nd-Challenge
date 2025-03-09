@@ -14,16 +14,8 @@ final class WishlistViewController: UIViewController {
     private var collectionView: UICollectionView!
     private let reuseIdentifier = "wishlist"
     private let navigation = UINavigationBar()
-    let favoriteManager = FavoriteManager.shared
-    
-    lazy var titleOfLabel: UILabel = {
-        let label = UILabel()
-        label.text = "Wishlist"
-        label.textColor = .black
-        label.textAlignment = .center
-        label.font = .systemFont(ofSize: 28, weight: .bold)
-        return label
-    }()
+    private let favoriteManager = FavoriteManager.shared
+    private let titleOfLabel = UILabel.makeLabel(text: "Wishlist", font: .systemFont(ofSize: 28, weight: .bold), textColor: .black)
     
     override func viewDidLoad() {
         super.viewDidLoad()

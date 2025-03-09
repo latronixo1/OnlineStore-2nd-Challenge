@@ -22,9 +22,9 @@ final class ProductViewController: UIViewController {
     private let stackForButton = UIStackView()
     
     private let mainImage = UIImageView()
-    private let imageVariations1 = UIImageView.makeImage(named: "Image", cornerRadius: 4, heightAnchor: 75, widthAnchor: 75)
-    private let imageVariations2 = UIImageView.makeImage(named: "Image", cornerRadius: 4, heightAnchor: 75, widthAnchor: 75)
-    private let imageVariations3 = UIImageView.makeImage(named: "Image", cornerRadius: 4, heightAnchor: 75, widthAnchor: 75)
+    private let imageVariations1 = UIImageView.makeImage(named: "Image", cornerRadius: 4, heightAnchor: 75, widthAnchor: 75, border: false, shadow: false)
+    private let imageVariations2 = UIImageView.makeImage(named: "Image", cornerRadius: 4, heightAnchor: 75, widthAnchor: 75, border: false, shadow: false)
+    private let imageVariations3 = UIImageView.makeImage(named: "Image", cornerRadius: 4, heightAnchor: 75, widthAnchor: 75, border: false, shadow: false)
     private let stackForImage = UIStackView()
     
     init(product: Product) {
