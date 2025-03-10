@@ -14,6 +14,7 @@ final class FinderViewController: UIViewController {
     private let finderView = FinderView()
     private var searchHistoryModel: SearchHistoryModel
     private var selectedItemIndex: Int?
+    var products: [Product] = []
     
     // MARK: - Init
     init(initialHistory: [String] = ["Socks", "Red dress", "Sunglasses", "Mustard Pants", "80-s Skirt"]) {

@@ -13,7 +13,7 @@ final class ShopCollectionViewCell: UICollectionViewCell {
     private let favoriteManager = FavoriteManager.shared
     
     private let viewBg = UIView()
-    private let imageView = UIImageView.makeImage(named: "Image", cornerRadius: 4, heightAnchor: 170, widthAnchor: 160)
+    private let imageView = UIImageView.makeImage(named: "Image", cornerRadius: 4, heightAnchor: 170, widthAnchor: 160, border: false, shadow: false)
     private let descriptionLabel = UILabel.makeLabel(text: "Lorem ipsum dolor sit amet consectetur", font: UIFont.systemFont(ofSize: 12, weight: .regular), textColor: .black)
     private let priceLabel = UILabel.makeLabel(text: "$17,00", font: UIFont.systemFont(ofSize: 17, weight: .bold), textColor: .black)
     private let buttonLike = UIButton()
@@ -33,7 +33,7 @@ final class ShopCollectionViewCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     func configure(model: Product) {
-        imageView.image = UIImage(named: model.image)
+        imageView.largeContentImage = UIImage(named: "Image")
         descriptionLabel.text = model.description
         priceLabel.text = model.price.formatted()
     }
