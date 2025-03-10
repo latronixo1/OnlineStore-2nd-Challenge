@@ -32,7 +32,6 @@ class TestCartViewController: UIViewController {
     
     @objc func checkoutButtonTapped() {
         let paymentVC = PaymentViewController()
-        //paymentVC.navigationItem.title = "Payment2"   //не рабочий вариант
         self.navigationController?.pushViewController(paymentVC, animated: true)
     }
     

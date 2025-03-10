@@ -11,14 +11,14 @@ class PaymentViewController: UIViewController {
     
     // MARK: - Variables
     
-    private var countItems: Int = 1
+    private var countItems: Int? = 1
     private var idItems: [Int]? = [1]
     
 
     
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+//    required init?(coder: NSCoder) {
+//        fatalError("init(coder:) has not been implemented")
+//    }
     
     // MARK: - UI Components
     
@@ -54,12 +54,15 @@ class PaymentViewController: UIViewController {
     private let mainStackView: UIStackView = {
         let element = UIStackView()
         element.axis = .vertical
-        element.spacing = 30
+        element.spacing = 10
 
         element.translatesAutoresizingMaskIntoConstraints = false
         return element
     }()
 
+//    private lazy var shippingView = createGrayView(title: "Shipping Address", text: "26, Duong So 2, Thao Dien Ward, An Phu, District 2, Ho Chi Minh city")
+//    private lazy var contactView = createGrayView(title: "Contact Information", text: "+84932000000\namandamorgan@example.com")
+    
     private let shippingOptionsLabel: UILabel = {
         let label = UILabel()
         label.text = "Shipping Options\n- [ ] Standard 5-7 days\n  FREE\n\n- [ ] Express 1-2 days\n  $12,00\n\nDelivered on or before Thursday, 23 April 2020"
@@ -137,9 +140,6 @@ class PaymentViewController: UIViewController {
         mainStackView.addArrangedSubview(createGrayView(title: "Shipping Address", text: "26, Duong So 2, Thao Dien Ward, An Phu, District 2, Ho Chi Minh city"))
         mainStackView.addArrangedSubview(createGrayView(title: "Contact Information", text: "+84932000000\namandamorgan@example.com"))
         mainStackView.addArrangedSubview(createItemsView())
-//        mainStackView.addArrangedSubview(createSectionTitle("Items 2"))
-//        mainStackView.addArrangedSubview(itemsLabel)
-//        mainStackView.addArrangedSubview(createSeparator())
         mainStackView.addArrangedSubview(createSectionTitle("Shipping Options"))
         mainStackView.addArrangedSubview(shippingOptionsLabel)
         mainStackView.addArrangedSubview(createSeparator())
@@ -171,7 +171,6 @@ class PaymentViewController: UIViewController {
             titleOfLabel.leadingAnchor.constraint(equalTo: navigation.leadingAnchor, constant: 16),
             titleOfLabel.centerYAnchor.constraint(equalTo: navigation.centerYAnchor),
 
-
             scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
@@ -188,6 +187,7 @@ class PaymentViewController: UIViewController {
             mainStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             mainStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16),
 
+            
             payButton.heightAnchor.constraint(equalToConstant: 50)
         ])
     }
@@ -205,7 +205,7 @@ class PaymentViewController: UIViewController {
         let grayView: UIView = {
             let element = UIView()
             element.backgroundColor = #colorLiteral(red: 0.97647053, green: 0.97647053, blue: 0.97647053, alpha: 1)
-            element.layer.cornerRadius = 2
+            element.layer.cornerRadius = 10
             
             element.translatesAutoresizingMaskIntoConstraints = false
             return element
@@ -252,13 +252,17 @@ class PaymentViewController: UIViewController {
         stackView.addArrangedSubview(textLabel)
         
         NSLayoutConstraint.activate([
+            grayView.heightAnchor.constraint(equalToConstant: 70),
+            
             stackView.topAnchor.constraint(equalTo: grayView.topAnchor),
             stackView.leadingAnchor.constraint(equalTo: grayView.leadingAnchor, constant: 7),
-            stackView.bottomAnchor.constraint(equalTo: grayView.bottomAnchor),
+            //stackView.bottomAnchor.constraint(equalTo: grayView.bottomAnchor, constant: 20),
             stackView.widthAnchor.constraint(equalTo: grayView.widthAnchor, multiplier: 0.8),
-            stackView.heightAnchor.constraint(equalToConstant: 70),
+            stackView.heightAnchor.constraint(equalToConstant: 60),
+            
+//            textLabel.bottomAnchor.constraint(equalTo: stackView.bottomAnchor, constant: 50),
 
-            editShippingButton.trailingAnchor.constraint(equalTo: grayView.trailingAnchor),
+            editShippingButton.trailingAnchor.constraint(equalTo: grayView.trailingAnchor, constant: 10),
             editShippingButton.bottomAnchor.constraint(equalTo: grayView.bottomAnchor),
             editShippingButton.widthAnchor.constraint(equalTo: grayView.widthAnchor, multiplier: 0.1),
             editShippingButton.heightAnchor.constraint(equalTo: grayView.widthAnchor, multiplier: 0.1),
@@ -270,13 +274,15 @@ class PaymentViewController: UIViewController {
     private func createItemsView() -> UIView {
         let itemsView: UIView = {
             let element = UIView()
-            
+            element.backgroundColor = .yellow
             element.translatesAutoresizingMaskIntoConstraints = false
             return element
         }()
         
-        let titleItemsView: UIView = {
-            let element = UIView()
+        let titleItemsView: UIStackView = {
+            let element = UIStackView()
+            element.axis = .horizontal
+            element.backgroundColor = .systemPink
             
             element.translatesAutoresizingMaskIntoConstraints = false
             return element
@@ -284,9 +290,9 @@ class PaymentViewController: UIViewController {
         
         let titleLabel: UILabel = {
             let element = UILabel()
-            element.text = title
+            element.text = "Items"
             element.numberOfLines = 1
-            element.font = UIFont.boldSystemFont(ofSize: 16)
+            element.font = UIFont.boldSystemFont(ofSize: 20)
             element.textColor = .black
             return element
         }()
@@ -297,11 +303,17 @@ class PaymentViewController: UIViewController {
             element.textAlignment = .center
             element.font = UIFont.boldSystemFont(ofSize: 16)
             element.textColor = .black
-            element.text = String(countItems)
+            element.text = String(countItems!)
             
             element.translatesAutoresizingMaskIntoConstraints = false
             return element
         }()
+//        let emptyView: UIView = {
+//            let element = UIView()
+//            
+//            element.translatesAutoresizingMaskIntoConstraints = false
+//            return element
+//        }()
         let addVaucherButton: UIButton = {
             let element = UIButton()
             element.setTitle("Add Voucher", for: .normal)
@@ -309,35 +321,43 @@ class PaymentViewController: UIViewController {
             element.backgroundColor = .white
             element.layer.borderWidth = 1
             element.layer.borderColor = #colorLiteral(red: 0, green: 0.2947360277, blue: 0.9967841506, alpha: 1)
-            
+            element.setTitleColor(#colorLiteral(red: 0, green: 0.2947360277, blue: 0.9967841506, alpha: 1), for: .normal)
+            element.titleLabel?.font = UIFont(name: "SFProRounded-Black", size: 20)
             element.translatesAutoresizingMaskIntoConstraints = false
             return element
         }()
         
         itemsView.addSubview(titleItemsView)
-        titleItemsView.addSubview(titleLabel)
-        titleItemsView.addSubview(countItemsInCart)
-        titleItemsView.addSubview(addVaucherButton)
+        titleItemsView.addArrangedSubview(titleLabel)
+        titleItemsView.addArrangedSubview(countItemsInCart)
+//        titleItemsView.addArrangedSubview(emptyView)
+        titleItemsView.addArrangedSubview(addVaucherButton)
         
         NSLayoutConstraint.activate([
             
+            itemsView.heightAnchor.constraint(equalToConstant: CGFloat(countItems! * 60 + 40)),
+
             titleItemsView.topAnchor.constraint(equalTo: itemsView.topAnchor),
             titleItemsView.leadingAnchor.constraint(equalTo: itemsView.leadingAnchor),
-            titleItemsView.heightAnchor.constraint(equalToConstant: 30),
+            titleItemsView.heightAnchor.constraint(equalToConstant: 40),
             titleItemsView.widthAnchor.constraint(equalTo: itemsView.widthAnchor),
             
             titleLabel.topAnchor.constraint(equalTo: titleItemsView.topAnchor),
             titleLabel.leadingAnchor.constraint(equalTo: titleItemsView.leadingAnchor),
-            titleLabel.widthAnchor.constraint(equalTo: titleItemsView.widthAnchor, multiplier: 0.2),
-            titleLabel.heightAnchor.constraint(equalTo: titleItemsView.heightAnchor),
+            titleLabel.widthAnchor.constraint(equalTo: titleItemsView.widthAnchor, multiplier: 0.15),
+            titleLabel.heightAnchor.constraint(equalToConstant: 20),
+//            titleLabel.widthAnchor.constraint(equalTo: itemsView.widthAnchor, multiplier: 0.2),
+//            titleLabel.heightAnchor.constraint(equalTo: itemsView.heightAnchor),
             
             countItemsInCart.topAnchor.constraint(equalTo: titleItemsView.topAnchor),
-            countItemsInCart.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
-            countItemsInCart.heightAnchor.constraint(equalTo: titleItemsView.heightAnchor),
+            countItemsInCart.leadingAnchor.constraint(equalTo: titleLabel.trailingAnchor),
+            countItemsInCart.heightAnchor.constraint(equalTo: titleItemsView.widthAnchor, multiplier: 0.1),
+            countItemsInCart.widthAnchor.constraint(equalTo: titleItemsView.widthAnchor, multiplier: 0.1),
             
             addVaucherButton.topAnchor.constraint(equalTo: titleItemsView.topAnchor),
-            addVaucherButton.trailingAnchor.constraint(equalTo: titleLabel.trailingAnchor),
+            addVaucherButton.trailingAnchor.constraint(equalTo: titleItemsView.trailingAnchor),
             addVaucherButton.heightAnchor.constraint(equalTo: titleItemsView.heightAnchor),
+            addVaucherButton.widthAnchor.constraint(equalTo: titleItemsView.widthAnchor, multiplier: 0.4),
 
             ])
         

@@ -109,6 +109,7 @@ final class CartViewController: UIViewController {
         bottomView.addSubview(amountLabel)
         bottomView.addSubview(checkoutButton)
         
+        checkoutButton.addTarget(self, action: #selector(checkoutButtonTapped), for: .touchUpInside)
         
         NSLayoutConstraint.activate([
             titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
@@ -146,6 +147,12 @@ final class CartViewController: UIViewController {
             checkoutButton.heightAnchor.constraint(equalToConstant: 40)
         ])
     }
+    
+    @objc func checkoutButtonTapped() {
+        let paymentVC = PaymentViewController()
+        self.navigationController?.pushViewController(paymentVC, animated: true)
+    }
+
 }
 
 // MARK: - UITableViewDataSource, UITableViewDelegate
