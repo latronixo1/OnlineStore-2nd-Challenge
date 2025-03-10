@@ -11,11 +11,13 @@ class PaymentViewController: UIViewController {
     
     // MARK: - Variables
     
-    private var countItems: Int? = 1
-    private var idItems: [Int]? = [1]
+    private var countItems: Int? = 2
+    private var idItems: [Int]? = [1, 2]
     
-
-    
+    var cartItems: [CartItem] = [
+        CartItem(imageName: "Image", title: "Lorem ipsum dolor sit amet consectetur.", price: "$17,00", quantity: 1),
+        CartItem(imageName: "Image", title: "Lorem ipsum dolor sit amet consectetur.", price: "$25,00", quantity: 1)
+    ]
 //    required init?(coder: NSCoder) {
 //        fatalError("init(coder:) has not been implemented")
 //    }
@@ -60,8 +62,13 @@ class PaymentViewController: UIViewController {
         return element
     }()
 
-//    private lazy var shippingView = createGrayView(title: "Shipping Address", text: "26, Duong So 2, Thao Dien Ward, An Phu, District 2, Ho Chi Minh city")
-//    private lazy var contactView = createGrayView(title: "Contact Information", text: "+84932000000\namandamorgan@example.com")
+    private let tableView: UITableView = {
+        let tableView = UITableView()
+        tableView.separatorStyle = .none
+        tableView.backgroundColor = .white
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        return tableView
+    }()
     
     private let shippingOptionsLabel: UILabel = {
         let label = UILabel()
@@ -105,7 +112,7 @@ class PaymentViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-        
+        setupTableView()
         setupViews()
         setConstraints()
     }
@@ -271,6 +278,7 @@ class PaymentViewController: UIViewController {
         return grayView
     }
     
+    //создание раздела с товарами
     private func createItemsView() -> UIView {
         let itemsView: UIView = {
             let element = UIView()
@@ -279,7 +287,7 @@ class PaymentViewController: UIViewController {
             return element
         }()
         
-        let titleItemsView: UIStackView = {
+        let titleItemsStackView: UIStackView = {
             let element = UIStackView()
             element.axis = .horizontal
             element.backgroundColor = .systemPink
@@ -327,37 +335,42 @@ class PaymentViewController: UIViewController {
             return element
         }()
         
-        itemsView.addSubview(titleItemsView)
-        titleItemsView.addArrangedSubview(titleLabel)
-        titleItemsView.addArrangedSubview(countItemsInCart)
+        itemsView.addSubview(titleItemsStackView)
+        titleItemsStackView.addArrangedSubview(titleLabel)
+        titleItemsStackView.addArrangedSubview(countItemsInCart)
 //        titleItemsView.addArrangedSubview(emptyView)
-        titleItemsView.addArrangedSubview(addVaucherButton)
+        titleItemsStackView.addArrangedSubview(addVaucherButton)
         
+        itemsView.addSubview(tableView)
         NSLayoutConstraint.activate([
             
             itemsView.heightAnchor.constraint(equalToConstant: CGFloat(countItems! * 60 + 40)),
 
-            titleItemsView.topAnchor.constraint(equalTo: itemsView.topAnchor),
-            titleItemsView.leadingAnchor.constraint(equalTo: itemsView.leadingAnchor),
-            titleItemsView.heightAnchor.constraint(equalToConstant: 40),
-            titleItemsView.widthAnchor.constraint(equalTo: itemsView.widthAnchor),
+            titleItemsStackView.topAnchor.constraint(equalTo: itemsView.topAnchor),
+            titleItemsStackView.leadingAnchor.constraint(equalTo: itemsView.leadingAnchor),
+            titleItemsStackView.heightAnchor.constraint(equalToConstant: 40),
+            titleItemsStackView.widthAnchor.constraint(equalTo: itemsView.widthAnchor),
             
-            titleLabel.topAnchor.constraint(equalTo: titleItemsView.topAnchor),
-            titleLabel.leadingAnchor.constraint(equalTo: titleItemsView.leadingAnchor),
-            titleLabel.widthAnchor.constraint(equalTo: titleItemsView.widthAnchor, multiplier: 0.15),
+            titleLabel.topAnchor.constraint(equalTo: titleItemsStackView.topAnchor),
+            titleLabel.leadingAnchor.constraint(equalTo: titleItemsStackView.leadingAnchor),
+            titleLabel.widthAnchor.constraint(equalTo: titleItemsStackView.widthAnchor, multiplier: 0.15),
             titleLabel.heightAnchor.constraint(equalToConstant: 20),
-//            titleLabel.widthAnchor.constraint(equalTo: itemsView.widthAnchor, multiplier: 0.2),
-//            titleLabel.heightAnchor.constraint(equalTo: itemsView.heightAnchor),
             
-            countItemsInCart.topAnchor.constraint(equalTo: titleItemsView.topAnchor),
+            countItemsInCart.topAnchor.constraint(equalTo: titleItemsStackView.topAnchor),
             countItemsInCart.leadingAnchor.constraint(equalTo: titleLabel.trailingAnchor),
-            countItemsInCart.heightAnchor.constraint(equalTo: titleItemsView.widthAnchor, multiplier: 0.1),
-            countItemsInCart.widthAnchor.constraint(equalTo: titleItemsView.widthAnchor, multiplier: 0.1),
+            countItemsInCart.heightAnchor.constraint(equalTo: titleItemsStackView.widthAnchor, multiplier: 0.1),
+            countItemsInCart.widthAnchor.constraint(equalTo: titleItemsStackView.widthAnchor, multiplier: 0.1),
             
-            addVaucherButton.topAnchor.constraint(equalTo: titleItemsView.topAnchor),
-            addVaucherButton.trailingAnchor.constraint(equalTo: titleItemsView.trailingAnchor),
-            addVaucherButton.heightAnchor.constraint(equalTo: titleItemsView.heightAnchor),
-            addVaucherButton.widthAnchor.constraint(equalTo: titleItemsView.widthAnchor, multiplier: 0.4),
+            addVaucherButton.topAnchor.constraint(equalTo: titleItemsStackView.topAnchor),
+            addVaucherButton.trailingAnchor.constraint(equalTo: titleItemsStackView.trailingAnchor),
+            addVaucherButton.heightAnchor.constraint(equalTo: titleItemsStackView.heightAnchor),
+            addVaucherButton.widthAnchor.constraint(equalTo: titleItemsStackView.widthAnchor, multiplier: 0.4),
+
+            tableView.topAnchor.constraint(equalTo: titleItemsStackView.bottomAnchor, constant: 10),
+            tableView.leadingAnchor.constraint(equalTo: itemsView.leadingAnchor, constant: 20),
+            tableView.trailingAnchor.constraint(equalTo: itemsView.trailingAnchor,constant: -20),
+            tableView.bottomAnchor.constraint(equalTo: itemsView.topAnchor, constant: -10),
+            tableView.heightAnchor.constraint(equalToConstant: 60),
 
             ])
         
@@ -377,6 +390,15 @@ class PaymentViewController: UIViewController {
         // Обработка нажатия на кнопку Pay
         print("Pay button tapped")
     }
+    
+    // MARK: - Set delegates
+    
+    private func setupTableView() {
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.register(PaymentCell.self, forCellReuseIdentifier: "PaymentCell")
+    }
+
 }
 
 //следующий код необходим, чтобы сделать кнопку круглой, если мы не знаем ее размеров
@@ -396,3 +418,38 @@ class RoundLabel: UILabel {
         layer.masksToBounds = true  //обрезаем содержимое по границам
     }
 }
+
+// MARK: - UITableViewDataSource, UITableViewDelegate
+extension PaymentViewController: UITableViewDelegate, UITableViewDataSource {
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return cartItems.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "PaymentCell", for: indexPath) as? PaymentCell else {
+            return UITableViewCell()
+        }
+        let item = cartItems[indexPath.row]
+        cell.selectionStyle = .none
+        cell.configure(with: item)
+        return cell
+    }
+    
+//    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+//        return 109
+//    }
+//    
+//    func didTapIncreaseButton(on cell: PaymentCell) {
+//        print("Increase button tapped")
+//    }
+//
+//    func didTapDecreaseButton(on cell: PaymentCell) {
+//        print("Decrease button tapped")
+//    }
+//
+//    func didTapDeleteButton(on cell: PaymentCell) {
+//        print("Delete button tapped")
+//    }
+}
+
