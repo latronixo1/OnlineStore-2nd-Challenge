@@ -24,6 +24,7 @@ class HomeView: UIView {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
+    //private let searchBar = SearchView(searchSize: .small)
     
     lazy var searchBar: UISearchBar = {
         let searchBar = UISearchBar()
