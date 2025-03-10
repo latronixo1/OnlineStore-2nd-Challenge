@@ -7,9 +7,76 @@
 
 import Foundation
 
+// MARK: KEYSforUSerDefaults
+
+enum UserDefaultsStorageKeys: String {
+    case name
+    case email
+    case password
+    case authIsTrue
+    case favoriteProducts
+    case category
+    var label: String {
+        switch self {
+        case .name: return "Name"
+        case .email: return "Email"
+        case .password: return "Password"
+        case .authIsTrue: return "AuthIsTrue"
+        case .favoriteProducts: return "FavoriteProducts"
+        case .category: return "Category"
+        }
+    }
+}
+
+
 class UserDefaultsManager {
     static let shared = UserDefaultsManager()
     private init() {}
+    
+    private let userKey = "savedUser"
+    private let productsKey = "savedProducts"
+    
+    
+    // Сохранение User
+    func saveUser(_ user: UserData) {
+        if let encoded = try? JSONEncoder().encode(user) {
+            UserDefaults.standard.set(encoded, forKey: userKey)
+        }
+    }
+    
+    // Загрузка User
+    func loadUser() -> UserData? {
+        if let user = UserDefaults.standard.data(forKey: userKey),
+           let userData = try? JSONDecoder().decode(UserData.self, from: user) {
+            return userData
+        }
+        return nil
+    }
+    
+    // Удаление User
+    func deleteUser() {
+        UserDefaults.standard.removeObject(forKey: userKey)
+    }
+    
+    // Сохранение массива Product
+    func saveProducts(_ products: [Product]) {
+        if let encoded = try? JSONEncoder().encode(products) {
+            UserDefaults.standard.set(encoded, forKey: productsKey)
+        }
+    }
+    
+    // Загрузка массива Product
+    func loadProducts() -> [Product] {
+        guard let data = UserDefaults.standard.data(forKey: productsKey) else { return [] }
+        return (try? JSONDecoder().decode([Product].self, from: data)) ?? []
+    }
+    
+    // Удаление всех сохранённых продуктов
+    func deleteProducts() {
+        UserDefaults.standard.removeObject(forKey: productsKey)
+    }
+    
+    
     
     func saveFavoriteProducts(_ products: [Product]) {
         do {
@@ -66,77 +133,6 @@ class UserDefaultsManager {
         } else {
             print("Товар не найден в избранном")
         }
-    }
-}
-
-// MARK: KEYSforUSerDefaults
-
-enum UserDefaultsStorageKeys: String {
-    case name
-    case email
-    case password
-    case authIsTrue
-    case favoriteProducts
-    case category
-    var label: String {
-        switch self {
-        case .name: return "Name"
-        case .email: return "Email"
-        case .password: return "Password"
-        case .authIsTrue: return "AuthIsTrue"
-        case .favoriteProducts: return "FavoriteProducts"
-        case .category: return "Category"
-        }
-    }
-}
-
-
-
-class UserDefaultsManager {
-    static let shared = UserDefaultsManager()
-    
-    private let userKey = "savedUser"
-    private let productsKey = "savedProducts"
-    
-    private init() {}
-
-    // Сохранение User
-    func saveUser(_ user: UserData) {
-        if let encoded = try? JSONEncoder().encode(user) {
-            UserDefaults.standard.set(encoded, forKey: userKey)
-        }
-    }
-    
-    // Загрузка User
-    func loadUser() -> UserData? {
-        if let user = UserDefaults.standard.data(forKey: userKey),
-           let userData = try? JSONDecoder().decode(UserData.self, from: user) {
-            return userData
-        }
-        return nil
-    }
-    
-    // Удаление User
-    func deleteUser() {
-        UserDefaults.standard.removeObject(forKey: userKey)
-    }
-    
-    // Сохранение массива Product
-    func saveProducts(_ products: [Product]) {
-        if let encoded = try? JSONEncoder().encode(products) {
-            UserDefaults.standard.set(encoded, forKey: productsKey)
-        }
-    }
-    
-    // Загрузка массива Product
-    func loadProducts() -> [Product] {
-        guard let data = UserDefaults.standard.data(forKey: productsKey) else { return [] }
-        return (try? JSONDecoder().decode([Product].self, from: data)) ?? []
-    }
-    
-    // Удаление всех сохранённых продуктов
-    func deleteProducts() {
-        UserDefaults.standard.removeObject(forKey: productsKey)
     }
 }
 

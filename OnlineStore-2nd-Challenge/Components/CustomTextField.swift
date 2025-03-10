@@ -13,7 +13,7 @@ enum CustomTextFieldType {
     case password
 }
 
-final class CustomTextField: UITextField {
+final class CustomTextField: UITextField, UITextFieldDelegate {
     private let textField: CustomTextFieldType
     private var eyeButton: UIButton?
     
