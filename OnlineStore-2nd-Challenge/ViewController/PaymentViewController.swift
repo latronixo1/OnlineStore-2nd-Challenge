@@ -8,7 +8,18 @@
 import UIKit
 
 class PaymentViewController: UIViewController {
+    
+    // MARK: - Variables
+    
+    private var countItems: Int = 1
+    private var idItems: [Int]? = [1]
+    
 
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     // MARK: - UI Components
     
     private let navigation: UINavigationBar = {
@@ -125,11 +136,10 @@ class PaymentViewController: UIViewController {
         // Добавляем компоненты в contentView
         mainStackView.addArrangedSubview(createGrayView(title: "Shipping Address", text: "26, Duong So 2, Thao Dien Ward, An Phu, District 2, Ho Chi Minh city"))
         mainStackView.addArrangedSubview(createGrayView(title: "Contact Information", text: "+84932000000\namandamorgan@example.com"))
-        mainStackView.addArrangedSubview(itemsView)
-        itemsView.addSubview(itemsLabel)
-        mainStackView.addArrangedSubview(createSectionTitle("Items 2"))
-        mainStackView.addArrangedSubview(itemsLabel)
-        mainStackView.addArrangedSubview(createSeparator())
+        mainStackView.addArrangedSubview(createItemsView())
+//        mainStackView.addArrangedSubview(createSectionTitle("Items 2"))
+//        mainStackView.addArrangedSubview(itemsLabel)
+//        mainStackView.addArrangedSubview(createSeparator())
         mainStackView.addArrangedSubview(createSectionTitle("Shipping Options"))
         mainStackView.addArrangedSubview(shippingOptionsLabel)
         mainStackView.addArrangedSubview(createSeparator())
@@ -191,7 +201,7 @@ class PaymentViewController: UIViewController {
         label.textColor = .black
         return label
     }
-    private func createGrayView(title: String, text: String) -> UIView{
+    private func createGrayView(title: String, text: String) -> UIView {
         let grayView: UIView = {
             let element = UIView()
             element.backgroundColor = #colorLiteral(red: 0.97647053, green: 0.97647053, blue: 0.97647053, alpha: 1)
@@ -256,12 +266,6 @@ class PaymentViewController: UIViewController {
         ])
         return grayView
     }
-    private func createSeparator() -> UIView {
-        let separator = UIView()
-        separator.backgroundColor = .lightGray
-        separator.heightAnchor.constraint(equalToConstant: 1).isActive = true
-        return separator
-    }
     
     private func createItemsView() -> UIView {
         let itemsView: UIView = {
@@ -271,22 +275,82 @@ class PaymentViewController: UIViewController {
             return element
         }()
         
-        let itemsLabel: UILabel = {
-            let label = UILabel()
-            label.text = "Items"
+        let titleItemsView: UIView = {
+            let element = UIView()
             
-            //1. Lorem ipsum dolor sit amet consectetur.\n   $17,00\n\n1. Lorem ipsum dolor sit amet consectetur.\n   $17,00"
-            label.numberOfLines = 0
-            label.font = UIFont.systemFont(ofSize: 16)
-            label.textColor = .darkGray
-            return label
+            element.translatesAutoresizingMaskIntoConstraints = false
+            return element
         }()
+        
+        let titleLabel: UILabel = {
+            let element = UILabel()
+            element.text = title
+            element.numberOfLines = 1
+            element.font = UIFont.boldSystemFont(ofSize: 16)
+            element.textColor = .black
+            return element
+        }()
+        let countItemsInCart: RoundLabel = {
+            let element = RoundLabel()
+            element.backgroundColor = #colorLiteral(red: 0.8971917033, green: 0.9204418063, blue: 0.9870311618, alpha: 1)
+            element.tintColor = .black
+            element.textAlignment = .center
+            element.font = UIFont.boldSystemFont(ofSize: 16)
+            element.textColor = .black
+            element.text = String(countItems)
+            
+            element.translatesAutoresizingMaskIntoConstraints = false
+            return element
+        }()
+        let addVaucherButton: UIButton = {
+            let element = UIButton()
+            element.setTitle("Add Voucher", for: .normal)
+            element.layer.cornerRadius = 10
+            element.backgroundColor = .white
+            element.layer.borderWidth = 1
+            element.layer.borderColor = #colorLiteral(red: 0, green: 0.2947360277, blue: 0.9967841506, alpha: 1)
+            
+            element.translatesAutoresizingMaskIntoConstraints = false
+            return element
+        }()
+        
+        itemsView.addSubview(titleItemsView)
+        titleItemsView.addSubview(titleLabel)
+        titleItemsView.addSubview(countItemsInCart)
+        titleItemsView.addSubview(addVaucherButton)
+        
+        NSLayoutConstraint.activate([
+            
+            titleItemsView.topAnchor.constraint(equalTo: itemsView.topAnchor),
+            titleItemsView.leadingAnchor.constraint(equalTo: itemsView.leadingAnchor),
+            titleItemsView.heightAnchor.constraint(equalToConstant: 30),
+            titleItemsView.widthAnchor.constraint(equalTo: itemsView.widthAnchor),
+            
+            titleLabel.topAnchor.constraint(equalTo: titleItemsView.topAnchor),
+            titleLabel.leadingAnchor.constraint(equalTo: titleItemsView.leadingAnchor),
+            titleLabel.widthAnchor.constraint(equalTo: titleItemsView.widthAnchor, multiplier: 0.2),
+            titleLabel.heightAnchor.constraint(equalTo: titleItemsView.heightAnchor),
+            
+            countItemsInCart.topAnchor.constraint(equalTo: titleItemsView.topAnchor),
+            countItemsInCart.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
+            countItemsInCart.heightAnchor.constraint(equalTo: titleItemsView.heightAnchor),
+            
+            addVaucherButton.topAnchor.constraint(equalTo: titleItemsView.topAnchor),
+            addVaucherButton.trailingAnchor.constraint(equalTo: titleLabel.trailingAnchor),
+            addVaucherButton.heightAnchor.constraint(equalTo: titleItemsView.heightAnchor),
 
-
+            ])
         
         return itemsView
     }
 
+    private func createSeparator() -> UIView {
+        let separator = UIView()
+        separator.backgroundColor = .lightGray
+        separator.heightAnchor.constraint(equalToConstant: 1).isActive = true
+        return separator
+    }
+    
     // MARK: - Actions
 
     @objc private func payButtonTapped() {
@@ -300,6 +364,15 @@ class RoundButton: UIButton {
     override func layoutSubviews() {
         super.layoutSubviews()
         layer.cornerRadius = bounds.height / 2
+        layer.masksToBounds = true  //обрезаем содержимое по границам
+    }
+}
+
+//следующий код необходим, чтобы сделать вьюху круглой, если мы не знаем ее размеров
+class RoundLabel: UILabel {
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        layer.cornerRadius = min(self.frame.size.width, self.frame.size.height) / 2.0
         layer.masksToBounds = true  //обрезаем содержимое по границам
     }
 }
