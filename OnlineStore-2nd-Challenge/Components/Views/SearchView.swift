@@ -9,10 +9,10 @@ import UIKit
 
 final class SearchView: UIViewController, UISearchBarDelegate {
     let searchBar = UISearchBar()
-    private var product: [Product] = []
+    private var products: [Product] = []
     private let networkManager = NetworkService.shared
     private let userDefaults = FavoriteManager.shared
-   
+    private let searchLabel = UILabel.makeLabel(text: "Search", font: .systemFont(ofSize: 16, weight: .regular), textColor: .systemGray4)
     
     
     override func viewDidLoad() {
@@ -24,32 +24,54 @@ final class SearchView: UIViewController, UISearchBarDelegate {
         
     }
     
-//    func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {
-//        let searchViewController = FinderView()
-//        
-//       // navigationController?.pushViewController(searchViewController, animated: true)
-//    }
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.resignFirstResponder()
+        pushFinderViewController()
+    }
+    
+    
+    func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {
+        return true
+    }
+    
+    private func pushFinderViewController() {
+        let searchViewController = FinderViewController()
+        searchViewController.products = products
+        searchViewController.modalPresentationStyle = .overFullScreen
+        present(searchViewController, animated: true, completion: nil)
+    }
     
     private func setupSearchBar() {
         searchBar.delegate = self
         searchBar.searchTextField.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(searchBar)
+        view.addSubview(searchLabel)
     }
     
     private func setupTextField() {
         if let searchBarTextField = searchBar.value(forKey: "searchField") as? UITextField {
             searchBarTextField.backgroundColor = .systemGray6
             searchBarTextField.textColor = .black
-            searchBarTextField.attributedPlaceholder = NSAttributedString(string: "Search", attributes: [.foregroundColor: UIColor.lightGray])
-            searchBarTextField.layer.cornerRadius = 12
+            searchBarTextField.borderStyle = .none
+            if let textField = searchBar.value(forKey: "searchField") as? UITextField {
+                textField.leftView = nil
+            }
+            searchBar.backgroundImage = UIImage()
+            searchBarTextField.layer.cornerRadius = 24
         }
     }
     
     private func setConstraints() {
+        searchLabel.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
+            
+            searchLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            searchLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            searchLabel.heightAnchor.constraint(equalToConstant: 21),
+            
             view.heightAnchor.constraint(equalToConstant: 40),
             searchBar.topAnchor.constraint(equalTo: view.topAnchor),
-            searchBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            searchBar.leadingAnchor.constraint(equalTo: searchLabel.trailingAnchor, constant: 8),
             searchBar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             searchBar.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             
@@ -58,13 +80,5 @@ final class SearchView: UIViewController, UISearchBarDelegate {
             searchBar.searchTextField.trailingAnchor.constraint(equalTo: searchBar.trailingAnchor),
             searchBar.searchTextField.bottomAnchor.constraint(equalTo: searchBar.bottomAnchor)
         ])
-    }
-    
-    private func presentSearchScreen() {
-//         let searchResultVC = //контроллер с поиском
-//        searchResultVC.articles = articles
-//        searchResultVC.modalPresentationStyle = .pageSheet
-//        present(searchResultVC, animated: true, completion: nil)
-    
     }
 }

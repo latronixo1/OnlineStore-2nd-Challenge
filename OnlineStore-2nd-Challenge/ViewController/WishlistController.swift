@@ -14,6 +14,7 @@ final class WishlistViewController: UIViewController {
     private var collectionView: UICollectionView!
     private let reuseIdentifier = "wishlist"
     private let navigation = UINavigationBar()
+    private let finderBar = SearchView()
     private let favoriteManager = FavoriteManager.shared
     private let titleOfLabel = UILabel.makeLabel(text: "Wishlist", font: .systemFont(ofSize: 28, weight: .bold), textColor: .black)
     
@@ -22,8 +23,8 @@ final class WishlistViewController: UIViewController {
         view.backgroundColor = .white
         setupView()
         setupNavigationBar()
+        setupFinderView()
         setupLayout()
-        configureCollectionView()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -41,6 +42,11 @@ final class WishlistViewController: UIViewController {
         navigation.addSubview(titleOfLabel)
         view.addSubview(navigation)
     }
+    
+    func setupFinderView() {
+        finderBar.searchBar.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(finderBar.view)
+    }
 }
 
 
@@ -52,7 +58,6 @@ private extension WishlistViewController {
         collectionView.dataSource = self
         collectionView.delegate = self
         view.addSubview(collectionView)
-
     }
 }
 
@@ -87,16 +92,6 @@ private extension WishlistViewController {
         )
         return UICollectionViewCompositionalLayout(section: section)
     }
-    
-    func configureCollectionView() {
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            collectionView.topAnchor.constraint(equalTo: view.topAnchor, constant: 100),
-            collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 12),
-            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -12),
-            collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-        ])
-    }
 }
 
 extension WishlistViewController: UICollectionViewDataSource {
@@ -106,7 +101,6 @@ extension WishlistViewController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-       
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as? ShopCollectionViewCell else {return UICollectionViewCell()}
         
         let content = favoriteManager.favoriteArray[indexPath.row]
@@ -130,15 +124,24 @@ private extension WishlistViewController {
     func setupLayout() {
         navigation.translatesAutoresizingMaskIntoConstraints = false
         titleOfLabel.translatesAutoresizingMaskIntoConstraints = false
+        finderBar.view.translatesAutoresizingMaskIntoConstraints = false
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            navigation.topAnchor.constraint(equalTo: view.topAnchor, constant: 50),
+            navigation.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             navigation.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             navigation.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            navigation.heightAnchor.constraint(equalToConstant: 80),
+            navigation.heightAnchor.constraint(equalToConstant: 44),
             
             titleOfLabel.centerXAnchor.constraint(equalTo: navigation.centerXAnchor),
-            titleOfLabel.centerYAnchor.constraint(equalTo: navigation.centerYAnchor),
+            titleOfLabel.bottomAnchor.constraint(equalTo: navigation.bottomAnchor, constant: -8),
+            
+            finderBar.view.topAnchor.constraint(equalTo: navigation.bottomAnchor, constant: 10),
+            finderBar.view.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 12),
+            finderBar.view.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -12),
+            finderBar.view.heightAnchor.constraint(equalToConstant: 40),
+            
+            collectionView.topAnchor.constraint(equalTo: finderBar.view.bottomAnchor, constant: 10),
         ])
     }
 }

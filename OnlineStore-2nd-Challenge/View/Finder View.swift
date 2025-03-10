@@ -16,6 +16,7 @@ protocol FinderViewDelegate: AnyObject {
 
 final class FinderView: UIView {
     weak var delegate: FinderViewDelegate?
+    private var products: [Product] = []
     
     // MARK: - UI Elements
     lazy var backView: UIView = {
