@@ -25,18 +25,25 @@ class HomeViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        mainView.backgroundColor = .systemGray6
+        mainView.backgroundColor = .white
         setupCollectionViews()
         makeProduct()
+        setupNavigation()
+        navigationController?.setNavigationBarHidden(true, animated: false)
+        
     }
     
     private func setupCollectionViews() {
         mainView.categoryCollectionView.delegate = self
         mainView.categoryCollectionView.dataSource = self
-        
         mainView.popularCollectionView.delegate = self
         mainView.popularCollectionView.dataSource = self
     }
+    private func setupNavigation() {
+        mainView.basketButton.addTarget(self, action: #selector(basketButtonTapped), for: .touchUpInside)
+        mainView.categoryButton.addTarget(self, action: #selector(categoriesButtonTapped), for: .touchUpInside)
+    }
+    
     
     private func makeProduct() {
         NetworkService.shared.fetchProducts(from: productURLString) { result in
@@ -97,9 +104,23 @@ class HomeViewController: UIViewController {
             }
         }
     }
+    //MARK: Navigation
+    @objc func basketButtonTapped() {
+        guard let tapBar = self.tabBarController else {
+            print("Ошбка в получении тап бара")
+            return
+        }
+        tapBar.selectedIndex = 3
+    }
+    @objc func categoriesButtonTapped() {
+        guard let tapBar = self.tabBarController else { return }
+        tapBar.selectedIndex = 2
+    }
 }
 
 extension HomeViewController: UICollectionViewDelegate {}
+
+//MARK: UICollectionViewDataSource
 
 extension HomeViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView,
@@ -160,7 +181,9 @@ extension HomeViewController: UICollectionViewDataSource {
             fatalError("Unknown collection view")
         }
     }
+    
 }
+//MARK: UICollectionViewDelegateFlowLayout
 
 extension HomeViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView,

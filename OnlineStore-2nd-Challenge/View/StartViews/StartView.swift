@@ -48,10 +48,7 @@ class StartView: UIView {
     }()
     lazy var loginButton: UIButton = {
         let button = UIButton()
-        button.backgroundColor = UIColor.button
-        button.setTitle("->", for: .normal)
-        button.setTitleColor(UIColor.white, for: .normal)
-        button.layer.cornerRadius = 15
+        button.setImage(UIImage(named: "chevronButton"), for: .normal)
         return button
     }()
     lazy var stackForLogin: UIStackView = {
