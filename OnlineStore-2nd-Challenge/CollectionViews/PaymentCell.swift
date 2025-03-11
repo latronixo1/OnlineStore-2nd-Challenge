@@ -106,7 +106,7 @@ final class PaymentCell: UITableViewCell {
             shadowContainerForImageView.heightAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 0.2),
             
             productImageView.topAnchor.constraint(equalTo: shadowContainerForImageView.topAnchor, constant: 5),
-            productImageView.leadingAnchor.constraint(equalTo: shadowContainerForImageView.leadingAnchor, constant: 5),
+            productImageView.leadingAnchor.constraint(equalTo: shadowContainerForImageView.leadingAnchor, constant: 8),
             productImageView.trailingAnchor.constraint(equalTo: shadowContainerForImageView.trailingAnchor),
             productImageView.bottomAnchor.constraint(equalTo: shadowContainerForImageView.bottomAnchor),
 
@@ -121,7 +121,6 @@ final class PaymentCell: UITableViewCell {
             
             priceLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 20),
             priceLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            //priceLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             priceLabel.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 0.2),
             
         ])
