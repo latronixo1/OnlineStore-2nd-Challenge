@@ -5,7 +5,6 @@
 //  Created by Евгений on 03.03.2025.
 //
 
-import Foundation
 import UIKit
 
 class StartViewController: UIViewController {
@@ -24,10 +23,12 @@ class StartViewController: UIViewController {
         
     }
     @objc func getStarted() {
+        print("нажал на кнопу")
         let vc = CreatAccountViewController()
         navigationController?.pushViewController(vc, animated: true)
     }
     @objc func goToAuthorize() {
+        print("нажал на кнопу")
         let vc = LoginViewController()
         navigationController?.pushViewController(vc, animated: true)
     }
