@@ -152,9 +152,12 @@ class PaymentViewController: UIViewController {
         mainStackView.addArrangedSubview(createGrayView(title: "Shipping Address", text: "26, Duong So 2, Thao Dien Ward, An Phu, District 2, Ho Chi Minh city"))
         mainStackView.addArrangedSubview(createGrayView(title: "Contact Information", text: "+84932000000\namandamorgan@example.com"))
         mainStackView.addArrangedSubview(createItemsView())
-        mainStackView.addArrangedSubview(createSectionTitle("Shipping Options"))
-        mainStackView.addArrangedSubview(shippingOptionsLabel)
-        mainStackView.addArrangedSubview(createSeparator())
+        mainStackView.addArrangedSubview(createShippingView())
+        
+        
+//        mainStackView.addArrangedSubview(createSectionTitle("Shipping Options"))
+//        mainStackView.addArrangedSubview(shippingOptionsLabel)
+//        mainStackView.addArrangedSubview(createSeparator())
         mainStackView.addArrangedSubview(createSectionTitle("Payment Method"))
         mainStackView.addArrangedSubview(paymentMethodLabel)
         mainStackView.addArrangedSubview(createSeparator())
@@ -268,12 +271,9 @@ class PaymentViewController: UIViewController {
             
             stackView.topAnchor.constraint(equalTo: grayView.topAnchor),
             stackView.leadingAnchor.constraint(equalTo: grayView.leadingAnchor, constant: 7),
-            //stackView.bottomAnchor.constraint(equalTo: grayView.bottomAnchor, constant: 20),
             stackView.widthAnchor.constraint(equalTo: grayView.widthAnchor, multiplier: 0.8),
             stackView.heightAnchor.constraint(equalToConstant: 60),
             
-//            textLabel.bottomAnchor.constraint(equalTo: stackView.bottomAnchor, constant: 50),
-
             editShippingButton.trailingAnchor.constraint(equalTo: grayView.trailingAnchor, constant: 10),
             editShippingButton.bottomAnchor.constraint(equalTo: grayView.bottomAnchor),
             editShippingButton.widthAnchor.constraint(equalTo: grayView.widthAnchor, multiplier: 0.1),
@@ -342,7 +342,7 @@ class PaymentViewController: UIViewController {
         itemsView.addSubview(tableView)
         NSLayoutConstraint.activate([
             
-            itemsView.heightAnchor.constraint(equalToConstant: CGFloat(cartItems.count * 109 + 40)),
+            itemsView.heightAnchor.constraint(equalToConstant: CGFloat(cartItems.count * 80 + 50)),
 
             titleItemsStackView.topAnchor.constraint(equalTo: itemsView.topAnchor),
             titleItemsStackView.leadingAnchor.constraint(equalTo: itemsView.leadingAnchor),
@@ -375,6 +375,76 @@ class PaymentViewController: UIViewController {
         return itemsView
     }
 
+    private func createShippingView() -> UIView {
+        let shippingView: UIView = {
+            let element = UIView()
+            element.backgroundColor = .yellow
+            element.translatesAutoresizingMaskIntoConstraints = false
+            return element
+        }()
+        
+        let shippingStackView: UIStackView = {
+            let element = UIStackView()
+            element.axis = .vertical
+            element.distribution = .fillEqually
+            element.spacing = 10
+            element.translatesAutoresizingMaskIntoConstraints = false
+            return element
+        }()
+        
+        let titleLabel: UILabel = {
+            let element = UILabel()
+            element.text = "Shipping Options"
+            element.numberOfLines = 1
+            element.textAlignment = .left
+            element.backgroundColor = .systemPink
+            element.font = UIFont.boldSystemFont(ofSize: 20)
+            element.textColor = .black
+            return element
+        }()
+        
+        let segmentedControl: UISegmentedControl = {
+            let element = UISegmentedControl(items: ["Standart", "Express"])
+            element.selectedSegmentIndex = 0    //выбран 1 вариант по умолчанию
+            element.backgroundColor = .systemPink
+            element.selectedSegmentTintColor = .systemBlue
+            element.setTitleTextAttributes([.foregroundColor: UIColor.green], for: .selected)
+            
+            element.translatesAutoresizingMaskIntoConstraints = false
+            return element
+        }()
+        
+        
+        shippingView.addSubview(shippingStackView)
+        shippingStackView.addArrangedSubview(titleLabel)
+        shippingStackView.addArrangedSubview(segmentedControl)
+        
+        
+        NSLayoutConstraint.activate([
+            shippingView.heightAnchor.constraint(equalToConstant: 100),
+            
+            shippingStackView.topAnchor.constraint(equalTo: shippingView.topAnchor),
+            shippingStackView.leadingAnchor.constraint(equalTo: shippingView.leadingAnchor, constant: 7),
+            shippingStackView.widthAnchor.constraint(equalTo: shippingView.widthAnchor),
+            shippingStackView.heightAnchor.constraint(equalToConstant: 60),
+
+//            titleLabel.topAnchor.constraint(equalTo: shippingStackView.topAnchor),
+//            titleLabel.leadingAnchor.constraint(equalTo: shippingStackView.leadingAnchor),
+//            titleLabel.trailingAnchor.constraint(equalTo: shippingStackView.trailingAnchor),
+//            titleLabel.heightAnchor.constraint(equalToConstant: 10),
+//            titleLabel.widthAnchor.constraint(equalTo: shippingStackView.widthAnchor),
+//            
+            //segmentedControl.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            //segmentedControl.topAnchor.constraint(equalTo: view.topAnchor, constant: 100),
+//            segmentedControl.widthAnchor.constraint(equalToConstant: 300),
+//            segmentedControl.heightAnchor.constraint(equalToConstant: 40)
+            
+            ])
+        
+        return shippingView
+    }
+    
+    
     private func createSeparator() -> UIView {
         let separator = UIView()
         separator.backgroundColor = .lightGray
