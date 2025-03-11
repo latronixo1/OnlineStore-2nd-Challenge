@@ -383,7 +383,7 @@ class PaymentViewController: UIViewController {
             return element
         }()
         
-        let shippingStackView: UIStackView = {
+        let shippingMainStackView: UIStackView = {
             let element = UIStackView()
             element.axis = .vertical
             element.distribution = .fillEqually
@@ -403,30 +403,38 @@ class PaymentViewController: UIViewController {
             return element
         }()
         
-        let segmentedControl: UISegmentedControl = {
-            let element = UISegmentedControl(items: ["Standart", "Express"])
-            element.selectedSegmentIndex = 0    //выбран 1 вариант по умолчанию
-            element.backgroundColor = .systemPink
-            element.selectedSegmentTintColor = .systemBlue
-            element.setTitleTextAttributes([.foregroundColor: UIColor.green], for: .selected)
+        let shippingOptionsStackView: UIStackView = {
+            let element = UIStackView()
+            element.axis = .vertical
+            element.distribution = .fillEqually
+            element.spacing = 10
+
+            element.translatesAutoresizingMaskIntoConstraints = false
+            return element
+        }()
+        
+        let standardButton: UIButton = {
+            let element = UIButton(type: .system)
+            element.setTitle("Standard", for: .normal)
+            element.layer.cornerRadius = 8
             
             element.translatesAutoresizingMaskIntoConstraints = false
             return element
         }()
         
         
-        shippingView.addSubview(shippingStackView)
-        shippingStackView.addArrangedSubview(titleLabel)
-        shippingStackView.addArrangedSubview(segmentedControl)
+        shippingView.addSubview(shippingMainStackView)
+        shippingMainStackView.addArrangedSubview(titleLabel)
+        shippingMainStackView.addArrangedSubview(shippingOptionsStackView)
         
         
         NSLayoutConstraint.activate([
             shippingView.heightAnchor.constraint(equalToConstant: 100),
             
-            shippingStackView.topAnchor.constraint(equalTo: shippingView.topAnchor),
-            shippingStackView.leadingAnchor.constraint(equalTo: shippingView.leadingAnchor, constant: 7),
-            shippingStackView.widthAnchor.constraint(equalTo: shippingView.widthAnchor),
-            shippingStackView.heightAnchor.constraint(equalToConstant: 60),
+            shippingMainStackView.topAnchor.constraint(equalTo: shippingView.topAnchor),
+            shippingMainStackView.leadingAnchor.constraint(equalTo: shippingView.leadingAnchor, constant: 7),
+            shippingMainStackView.widthAnchor.constraint(equalTo: shippingView.widthAnchor),
+            shippingMainStackView.heightAnchor.constraint(equalToConstant: 60),
 
 //            titleLabel.topAnchor.constraint(equalTo: shippingStackView.topAnchor),
 //            titleLabel.leadingAnchor.constraint(equalTo: shippingStackView.leadingAnchor),
@@ -444,6 +452,7 @@ class PaymentViewController: UIViewController {
         return shippingView
     }
     
+
     
     private func createSeparator() -> UIView {
         let separator = UIView()
