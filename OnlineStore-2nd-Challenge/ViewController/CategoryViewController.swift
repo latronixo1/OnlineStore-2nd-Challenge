@@ -13,13 +13,6 @@ final class CategoryViewController: UIViewController {
     private var categories: [Category] = []
     private let categoryView = CategoryView()
     
-    private lazy var closeButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.setImage(UIImage(systemName: "xmark"), for: .normal)
-        button.tintColor = .black
-        return button
-    }()
-    
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.text = "All Categories"
@@ -36,7 +29,6 @@ final class CategoryViewController: UIViewController {
         super.viewDidLoad()
         setupNavigationBar()
         setupDelegates()
-        setupActions()
         fetchCategories() // Добавляем этот вызов
     }
     
@@ -47,9 +39,7 @@ final class CategoryViewController: UIViewController {
         let titleItem = UIBarButtonItem(customView: titleLabel)
         navigationItem.leftBarButtonItem = titleItem
         
-        // Настраиваем правую часть навбара (кнопка закрытия)
-        let closeItem = UIBarButtonItem(customView: closeButton)
-        navigationItem.rightBarButtonItem = closeItem
+        navigationItem.hidesBackButton = true
         
         // Убираем разделительную линию навбара
         navigationController?.navigationBar.shadowImage = UIImage()
@@ -62,22 +52,6 @@ final class CategoryViewController: UIViewController {
         categoryView.collectionView.dataSource = self
     }
     
-    private func setupActions() {
-        closeButton.addTarget(
-            self,
-            action: #selector(closeButtonTapped),
-            for: .touchUpInside
-        )
-    }
-    
-    // MARK: - Actions
-    @objc private func closeButtonTapped() {
-        if let tabBarController = self.view.window?.rootViewController as? UITabBarController {
-            tabBarController.selectedIndex = 0 // Переключаемся на первый таб
-            navigationController?.popToRootViewController(animated: true)
-        }
-    }
-    
     // MARK: - Method
     private func fetchCategories() {
         NetworkService.shared.fetchProducts(from: "https://fakestoreapi.com/products") { [weak self] result in
@@ -86,11 +60,12 @@ final class CategoryViewController: UIViewController {
                 
                 switch result {
                 case .success(let products):
-                    // Получаем уникальные категории
+                    // Получаем уникальные категории и сортируем их в нужном порядке
                     let uniqueCategories = Array(Set(products.map { $0.category }))
+                    let sortedCategories = self.sortCategories(uniqueCategories)
                     
                     // Создаем массив категорий с кастомными подкатегориями и иконками
-                    self.categories = uniqueCategories.enumerated().map { index, title in
+                    self.categories = sortedCategories.map { title in
                         Category(
                             title: title,
                             icon: Category.getCustomIcon(for: title),
@@ -126,6 +101,17 @@ final class CategoryViewController: UIViewController {
                     }
                 }
             }
+        }
+    }
+    
+    private func sortCategories(_ categories: [String]) -> [String] {
+        let order = ["men's clothing", "electronics", "women's clothing", "jewelery"]
+        return categories.sorted { first, second in
+            guard let index1 = order.firstIndex(of: first),
+                  let index2 = order.firstIndex(of: second) else {
+                return false
+            }
+            return index1 < index2
         }
     }
 }
@@ -166,25 +152,32 @@ extension CategoryViewController: UICollectionViewDataSource {
 extension CategoryViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if indexPath.item == 0 {
-            // Закрываем предыдущую открытую категорию
+            // Логика для категории остается прежней
             for (index, _) in categories.enumerated() where index != indexPath.section && categories[index].isExpanded {
                 categories[index].isExpanded = false
                 collectionView.reloadSections(IndexSet(integer: index))
             }
             
-            // Открываем/закрываем выбранную категорию
             categories[indexPath.section].isExpanded.toggle()
             
-            // Сохраняем обновленное состояние в UserDefaults
             if let encodedData = try? JSONEncoder().encode(categories) {
                 UserDefaults.standard.set(encodedData, forKey: UserDefaultsStorageKeys.category.label)
             }
             
             collectionView.reloadSections(IndexSet(integer: indexPath.section))
         } else {
-            // Переход на HomeViewController при выборе подкатегории
-            let homeVC = HomeViewController(); // Добавлена точка с запятой
-            navigationController?.pushViewController(homeVC, animated: true);  // Добавлена точка с запятой
+            // Получаем название выбранной подкатегории
+            let category = categories[indexPath.section]
+            let selectedSubcategory = category.subcategories[indexPath.item - 1]
+
+            
+            // Создаем и настраиваем HomeViewController
+            let homeVC = HomeViewController()
+//            homeVC.selectedSubcategory = selectedSubcategory
+            
+            // Переходим на HomeViewController
+            navigationController?.pushViewController(homeVC, animated: true)
+            
             collectionView.deselectItem(at: indexPath, animated: true)
         }
     }
