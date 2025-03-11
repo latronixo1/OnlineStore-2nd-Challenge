@@ -7,7 +7,7 @@
 
 import UIKit
 
-class NewOnboardingViewController: UIViewController {
+class OnboardingViewController: UIViewController {
     
     // MARK: - Properties
     private let slides: [(image: String, title: String, description: String)] = [
@@ -30,7 +30,7 @@ class NewOnboardingViewController: UIViewController {
         cv.showsHorizontalScrollIndicator = false
         cv.delegate = self
         cv.dataSource = self
-        cv.register(NewOnboardingCell.self, forCellWithReuseIdentifier: "OnboardingCell")
+        cv.register(OnboardingCell.self, forCellWithReuseIdentifier: "OnboardingCell")
         cv.translatesAutoresizingMaskIntoConstraints = false
         cv.clipsToBounds = false // Важно! Отключаем обрезку содержимого
         return cv
@@ -118,7 +118,7 @@ class NewOnboardingViewController: UIViewController {
 }
 
 // MARK: - UICollectionViewDelegate & DataSource
-extension NewOnboardingViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+extension OnboardingViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return slides.count
@@ -128,7 +128,7 @@ extension NewOnboardingViewController: UICollectionViewDelegate, UICollectionVie
             let cell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: "OnboardingCell",
                 for: indexPath
-            ) as! NewOnboardingCell
+            ) as! OnboardingCell
             
             let slide = slides[indexPath.item]
             let isLastCell = indexPath.item == slides.count - 1
