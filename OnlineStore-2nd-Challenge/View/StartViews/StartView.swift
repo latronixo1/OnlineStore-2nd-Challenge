@@ -9,7 +9,7 @@
 import UIKit
 
 class StartView: UIView {
-    lazy var backGroundCircle: UIView = {
+    let backGroundCircle: UIView = {
         let circle = UIView()
         circle.backgroundColor = UIColor.white
         circle.layer.cornerRadius = 100
@@ -22,7 +22,8 @@ class StartView: UIView {
     }()
     lazy var logoImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(systemName: "arrowshape.turn.up.forward.circle")
+        imageView.image = UIImage(named: "LaunchScreenImage")
+        imageView.contentMode = .center
         imageView.tintColor = .button
         return imageView
     }()
@@ -48,10 +49,7 @@ class StartView: UIView {
     }()
     lazy var loginButton: UIButton = {
         let button = UIButton()
-        button.backgroundColor = UIColor.button
-        button.setTitle("->", for: .normal)
-        button.setTitleColor(UIColor.white, for: .normal)
-        button.layer.cornerRadius = 15
+        button.setImage(UIImage(named: "chevronButton"), for: .normal)
         return button
     }()
     lazy var stackForLogin: UIStackView = {
@@ -94,8 +92,8 @@ class StartView: UIView {
 
             logoImageView.centerXAnchor.constraint(equalTo: backGroundCircle.centerXAnchor),
             logoImageView.centerYAnchor.constraint(equalTo: backGroundCircle.centerYAnchor),
-            logoImageView.widthAnchor.constraint(equalToConstant: 60),
-            logoImageView.heightAnchor.constraint(equalToConstant: 60),
+            logoImageView.widthAnchor.constraint(equalToConstant: 81),
+            logoImageView.heightAnchor.constraint(equalToConstant: 92),
 
             nameOfAppLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
             nameOfAppLabel.topAnchor.constraint(equalTo: backGroundCircle.bottomAnchor, constant: 20),

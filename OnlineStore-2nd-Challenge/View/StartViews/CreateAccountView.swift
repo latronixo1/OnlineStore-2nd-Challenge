@@ -17,18 +17,31 @@ class CreatAccountView: UIView {
         label.font = UIFont.systemFont(ofSize: 54)
         return label
     }()
+    lazy var paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: 50))
+//    textField.leftView = paddingView
+//    textField.leftViewMode = .always
     lazy var emailTextField: UITextField = {
         let textField = UITextField()
         textField.placeholder = "Email"
         textField.backgroundColor = .systemGray6
         textField.layer.cornerRadius = 20
+        textField.leftView = paddingView
+        textField.leftViewMode = .always
         return textField
+    }()
+    lazy var genderSelection: UIPickerView = {
+        let pickerView = UIPickerView()
+        pickerView.backgroundColor = .systemGray6
+        pickerView.layer.cornerRadius = 20
+        return pickerView
     }()
     lazy var nameTextField: UITextField = {
         let textField = UITextField()
         textField.placeholder = "Name"
         textField.backgroundColor = .systemGray6
         textField.layer.cornerRadius = 20
+        textField.leftView = paddingView
+        textField.leftViewMode = .always
         return textField
     }()
     lazy var passwordTextField: UITextField = {
@@ -63,12 +76,14 @@ class CreatAccountView: UIView {
         addSubview(labelOfView)
         addSubview(nameTextField)
         addSubview(emailTextField)
+        addSubview(genderSelection)
         addSubview(passwordTextField)
         addSubview(doneButton)
         addSubview(cancelButton)
         
         labelOfView.translatesAutoresizingMaskIntoConstraints = false
         nameTextField.translatesAutoresizingMaskIntoConstraints = false
+        genderSelection.translatesAutoresizingMaskIntoConstraints = false
         emailTextField.translatesAutoresizingMaskIntoConstraints = false
         passwordTextField.translatesAutoresizingMaskIntoConstraints = false
         doneButton.translatesAutoresizingMaskIntoConstraints = false
@@ -95,7 +110,12 @@ class CreatAccountView: UIView {
             passwordTextField.rightAnchor.constraint(equalTo: rightAnchor, constant: -20),
             passwordTextField.heightAnchor.constraint(equalToConstant: 50),
             
-            emailTextField.bottomAnchor.constraint(equalTo: passwordTextField.topAnchor, constant: -10),
+            genderSelection.bottomAnchor.constraint(equalTo: passwordTextField.topAnchor, constant: -10),
+            genderSelection.leftAnchor.constraint(equalTo: leftAnchor, constant: 20),
+            genderSelection.rightAnchor.constraint(equalTo: rightAnchor, constant: -20),
+            genderSelection.heightAnchor.constraint(equalToConstant: 50),
+            
+            emailTextField.bottomAnchor.constraint(equalTo: genderSelection.topAnchor, constant: -10),
             emailTextField.leftAnchor.constraint(equalTo: leftAnchor, constant: 20),
             emailTextField.rightAnchor.constraint(equalTo: rightAnchor, constant: -20),
             emailTextField.heightAnchor.constraint(equalToConstant: 50),
