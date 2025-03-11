@@ -72,10 +72,10 @@ final class CategoryViewController: UIViewController {
     
     // MARK: - Actions
     @objc private func closeButtonTapped() {
-        if let tabBarController = self.view.window?.rootViewController as? UITabBarController {
-            tabBarController.selectedIndex = 0 // Переключаемся на первый таб
+//        if let tabBarController = self.view.window?.rootViewController as? UITabBarController {
+//            tabBarController.selectedIndex = 0 // Переключаемся на первый таб
             navigationController?.popToRootViewController(animated: true)
-        }
+//        }
     }
     
     // MARK: - Method

@@ -11,16 +11,21 @@ class PaymentViewController: UIViewController {
     
     // MARK: - Variables
     
-    private var countItems: Int? = 2
-    private var idItems: [Int]? = [1, 2]
+    var cartItems: [CartItem]
     
-    var cartItems: [CartItem] = [
-        CartItem(imageName: "Image", title: "Lorem ipsum dolor sit amet consectetur.", price: "$17,00", quantity: 1),
-        CartItem(imageName: "Image", title: "Lorem ipsum dolor sit amet consectetur.", price: "$25,00", quantity: 1)
-    ]
-//    required init?(coder: NSCoder) {
-//        fatalError("init(coder:) has not been implemented")
-//    }
+    init(_ cartItems: [CartItem]) {
+        self.cartItems = cartItems
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        //значение по умолчанию
+        cartItems = [
+            CartItem(imageName: "Image", title: "Lorem ipsum dolor sit amet consectetur.", price: "$99,00", quantity: 2),
+            CartItem(imageName: "Image", title: "Lorem ipsum dolor sit amet consectetur.", price: "$99,00", quantity: 1)
+        ]
+        fatalError("init(coder:) has not been implemented")
+    }
     
     // MARK: - UI Components
     
@@ -282,7 +287,7 @@ class PaymentViewController: UIViewController {
     private func createItemsView() -> UIView {
         let itemsView: UIView = {
             let element = UIView()
-            element.backgroundColor = .yellow
+            //element.backgroundColor = .yellow
             element.translatesAutoresizingMaskIntoConstraints = false
             return element
         }()
@@ -290,7 +295,7 @@ class PaymentViewController: UIViewController {
         let titleItemsStackView: UIStackView = {
             let element = UIStackView()
             element.axis = .horizontal
-            element.backgroundColor = .systemPink
+            //element.backgroundColor = .systemPink
             
             element.translatesAutoresizingMaskIntoConstraints = false
             return element
@@ -311,17 +316,11 @@ class PaymentViewController: UIViewController {
             element.textAlignment = .center
             element.font = UIFont.boldSystemFont(ofSize: 16)
             element.textColor = .black
-            element.text = String(countItems!)
+            element.text = String(cartItems.count)
             
             element.translatesAutoresizingMaskIntoConstraints = false
             return element
         }()
-//        let emptyView: UIView = {
-//            let element = UIView()
-//            
-//            element.translatesAutoresizingMaskIntoConstraints = false
-//            return element
-//        }()
         let addVaucherButton: UIButton = {
             let element = UIButton()
             element.setTitle("Add Voucher", for: .normal)
@@ -338,13 +337,12 @@ class PaymentViewController: UIViewController {
         itemsView.addSubview(titleItemsStackView)
         titleItemsStackView.addArrangedSubview(titleLabel)
         titleItemsStackView.addArrangedSubview(countItemsInCart)
-//        titleItemsView.addArrangedSubview(emptyView)
         titleItemsStackView.addArrangedSubview(addVaucherButton)
         
         itemsView.addSubview(tableView)
         NSLayoutConstraint.activate([
             
-            itemsView.heightAnchor.constraint(equalToConstant: CGFloat(countItems! * 60 + 40)),
+            itemsView.heightAnchor.constraint(equalToConstant: CGFloat(cartItems.count * 109 + 40)),
 
             titleItemsStackView.topAnchor.constraint(equalTo: itemsView.topAnchor),
             titleItemsStackView.leadingAnchor.constraint(equalTo: itemsView.leadingAnchor),
@@ -366,11 +364,11 @@ class PaymentViewController: UIViewController {
             addVaucherButton.heightAnchor.constraint(equalTo: titleItemsStackView.heightAnchor),
             addVaucherButton.widthAnchor.constraint(equalTo: titleItemsStackView.widthAnchor, multiplier: 0.4),
 
-            tableView.topAnchor.constraint(equalTo: titleItemsStackView.bottomAnchor, constant: 10),
-            tableView.leadingAnchor.constraint(equalTo: itemsView.leadingAnchor, constant: 20),
-            tableView.trailingAnchor.constraint(equalTo: itemsView.trailingAnchor,constant: -20),
-            tableView.bottomAnchor.constraint(equalTo: itemsView.topAnchor, constant: -10),
-            tableView.heightAnchor.constraint(equalToConstant: 60),
+            tableView.topAnchor.constraint(equalTo: titleItemsStackView.bottomAnchor, constant: 0),
+            tableView.leadingAnchor.constraint(equalTo: itemsView.leadingAnchor, constant: 0),
+            tableView.trailingAnchor.constraint(equalTo: itemsView.trailingAnchor, constant: 0),
+            tableView.bottomAnchor.constraint(equalTo: itemsView.bottomAnchor, constant: 0),
+            //tableView.heightAnchor.constraint(equalToConstant: 40),
 
             ])
         
@@ -436,20 +434,7 @@ extension PaymentViewController: UITableViewDelegate, UITableViewDataSource {
         return cell
     }
     
-//    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-//        return 109
-//    }
-//    
-//    func didTapIncreaseButton(on cell: PaymentCell) {
-//        print("Increase button tapped")
-//    }
-//
-//    func didTapDecreaseButton(on cell: PaymentCell) {
-//        print("Decrease button tapped")
-//    }
-//
-//    func didTapDeleteButton(on cell: PaymentCell) {
-//        print("Delete button tapped")
-//    }
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 80   //высота ячейки
+    }
 }
-
