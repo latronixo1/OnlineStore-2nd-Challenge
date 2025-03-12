@@ -32,6 +32,8 @@ class CreatAccountViewController: UIViewController {
         
     }
     
+    //MARK: CREATE_USER
+    
     @objc func doneButtonTapped() {
         print("Кнопка Done")
         self.email = mainView.emailTextField.text?.lowercased() ?? ""
@@ -43,7 +45,7 @@ class CreatAccountViewController: UIViewController {
         }
         Auth.auth().createUser(withEmail: self.email, password: self.password){ result, error in
             if let error = error {
-                makeAlertMessage(error: error)
+                self.makeAlertMessage(error: error)
                 self.makeShowAlert(on: self, title: "Ошибка", message: self.alertMessage)
                 print("ошибка регистрации")
             } else {
@@ -53,34 +55,10 @@ class CreatAccountViewController: UIViewController {
                 self.nextView()
             }
         }
-        
-        func makeAlertMessage(error: Error) {
-            self.alertMessage = ""
-               if let errorCode = AuthErrorCode(rawValue: error._code) {
-                       switch errorCode {
-                       case .invalidEmail:
-                           self.alertMessage = "Некорректный email."
-                       case .emailAlreadyInUse:
-                           self.alertMessage = "Email уже используется."
-                       case .weakPassword:
-                           self.alertMessage = "Пароль слишком слабый. Минимум 6 символов."
-                       case .userDisabled:
-                           self.alertMessage = "Пользователь отключен."
-                       case .userNotFound:
-                           self.alertMessage = "Пользователь не найден."
-                       case .wrongPassword:
-                           self.alertMessage = "Неверный пароль."
-                       case .tooManyRequests:
-                           self.alertMessage = "Слишком много попыток. Попробуйте позже."
-                       default:
-                           self.alertMessage = "Произошла ошибка: \(error.localizedDescription)"
-                       }
-                   } else {
-                       self.alertMessage = "Произошла неизвестная ошибка."
-                   }
-           }
     }
     
+    //MARK: NAVIGATION
+
     @objc func cancelButtonTapped() {
         navigationController?.popViewController(animated: true)
     }
@@ -88,6 +66,34 @@ class CreatAccountViewController: UIViewController {
         let nextVc = LoginViewController()
         navigationController?.pushViewController(nextVc, animated: true)
     }
+    
+    //MARK: ALERT
+    
+    func makeAlertMessage(error: Error) {
+        self.alertMessage = ""
+        if let errorCode = AuthErrorCode(rawValue: error._code) {
+            switch errorCode {
+            case .invalidEmail:
+                self.alertMessage = "Некорректный email."
+            case .emailAlreadyInUse:
+                self.alertMessage = "Email уже используется."
+            case .weakPassword:
+                self.alertMessage = "Пароль слишком слабый. Минимум 6 символов."
+            case .userDisabled:
+                self.alertMessage = "Пользователь отключен."
+            case .userNotFound:
+                self.alertMessage = "Пользователь не найден."
+            case .wrongPassword:
+                self.alertMessage = "Неверный пароль."
+            case .tooManyRequests:
+                self.alertMessage = "Слишком много попыток. Попробуйте позже."
+            default:
+                self.alertMessage = "Произошла ошибка: \(error.localizedDescription)"
+            }
+        } else {
+            self.alertMessage = "Произошла неизвестная ошибка."
+        }
+       }
 
     func makeShowAlert(on viewController: UIViewController, title: String, message: String, actions: [UIAlertAction] = []) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
@@ -102,7 +108,8 @@ class CreatAccountViewController: UIViewController {
         
         viewController.present(alert, animated: true, completion: nil)
     }
-    
+    //MARK: VISABLE_PASS
+
     @objc private func togglePasswordVisibility() {
         self.mainView.passwordTextField.isSecureTextEntry.toggle()
         if self.mainView.passwordTextField.isSecureTextEntry {

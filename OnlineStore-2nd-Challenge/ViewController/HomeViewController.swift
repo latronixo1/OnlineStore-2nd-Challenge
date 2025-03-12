@@ -44,7 +44,7 @@ class HomeViewController: UIViewController {
         mainView.categoryButton.addTarget(self, action: #selector(categoriesButtonTapped), for: .touchUpInside)
     }
     
-    
+    //MARK: FETCH_PRODUCTS
     private func makeProduct() {
         NetworkService.shared.fetchProducts(from: productURLString) { result in
             switch result {
