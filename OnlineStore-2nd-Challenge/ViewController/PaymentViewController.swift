@@ -29,7 +29,7 @@ class PaymentViewController: UIViewController {
     
     let shippingOptions: [ShippingOption] = [
         ShippingOption(name: "Standard", duration: "5-7 days", price: "FREE"),
-        ShippingOption(name: "Express", duration: "5-7 days", price: "$12,00")
+        ShippingOption(name: "Express", duration: "1-2 days", price: "$12,00")
     ]
     
     // MARK: - UI Components
@@ -80,11 +80,20 @@ class PaymentViewController: UIViewController {
         return tableView
     }()
     
+    let deliveryDateLabel: UILabel = {
+        let element = UILabel()
+        element.text = "It will be delivered on"
+        element.textAlignment = .left
+        element.font = UIFont.boldSystemFont(ofSize: 12)
+        element.textColor = .darkGray
+        return element
+    }()
+
     private let shippingOptionsLabel: UILabel = {
         let label = UILabel()
         label.text = "Shipping Options\n- [ ] Standard 5-7 days\n  FREE\n\n- [ ] Express 1-2 days\n  $12,00\n\nDelivered on or before Thursday, 23 April 2020"
         label.numberOfLines = 0
-        label.font = UIFont.systemFont(ofSize: 16)
+        label.font = UIFont.systemFont(ofSize: 14)
         label.textColor = .darkGray
         return label
     }()
@@ -123,6 +132,7 @@ class PaymentViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .white
         setupTableView()
+        setupCollectionView()
         setupViews()
         setConstraints()
     }
@@ -158,7 +168,7 @@ class PaymentViewController: UIViewController {
         mainStackView.addArrangedSubview(createGrayView(title: "Contact Information", text: "+84932000000\namandamorgan@example.com"))
         mainStackView.addArrangedSubview(createItemsView())
         mainStackView.addArrangedSubview(createShippingView())
-        
+        setupCollectionView()
         
 //        mainStackView.addArrangedSubview(createSectionTitle("Shipping Options"))
 //        mainStackView.addArrangedSubview(shippingOptionsLabel)
@@ -379,16 +389,27 @@ class PaymentViewController: UIViewController {
         
         return itemsView
     }
-
+    private lazy var collectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .horizontal
+        layout.minimumInteritemSpacing = 3
+        layout.minimumLineSpacing = 3
+        layout.itemSize = CGSize(width: 50, height: 30)
+//
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.backgroundColor = .white
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        return collectionView
+    }()
+    
     private func createShippingView() -> UIView {
         let shippingView: UIView = {
             let element = UIView()
-            element.backgroundColor = .yellow
             element.translatesAutoresizingMaskIntoConstraints = false
             return element
         }()
         
-        let shippingMainStackView: UIStackView = {
+        let shippingStackView: UIStackView = {
             let element = UIStackView()
             element.axis = .vertical
             element.distribution = .fill
@@ -400,68 +421,49 @@ class PaymentViewController: UIViewController {
         let titleLabel: UILabel = {
             let element = UILabel()
             element.text = "Shipping Options"
-            element.numberOfLines = 1
             element.textAlignment = .left
             element.font = UIFont.boldSystemFont(ofSize: 20)
             element.textColor = .black
             return element
         }()
-                 
-        let collectionView: UICollectionView = {
-            let layout = UICollectionViewFlowLayout()
-            layout.scrollDirection = .horizontal
-            layout.minimumInteritemSpacing = 10
-            layout.minimumLineSpacing = 10
-            layout.itemSize = CGSize(width: 150, height: 30)
-            
-            let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-            collectionView.register(ShippingOptionCell.self, forCellWithReuseIdentifier: "ShippingOptionCell")
-            collectionView.delegate = self
-            collectionView.dataSource = self
-            collectionView.backgroundColor = .white
-            collectionView.translatesAutoresizingMaskIntoConstraints = false
-            return collectionView
-        }()
-        
-        
-        
-        shippingView.addSubview(shippingMainStackView)
-        shippingMainStackView.addArrangedSubview(titleLabel)
-        shippingMainStackView.addArrangedSubview(collectionView)
-        
+
+        shippingView.addSubview(shippingStackView)
+        shippingStackView.addArrangedSubview(titleLabel)
+        shippingStackView.addArrangedSubview(collectionView)
+        shippingStackView.addArrangedSubview(deliveryDateLabel)
+        deliveryDateLabel.text = "It will be delivered on" + afterNDays(7)
+        collectionView.register(ShippingOptionCell.self, forCellWithReuseIdentifier: "ShippingOptionCell")
+
         let firstItemPath = IndexPath(item: 0, section: 0)
         collectionView.selectItem(at: firstItemPath, animated: false, scrollPosition: .left)
         
         NSLayoutConstraint.activate([
-            shippingView.heightAnchor.constraint(equalToConstant: 250),
+            shippingView.heightAnchor.constraint(equalToConstant: 170),
             
-            shippingMainStackView.topAnchor.constraint(equalTo: shippingView.topAnchor),
-            shippingMainStackView.leadingAnchor.constraint(equalTo: shippingView.leadingAnchor, constant: 7),
-            shippingMainStackView.widthAnchor.constraint(equalTo: shippingView.widthAnchor),
-            shippingMainStackView.heightAnchor.constraint(equalToConstant: 250),
+            shippingStackView.topAnchor.constraint(equalTo: shippingView.topAnchor),
+            shippingStackView.leadingAnchor.constraint(equalTo: shippingView.leadingAnchor, constant: 0),
+            shippingStackView.widthAnchor.constraint(equalTo: shippingView.widthAnchor),
+            shippingStackView.heightAnchor.constraint(equalToConstant: 165),
 
             titleLabel.heightAnchor.constraint(equalToConstant: 40),
             
-            collectionView.heightAnchor.constraint(equalToConstant: 100),
-            collectionView.leadingAnchor.constraint(equalTo: shippingMainStackView.leadingAnchor),
-            collectionView.trailingAnchor.constraint(equalTo: shippingMainStackView.trailingAnchor),
-//            titleLabel.topAnchor.constraint(equalTo: shippingStackView.topAnchor),
-//            titleLabel.leadingAnchor.constraint(equalTo: shippingStackView.leadingAnchor),
-//            titleLabel.trailingAnchor.constraint(equalTo: shippingStackView.trailingAnchor),
-//            titleLabel.heightAnchor.constraint(equalToConstant: 10),
-//            titleLabel.widthAnchor.constraint(equalTo: shippingStackView.widthAnchor),
-//            
-            //segmentedControl.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            //segmentedControl.topAnchor.constraint(equalTo: view.topAnchor, constant: 100),
-//            segmentedControl.widthAnchor.constraint(equalToConstant: 300),
-//            segmentedControl.heightAnchor.constraint(equalToConstant: 40)
+            collectionView.heightAnchor.constraint(equalToConstant: 70),
+            collectionView.leadingAnchor.constraint(equalTo: shippingStackView.leadingAnchor),
+            collectionView.trailingAnchor.constraint(equalTo: shippingStackView.trailingAnchor),
+            
+            deliveryDateLabel.heightAnchor.constraint(equalToConstant: 20),
             
             ])
         
         return shippingView
     }
     
-
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        print("UICollectionView frame after layout: \(collectionView.frame)")
+        print("UICollectionView bounds after layout: \(collectionView.bounds)")
+    }
     
     private func createSeparator() -> UIView {
         let separator = UIView()
@@ -484,7 +486,11 @@ class PaymentViewController: UIViewController {
         tableView.dataSource = self
         tableView.register(PaymentCell.self, forCellReuseIdentifier: "PaymentCell")
     }
-
+    
+    private func setupCollectionView() {
+        collectionView.delegate = self
+        collectionView.dataSource = self
+    }
 }
 
 //следующий код необходим, чтобы сделать кнопку круглой, если мы не знаем ее размеров
@@ -544,7 +550,12 @@ extension PaymentViewController: UICollectionViewDataSource, UICollectionViewDel
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         // Обработка выбора способа доставки
-        print("Selected option: \(shippingOptions[indexPath.item].name)")
+        print("Selected option: \(shippingOptions[indexPath.item].name) \(indexPath.item)")
+        if indexPath.item == 0 {
+            deliveryDateLabel.text = "It will be delivered on " + afterNDays(7)
+        } else {
+            deliveryDateLabel.text = "It will be delivered on " + afterNDays(2)
+        }
     }
 }
 
@@ -553,9 +564,23 @@ extension PaymentViewController: UICollectionViewDataSource, UICollectionViewDel
 extension PaymentViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         // Ширина ячейки равна ширине UICollectionView минус отступы
-        let width = collectionView.frame.width - 10
+        let width = collectionView.frame.width //- 10
         // Высота ячейки
-        let height: CGFloat = 50
+        let height: CGFloat = 45
         return CGSize(width: width, height: height)
     }
 }
+
+private func afterNDays(_ countDays: Int) -> String {
+    let currentDate = Date()    //получаем текущую дату
+    let calendar = Calendar.current //создаем коалендарь
+    
+    //прибавляем 7 дней к текущей дате
+    let futureDate = calendar.date(byAdding: .day, value: countDays, to: currentDate)
+    let dateFormatter = DateFormatter() //создаем DateFormatter для форматирования даты в стркоу
+    dateFormatter.dateFormat = "EEEE, MMMM, d, yyyy"
+    let dateString = dateFormatter.string(from: futureDate ?? currentDate) //преобразуем дату в строку
+
+    return dateString
+}
+

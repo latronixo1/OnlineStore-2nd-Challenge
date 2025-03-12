@@ -8,6 +8,7 @@
 import UIKit
 
 final class ShopCollectionViewCell: UICollectionViewCell {
+    
     //MARK: - Private Property
     static let identifier = "ShopCell"
     private let favoriteManager = FavoriteManager.shared

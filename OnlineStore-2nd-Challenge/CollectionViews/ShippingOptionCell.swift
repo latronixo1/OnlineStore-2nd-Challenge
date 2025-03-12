@@ -40,44 +40,31 @@ class ShippingOptionCell: UICollectionViewCell {
         let element = UILabel()
         element.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         element.textColor = .black
-        element.text = "nameLabel"
-        element.textAlignment = .center
-        element.numberOfLines = 0
-        element.backgroundColor = .cyan
+        element.textAlignment = .left
         element.translatesAutoresizingMaskIntoConstraints = false
         return element
     }()
     
-    private let priceLabel: UILabel = {
-        let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 14, weight: .regular)
-        label.textColor = .darkGray
-        label.textAlignment = .center
-        label.text = "priceLabel"
-        label.numberOfLines = 1
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
     private let durationLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 14, weight: .regular)
-        label.textColor = .darkGray
-        label.text = "durationLabel"
+        label.textColor = #colorLiteral(red: 0, green: 0.1941763461, blue: 1, alpha: 1)
         label.textAlignment = .center
-        label.numberOfLines = 1
+        label.backgroundColor = #colorLiteral(red: 0.9603808522, green: 0.972076118, blue: 1, alpha: 1)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
 
-//    private let selectionIndicator: UIView = {
-//        let view = UIView()
-//        view.backgroundColor = .systemBlue
-//        view.layer.cornerRadius = 4
-//        view.isHidden = true
-//        view.translatesAutoresizingMaskIntoConstraints = false
-//        return view
-//    }()
-    
+    private let priceLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        label.textColor = .black
+        label.textAlignment = .right
+         label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+
+
     // MARK: - Properties
     
     override var isSelected: Bool {
@@ -117,9 +104,9 @@ class ShippingOptionCell: UICollectionViewCell {
         
         contentView.backgroundColor = #colorLiteral(red: 0.9800000787, green: 0.9800000787, blue: 0.9800000787, alpha: 1)
         
-//        contentView.addSubview(nameLabel)
-//        contentView.addSubview(priceLabel)
-//        contentView.addSubview(selectionIndicator)
+        contentView.addSubview(nameLabel)
+        contentView.addSubview(durationLabel)
+        contentView.addSubview(priceLabel)
         
         NSLayoutConstraint.activate([
             contentView.heightAnchor.constraint(equalToConstant: 100),
@@ -134,15 +121,22 @@ class ShippingOptionCell: UICollectionViewCell {
             notSelectedImage.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.08),
             notSelectedImage.heightAnchor.constraint(equalTo: widthAnchor, multiplier: 0.08),
             
-//            selectedImage.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
-//            selectedImage.widthAnchor.constraint(equalToConstant: 8),
-//            selectedImage.heightAnchor.constraint(equalToConstant: 8),
+            nameLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
+            nameLabel.leadingAnchor.constraint(equalTo: notSelectedImage.trailingAnchor, constant: 10),
+            nameLabel.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.2),
+            nameLabel.heightAnchor.constraint(equalTo: widthAnchor, multiplier: 0.08),
+            
+            durationLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
+            durationLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
+            durationLabel.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.2),
+            durationLabel.heightAnchor.constraint(equalTo: widthAnchor, multiplier: 0.08),
 
-//            nameLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
-//            nameLabel.leadingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: 10),
-//            //nameLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
-//            nameLabel.heightAnchor.constraint(equalToConstant: 20),
-//            
+            priceLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
+            priceLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
+            priceLabel.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.2),
+            priceLabel.heightAnchor.constraint(equalTo: widthAnchor, multiplier: 0.08),
+            
+
 //            priceLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 5),
 //            priceLabel.leadingAnchor.constraint(equalTo: nameLabel.trailingAnchor, constant: 10),
 //            priceLabel.heightAnchor.constraint(equalToConstant: 15),
