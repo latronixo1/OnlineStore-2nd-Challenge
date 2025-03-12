@@ -7,7 +7,7 @@
 
 import UIKit
 
-class NewOnboardingCell: UICollectionViewCell {
+class OnboardingCell: UICollectionViewCell {
     private let imageView: UIImageView = {
         let iv = UIImageView()
         iv.contentMode = .scaleAspectFill
