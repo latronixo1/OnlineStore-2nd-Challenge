@@ -153,8 +153,6 @@ class PaymentViewController: UIViewController {
         )
         backButton.tintColor = .black
 
-//        let backButton = UIBarButtonItem(title: "Back", style: .plain, target: self, action: #selector(goBack))
-//        backButton.
         navigationItem.leftBarButtonItem = backButton
 
 
@@ -170,12 +168,9 @@ class PaymentViewController: UIViewController {
         mainStackView.addArrangedSubview(createShippingView())
         setupCollectionView()
         
-//        mainStackView.addArrangedSubview(createSectionTitle("Shipping Options"))
-//        mainStackView.addArrangedSubview(shippingOptionsLabel)
+//        mainStackView.addArrangedSubview(createSectionTitle("Payment Method"))
+//        mainStackView.addArrangedSubview(paymentMethodLabel)
 //        mainStackView.addArrangedSubview(createSeparator())
-        mainStackView.addArrangedSubview(createSectionTitle("Payment Method"))
-        mainStackView.addArrangedSubview(paymentMethodLabel)
-        mainStackView.addArrangedSubview(createSeparator())
         mainStackView.addArrangedSubview(totalLabel)
         mainStackView.addArrangedSubview(payButton)
         
@@ -458,12 +453,42 @@ class PaymentViewController: UIViewController {
         return shippingView
     }
     
-    
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        print("UICollectionView frame after layout: \(collectionView.frame)")
-        print("UICollectionView bounds after layout: \(collectionView.bounds)")
+    private func createPaymentMethodView() -> UIView {
+        let paymentMethodView: UIView = {
+            let element = UIView()
+            element.translatesAutoresizingMaskIntoConstraints = false
+            return element
+        }()
+        
+        let shippingStackView: UIStackView = {
+            let element = UIStackView()
+            element.axis = .vertical
+            element.distribution = .fill
+            element.spacing = 2
+            element.translatesAutoresizingMaskIntoConstraints = false
+            return element
+        }()
+        
+        let titleLabel: UILabel = {
+            let element = UILabel()
+            element.text = "Shipping Options"
+            element.textAlignment = .left
+            element.font = UIFont.boldSystemFont(ofSize: 20)
+            element.textColor = .black
+            return element
+        }()
+        
+        paymentMethodView.addSubview(shippingStackView)
+        shippingStackView.addArrangedSubview(titleLabel)
+        
+        return paymentMethodView
     }
+    
+//    override func viewDidLayoutSubviews() {
+//        super.viewDidLayoutSubviews()
+//        print("UICollectionView frame after layout: \(collectionView.frame)")
+//        print("UICollectionView bounds after layout: \(collectionView.bounds)")
+//    }
     
     private func createSeparator() -> UIView {
         let separator = UIView()
