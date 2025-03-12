@@ -30,6 +30,7 @@ final class SettingViewController: UIViewController {
     private let infoLabelName = UILabel.makeLabel(text: "Имя не может быть пустым", font: .systemFont(ofSize: 14, weight: .regular), textColor: .red)
     private let infoLabelEmail = UILabel.makeLabel(text: "Email не может быть пустым", font: .systemFont(ofSize: 14, weight: .regular), textColor: .red)
     private let infoLabelPassword = UILabel.makeLabel(text: "Пароль не может быть пустым", font: .systemFont(ofSize: 14, weight: .regular), textColor: .red)
+    private let genderLabel = UILabel.makeLabel(text: "Выберите пол", font: .systemFont(ofSize: 17, weight: .regular), textColor: .black)
     private let navigation = UINavigationBar()
     private let titleOfLabel = UILabel.makeLabel(
         text: "Settings",
@@ -41,6 +42,9 @@ final class SettingViewController: UIViewController {
         font: .systemFont(ofSize: 16, weight: .medium),
         textColor: .black
     )
+    private let genders: [String] = ["Man", "Women"]
+    private var currentGender = String()
+    private let genderSelection = UIPickerView()
     
     
     
@@ -59,12 +63,17 @@ final class SettingViewController: UIViewController {
             photo: UIImage(data: user?.photo ?? Data()) ?? UIImage(named: "Image") ?? UIImage(),
             name: user?.name ?? "Ivan",
             email: user?.email ?? "ivan@mail",
-            password: user?.password ?? "1234"
+            password: user?.password ?? "1234",
+            gender: user?.gender ?? "пол не определен"
+            
         )
         
         nameTextField.delegate = self
         emailTextField.delegate = self
         passwordTextField.delegate = self
+        
+        genderSelection.delegate = self
+        genderSelection.dataSource = self
         
         nameTextField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
         emailTextField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
@@ -89,11 +98,17 @@ final class SettingViewController: UIViewController {
         passwordTextField.resignFirstResponder()
     }
     
-    private func updateUserData(photo: UIImage, name: String, email: String, password: String) {
+    private func updateUserData(photo: UIImage, name: String, email: String, password: String, gender: String) {
         profileImage.image = photo
         nameTextField.text = name
         emailTextField.text = email
         passwordTextField.text = password
+        currentGender = gender
+        
+        if let index = genders.firstIndex(of: gender) {
+                genderSelection.selectRow(index, inComponent: 0, animated: false)
+            }
+        
     }
     
     private func updateSaveButtonState() {
@@ -158,7 +173,9 @@ private extension SettingViewController {
             subTitleOfLabel,
             infoLabelName,
             infoLabelEmail,
-            infoLabelPassword
+            infoLabelPassword,
+            genderSelection,
+            genderLabel
         ].forEach {
             view.addSubview($0)
             $0.translatesAutoresizingMaskIntoConstraints = false
@@ -220,6 +237,14 @@ private extension SettingViewController {
             infoLabelPassword.trailingAnchor.constraint(equalTo: passwordTextField.trailingAnchor),
             infoLabelPassword.heightAnchor.constraint(equalToConstant: 16),
             
+            genderLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            genderLabel.centerYAnchor.constraint(equalTo: genderSelection.centerYAnchor),
+            
+            genderSelection.topAnchor.constraint(equalTo: infoLabelPassword.bottomAnchor, constant: 10),
+            genderSelection.leadingAnchor.constraint(equalTo: genderLabel.trailingAnchor, constant: -8),
+            genderSelection.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
+            genderSelection.heightAnchor.constraint(equalToConstant: 50),
+            
             buttonSave.heightAnchor.constraint(equalToConstant: 40),
             buttonSave.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
             buttonSave.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
@@ -249,7 +274,8 @@ extension SettingViewController: UIImagePickerControllerDelegate, UINavigationCo
                 photo: profileImage.image?.pngData() ?? Data(),
                 name: nameTextField.text ?? "",
                 email: emailTextField.text ?? "",
-                password: passwordTextField.text ?? ""
+                password: passwordTextField.text ?? "",
+                gender: currentGender
             )
         )
     }
@@ -314,5 +340,42 @@ extension SettingViewController: UITextFieldDelegate {
             }
         }
         
+    }
+}
+
+extension SettingViewController: UIPickerViewDataSource, UIPickerViewDelegate {
+    
+    
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        genders.count
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        genders[row]
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, rowHeightForComponent component: Int) -> CGFloat {
+        50
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        currentGender = genders[row]
+        
+        UserDefaultsManager.shared.saveUser(
+            UserData(
+                id: 0,
+                photo: profileImage.image?.pngData() ?? Data(),
+                name: nameTextField.text ?? "",
+                email: emailTextField.text ?? "",
+                password: passwordTextField.text ?? "",
+                gender: currentGender
+            )
+        )
+        
+        updateSaveButtonState()
     }
 }

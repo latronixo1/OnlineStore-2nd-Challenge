@@ -56,6 +56,7 @@ class CreatAccountViewController: UIViewController {
             UserDefaults.standard.set(self.name, forKey: UserDefaultsStorageKeys.name.label)
                 UserDefaults.standard.set(self.email, forKey: UserDefaultsStorageKeys.email.label)
                 UserDefaults.standard.set(self.password, forKey: UserDefaultsStorageKeys.password.label)
+                //тут гендер добавить
                 self.goToLoginView()
             }
             
