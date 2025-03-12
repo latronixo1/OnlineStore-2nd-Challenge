@@ -25,17 +25,20 @@ class LoginViewController: UIViewController {
         mainView.backgroundColor = .white
         mainView.cancelButton.addTarget(self, action: #selector(cancelButtonTapped), for: .touchUpInside)
         mainView.loginButton.addTarget(self, action: #selector(loginButtonTapped), for: .touchUpInside)
-        
+        mainView.eyeButton.addTarget(self, action: #selector(togglePasswordVisibility), for: .touchUpInside)
     }
+    
     @objc func loginButtonTapped() {
-        email = mainView.emailTextField.text ?? ""
+        email = mainView.emailTextField.text?.lowercased() ?? ""
         password = mainView.passwordTextField.text ?? ""
         guard !email.isEmpty, !password.isEmpty else {
+            print("ошибка авторизации")
             self.showAlert(message: "Заполните все поля")
             return
         }
         Auth.auth().signIn(withEmail: email, password: password) { auth, error in
             if let error = error {
+                print("Произошла ошибка: \(error.localizedDescription)")
                 self.catchError(error: error)
                 self.showAlert(message: self.alertMessage )
             } else {
@@ -71,5 +74,13 @@ class LoginViewController: UIViewController {
     }
     func goNextView(){
         navigationController?.pushViewController(HomeViewController(), animated: true)
+    }
+    @objc private func togglePasswordVisibility() {
+        self.mainView.passwordTextField.isSecureTextEntry.toggle()
+        if self.mainView.passwordTextField.isSecureTextEntry {
+            self.mainView.eyeButton.setImage(UIImage(systemName: "eye.slash"), for: .normal)
+        } else {
+            self.mainView.eyeButton.setImage(UIImage(systemName: "eye"), for: .normal)
+        }
     }
 }

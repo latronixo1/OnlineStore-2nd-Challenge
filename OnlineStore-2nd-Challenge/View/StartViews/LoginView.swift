@@ -36,7 +36,16 @@ class LoginView: UIView {
         txtField.placeholder = "Password"
         txtField.backgroundColor = .systemGray6
         txtField.layer.cornerRadius = 20
+        txtField.clipsToBounds = true
+        txtField.isSecureTextEntry = true
         return txtField
+    }()
+    let eyeButton: UIButton = {
+        let button = UIButton(type: .custom)
+        button.setImage(UIImage(systemName: "eye.slash"), for: .normal)
+        button.tintColor = UIColor.systemGray
+        button.frame = CGRect(x: 0, y: 0, width: 30, height: 30)
+        return button
     }()
     lazy var loginButton: UIButton = {
         let button = UIButton()
@@ -66,6 +75,8 @@ class LoginView: UIView {
         addSubview(passwordTextField)
         addSubview(loginButton)
         addSubview(cancelButton)
+        passwordTextField.rightView = eyeButton
+        passwordTextField.rightViewMode = .always
         
         loginLabel.translatesAutoresizingMaskIntoConstraints = false
         littleLabel.translatesAutoresizingMaskIntoConstraints = false
