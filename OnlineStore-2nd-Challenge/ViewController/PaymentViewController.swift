@@ -31,7 +31,7 @@ class PaymentViewController: UIViewController {
         ShippingOption(name: "Standard", duration: "5-7 days", price: "FREE"),
         ShippingOption(name: "Express", duration: "5-7 days", price: "$12,00")
     ]
-
+    
     // MARK: - UI Components
     
     private let navigation: UINavigationBar = {
@@ -279,7 +279,7 @@ class PaymentViewController: UIViewController {
             stackView.widthAnchor.constraint(equalTo: grayView.widthAnchor, multiplier: 0.8),
             stackView.heightAnchor.constraint(equalToConstant: 60),
             
-            editShippingButton.trailingAnchor.constraint(equalTo: grayView.trailingAnchor, constant: 10),
+            editShippingButton.trailingAnchor.constraint(equalTo: grayView.trailingAnchor, constant: -10),
             editShippingButton.bottomAnchor.constraint(equalTo: grayView.bottomAnchor),
             editShippingButton.widthAnchor.constraint(equalTo: grayView.widthAnchor, multiplier: 0.1),
             editShippingButton.heightAnchor.constraint(equalTo: grayView.widthAnchor, multiplier: 0.1),
@@ -429,6 +429,8 @@ class PaymentViewController: UIViewController {
         shippingMainStackView.addArrangedSubview(titleLabel)
         shippingMainStackView.addArrangedSubview(collectionView)
         
+        let firstItemPath = IndexPath(item: 0, section: 0)
+        collectionView.selectItem(at: firstItemPath, animated: false, scrollPosition: .left)
         
         NSLayoutConstraint.activate([
             shippingView.heightAnchor.constraint(equalToConstant: 250),
@@ -551,7 +553,7 @@ extension PaymentViewController: UICollectionViewDataSource, UICollectionViewDel
 extension PaymentViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         // Ширина ячейки равна ширине UICollectionView минус отступы
-        let width = collectionView.frame.width - collectionView.contentInset.left - collectionView.contentInset.right
+        let width = collectionView.frame.width - 10
         // Высота ячейки
         let height: CGFloat = 50
         return CGSize(width: width, height: height)
