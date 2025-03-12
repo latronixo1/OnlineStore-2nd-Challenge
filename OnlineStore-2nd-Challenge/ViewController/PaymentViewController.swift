@@ -86,6 +86,7 @@ class PaymentViewController: UIViewController {
         element.textAlignment = .left
         element.font = UIFont.boldSystemFont(ofSize: 12)
         element.textColor = .darkGray
+        element.translatesAutoresizingMaskIntoConstraints = false
         return element
     }()
 
@@ -95,6 +96,7 @@ class PaymentViewController: UIViewController {
         label.numberOfLines = 0
         label.font = UIFont.systemFont(ofSize: 14)
         label.textColor = .darkGray
+        label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
 
@@ -104,6 +106,7 @@ class PaymentViewController: UIViewController {
         label.numberOfLines = 0
         label.font = UIFont.systemFont(ofSize: 16)
         label.textColor = .darkGray
+        label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
 
@@ -112,6 +115,7 @@ class PaymentViewController: UIViewController {
         label.text = "Total $34,00"
         label.font = UIFont.boldSystemFont(ofSize: 18)
         label.textColor = .black
+        label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
 
@@ -167,12 +171,8 @@ class PaymentViewController: UIViewController {
         mainStackView.addArrangedSubview(createItemsView())
         mainStackView.addArrangedSubview(createShippingView())
         setupCollectionView()
-        
-//        mainStackView.addArrangedSubview(createSectionTitle("Payment Method"))
-//        mainStackView.addArrangedSubview(paymentMethodLabel)
-//        mainStackView.addArrangedSubview(createSeparator())
-        mainStackView.addArrangedSubview(totalLabel)
-        mainStackView.addArrangedSubview(payButton)
+        mainStackView.addArrangedSubview(createPaymentMethodView())
+        mainStackView.addArrangedSubview(createTotalView())
         
         contentView.addSubview(mainStackView)
 
@@ -224,6 +224,7 @@ class PaymentViewController: UIViewController {
         label.text = title
         label.font = UIFont.boldSystemFont(ofSize: 20)
         label.textColor = .black
+        label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }
     private func createGrayView(title: String, text: String) -> UIView {
@@ -248,6 +249,7 @@ class PaymentViewController: UIViewController {
             element.numberOfLines = 1
             element.font = UIFont.boldSystemFont(ofSize: 16)
             element.textColor = .black
+            element.translatesAutoresizingMaskIntoConstraints = false
             return element
         }()
         let textLabel: UILabel = {
@@ -256,6 +258,7 @@ class PaymentViewController: UIViewController {
             element.numberOfLines = 0
             element.font = UIFont.boldSystemFont(ofSize: 10)
             element.textColor = .darkGray
+            element.translatesAutoresizingMaskIntoConstraints = false
             return element
         }()
         let editShippingButton: RoundButton = {
@@ -317,6 +320,7 @@ class PaymentViewController: UIViewController {
             element.numberOfLines = 1
             element.font = UIFont.boldSystemFont(ofSize: 20)
             element.textColor = .black
+            element.translatesAutoresizingMaskIntoConstraints = false
             return element
         }()
         let countItemsInCart: RoundLabel = {
@@ -419,6 +423,7 @@ class PaymentViewController: UIViewController {
             element.textAlignment = .left
             element.font = UIFont.boldSystemFont(ofSize: 20)
             element.textColor = .black
+            element.translatesAutoresizingMaskIntoConstraints = false
             return element
         }()
 
@@ -460,35 +465,127 @@ class PaymentViewController: UIViewController {
             return element
         }()
         
-        let shippingStackView: UIStackView = {
-            let element = UIStackView()
-            element.axis = .vertical
-            element.distribution = .fill
-            element.spacing = 2
+        let titleLabel: UILabel = {
+            let element = UILabel()
+            element.text = "Payment Method"
+            element.textAlignment = .left
+            element.font = UIFont.boldSystemFont(ofSize: 20)
+            element.textColor = .black
             element.translatesAutoresizingMaskIntoConstraints = false
             return element
         }()
         
-        let titleLabel: UILabel = {
-            let element = UILabel()
-            element.text = "Shipping Options"
-            element.textAlignment = .left
-            element.font = UIFont.boldSystemFont(ofSize: 20)
-            element.textColor = .black
+        let editPaymentMethodButton: RoundButton = {
+            let element = RoundButton()
+            // Создаем конфигурацию для увеличения размера изображения
+            let largeConfig = UIImage.SymbolConfiguration(pointSize: 20, weight: .regular, scale: .default)
+            let pencilImage = UIImage(systemName: "pencil", withConfiguration: largeConfig)
+            
+            element.setImage(pencilImage, for: .normal)
+            element.backgroundColor = #colorLiteral(red: 0, green: 0.2947360277, blue: 0.9967841506, alpha: 1)
+            element.tintColor = .white
+            element.translatesAutoresizingMaskIntoConstraints = false
             return element
         }()
         
-        paymentMethodView.addSubview(shippingStackView)
-        shippingStackView.addArrangedSubview(titleLabel)
+        let editCardButton: UIButton = {
+            let element = UIButton()
+            element.setTitle("Card", for: .normal)
+            element.layer.cornerRadius = 20
+            element.setTitleColor(#colorLiteral(red: 0, green: 0.2762006819, blue: 1, alpha: 1), for: .normal)
+            element.backgroundColor = #colorLiteral(red: 0.8971917033, green: 0.9204418063, blue: 0.9870311618, alpha: 1)
+            element.tintColor = .white
+            element.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
+            element.translatesAutoresizingMaskIntoConstraints = false
+            return element
+        }()
+        
+        paymentMethodView.addSubview(titleLabel)
+        paymentMethodView.addSubview(editPaymentMethodButton)
+        paymentMethodView.addSubview(editCardButton)
+        
+        NSLayoutConstraint.activate([
+            paymentMethodView.heightAnchor.constraint(equalToConstant: 75),
+            
+            titleLabel.topAnchor.constraint(equalTo: paymentMethodView.topAnchor),
+            titleLabel.leadingAnchor.constraint(equalTo: paymentMethodView.leadingAnchor),
+            titleLabel.heightAnchor.constraint(equalTo: paymentMethodView.widthAnchor, multiplier: 0.1),
+            titleLabel.widthAnchor.constraint(equalTo: paymentMethodView.widthAnchor, multiplier: 0.5),
+            
+            editPaymentMethodButton.trailingAnchor.constraint(equalTo: paymentMethodView.trailingAnchor, constant: -10),
+            editPaymentMethodButton.topAnchor.constraint(equalTo: paymentMethodView.topAnchor),
+            editPaymentMethodButton.widthAnchor.constraint(equalTo: paymentMethodView.widthAnchor, multiplier: 0.1),
+            editPaymentMethodButton.heightAnchor.constraint(equalTo: paymentMethodView.widthAnchor, multiplier: 0.1),
+
+            editCardButton.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 5),
+            editCardButton.leadingAnchor.constraint(equalTo: paymentMethodView.leadingAnchor),
+            editCardButton.heightAnchor.constraint(equalToConstant: 35),
+            editCardButton.widthAnchor.constraint(equalTo: paymentMethodView.widthAnchor, multiplier: 0.2),
+
+            ])
         
         return paymentMethodView
     }
     
-//    override func viewDidLayoutSubviews() {
-//        super.viewDidLayoutSubviews()
-//        print("UICollectionView frame after layout: \(collectionView.frame)")
-//        print("UICollectionView bounds after layout: \(collectionView.bounds)")
-//    }
+    private func createTotalView() -> UIView {
+        let bottomView: UIView = {
+            let view = UIView()
+            view.backgroundColor = UIColor(red: 245/255, green: 245/255, blue: 245/255, alpha: 1.0)
+            view.translatesAutoresizingMaskIntoConstraints = false
+            return view
+        }()
+        
+        let totalLabel: UILabel = {
+            let label = UILabel()
+            label.text = "Total"
+            label.textColor = .black
+            label.font = UIFont.systemFont(ofSize: 20, weight: .bold)
+            label.translatesAutoresizingMaskIntoConstraints = false
+            return label
+        }()
+        
+        let amountLabel: UILabel = {
+            let label = UILabel()
+            label.text = "$34,00"
+            label.textColor = .black
+            label.font = UIFont.systemFont(ofSize: 18)
+            label.translatesAutoresizingMaskIntoConstraints = false
+            return label
+        }()
+        
+        let payButton: UIButton = {
+            let button = UIButton(type: .system)
+            button.setTitle("Pay", for: .normal)
+            button.setTitleColor(.white, for: .normal)
+            button.backgroundColor = .black
+            button.layer.cornerRadius = 11
+            button.translatesAutoresizingMaskIntoConstraints = false
+            return button
+        }()
+        
+        bottomView.addSubview(totalLabel)
+        bottomView.addSubview(amountLabel)
+        bottomView.addSubview(payButton)
+        
+        payButton.addTarget(self, action: #selector(payButtonTapped), for: .touchUpInside)
+
+        NSLayoutConstraint.activate([
+            bottomView.heightAnchor.constraint(equalToConstant: 60),
+ 
+            totalLabel.leadingAnchor.constraint(equalTo: bottomView.leadingAnchor, constant: 20),
+            totalLabel.centerYAnchor.constraint(equalTo: bottomView.centerYAnchor),
+            
+            amountLabel.leadingAnchor.constraint(equalTo: totalLabel.trailingAnchor, constant: 10),
+            amountLabel.centerYAnchor.constraint(equalTo: bottomView.centerYAnchor),
+            
+            payButton.trailingAnchor.constraint(equalTo: bottomView.trailingAnchor, constant: -20),
+            payButton.centerYAnchor.constraint(equalTo: bottomView.centerYAnchor),
+            payButton.widthAnchor.constraint(equalToConstant: 120),
+            payButton.heightAnchor.constraint(equalToConstant: 40)
+        ])
+        
+        return bottomView
+    }
     
     private func createSeparator() -> UIView {
         let separator = UIView()
@@ -499,9 +596,23 @@ class PaymentViewController: UIViewController {
     
     // MARK: - Actions
 
-    @objc private func payButtonTapped() {
-        // Обработка нажатия на кнопку Pay
-        print("Pay button tapped")
+    @objc func payButtonTapped() {
+        // Создаем UIAlertController
+        let alert = UIAlertController(
+            title: "Done!",
+            message: """
+            Your card has been successfully charged.
+            """,
+            preferredStyle: .alert
+        )
+        
+        // Добавляем действия (кнопки)
+        alert.addAction(UIAlertAction(title: "Track My Order", style: .default, handler: { _ in
+            print("OK нажата")
+        }))
+        
+        // Показываем Alert
+        present(alert, animated: true, completion: nil)
     }
     
     // MARK: - Set delegates
