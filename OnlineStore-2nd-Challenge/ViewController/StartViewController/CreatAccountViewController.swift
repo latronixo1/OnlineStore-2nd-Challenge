@@ -31,10 +31,11 @@ class CreatAccountViewController: UIViewController {
         mainView.eyeButton.addTarget(self, action: #selector (togglePasswordVisibility), for: .touchUpInside)
         
     }
+    
     @objc func doneButtonTapped() {
         print("Кнопка Done")
-        self.email = mainView.emailTextField.text ?? ""
-        self.password = mainView.emailTextField.text ?? ""
+        self.email = mainView.emailTextField.text?.lowercased() ?? ""
+        self.password = mainView.passwordTextField.text ?? ""
         guard self.email != "" && self.password != "" && gender != ""  else {
             self.alertMessage = "Заполните все поля"
             self.makeShowAlert(on: self, title: "Ошибка", message: self.alertMessage)
@@ -51,10 +52,8 @@ class CreatAccountViewController: UIViewController {
                 UserDefaults.standard.set("\(self.password)", forKey: UserDefaultsStorageKeys.password.label)
                 self.nextView()
             }
-            
-            
-            
         }
+        
         func makeAlertMessage(error: Error) {
             self.alertMessage = ""
                if let errorCode = AuthErrorCode(rawValue: error._code) {
@@ -80,8 +79,8 @@ class CreatAccountViewController: UIViewController {
                        self.alertMessage = "Произошла неизвестная ошибка."
                    }
            }
-        
     }
+    
     @objc func cancelButtonTapped() {
         navigationController?.popViewController(animated: true)
     }

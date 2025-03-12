@@ -49,12 +49,12 @@ class CreateAccountView: UIView {
         return textField
     }()
     let eyeButton: UIButton = {
-            let button = UIButton(type: .custom)
-            button.setImage(UIImage(systemName: "eye.slash"), for: .normal) // Изначально глаз закрыт
-            button.tintColor = UIColor.systemGray
-            button.frame = CGRect(x: 0, y: 0, width: 30, height: 30)
-            return button
-        }()
+        let button = UIButton(type: .custom)
+        button.setImage(UIImage(systemName: "eye.slash"), for: .normal)
+        button.tintColor = UIColor.systemGray
+        button.frame = CGRect(x: 0, y: 0, width: 30, height: 30)
+        return button
+    }()
     let doneButton: UIButton = {
         let button = UIButton()
         button.setTitle("Done", for: .normal)
