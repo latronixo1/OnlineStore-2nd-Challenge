@@ -9,7 +9,7 @@ import FirebaseAuth
 
 class CreatAccountViewController: UIViewController {
     private let mainView: CreateAccountView = .init()
-    private let pickerData: [String] = ["Мужской","Женский"]
+    private let pickerData: [String] = ["", "Мужской","Женский"]
     private var gender: String = ""
     private var email: String = ""
     private var password: String = ""
@@ -18,8 +18,6 @@ class CreatAccountViewController: UIViewController {
     
     override func loadView() {
         self.view = mainView
-        mainView.doneButton.addTarget(self, action: #selector (doneButtonTapped), for: .touchUpInside)
-        mainView.cancelButton.addTarget(self, action: #selector (cancelButtonTapped), for: .touchUpInside)
     }
     
     
@@ -28,20 +26,24 @@ class CreatAccountViewController: UIViewController {
         mainView.genderPicker.delegate = self
         mainView.genderPicker.dataSource = self
         mainView.backgroundColor = .white
+        mainView.doneButton.addTarget(self, action: #selector (doneButtonTapped), for: .touchUpInside)
+        mainView.cancelButton.addTarget(self, action: #selector (cancelButtonTapped), for: .touchUpInside)
+        mainView.eyeButton.addTarget(self, action: #selector (togglePasswordVisibility), for: .touchUpInside)
         
     }
     @objc func doneButtonTapped() {
+        print("Кнопка Done")
         self.email = mainView.emailTextField.text ?? ""
         self.password = mainView.emailTextField.text ?? ""
         guard self.email != "" && self.password != "" && gender != ""  else {
-            self.showALert = true
             self.alertMessage = "Заполните все поля"
+            self.makeShowAlert(on: self, title: "Ошибка", message: self.alertMessage)
             return
         }
         Auth.auth().createUser(withEmail: self.email, password: self.password){ result, error in
             if let error = error {
                 makeAlertMessage(error: error)
-                self.showALert = true
+                self.makeShowAlert(on: self, title: "Ошибка", message: self.alertMessage)
                 print("ошибка регистрации")
             } else {
                 UserDefaults.standard.set("\(self.email)", forKey: UserDefaultsStorageKeys.email.label)
@@ -87,7 +89,29 @@ class CreatAccountViewController: UIViewController {
         let nextVc = LoginViewController()
         navigationController?.pushViewController(nextVc, animated: true)
     }
+
+    func makeShowAlert(on viewController: UIViewController, title: String, message: String, actions: [UIAlertAction] = []) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        if !actions.isEmpty {
+            for action in actions {
+                alert.addAction(action)
+            }
+        } else {
+            let defaultAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+            alert.addAction(defaultAction)
+        }
+        
+        viewController.present(alert, animated: true, completion: nil)
+    }
     
+    @objc private func togglePasswordVisibility() {
+        self.mainView.passwordTextField.isSecureTextEntry.toggle()
+        if self.mainView.passwordTextField.isSecureTextEntry {
+            self.mainView.eyeButton.setImage(UIImage(systemName: "eye.slash"), for: .normal)
+        } else {
+            self.mainView.eyeButton.setImage(UIImage(systemName: "eye"), for: .normal)
+        }
+    }
     
     
 }

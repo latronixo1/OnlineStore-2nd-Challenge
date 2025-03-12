@@ -16,7 +16,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 //        let auth = UserDefaults.standard.bool(forKey: UserDefaultsStorageKeys.authIsTrue.label)
         let auth = false
         window = UIWindow(windowScene: windowScene)
-        window?.rootViewController = UINavigationController(rootViewController: auth ? TabBarController() : CreatAccountViewController())
+        window?.rootViewController = UINavigationController(rootViewController: auth ? TabBarController() : StartViewController())
         window?.makeKeyAndVisible()
     }
 
