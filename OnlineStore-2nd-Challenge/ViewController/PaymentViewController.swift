@@ -27,6 +27,11 @@ class PaymentViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    let shippingOptions: [ShippingOption] = [
+        ShippingOption(name: "Standard", duration: "5-7 days", price: "FREE"),
+        ShippingOption(name: "Express", duration: "5-7 days", price: "$12,00")
+    ]
+
     // MARK: - UI Components
     
     private let navigation: UINavigationBar = {
@@ -386,8 +391,8 @@ class PaymentViewController: UIViewController {
         let shippingMainStackView: UIStackView = {
             let element = UIStackView()
             element.axis = .vertical
-            element.distribution = .fillEqually
-            element.spacing = 10
+            element.distribution = .fill
+            element.spacing = 2
             element.translatesAutoresizingMaskIntoConstraints = false
             return element
         }()
@@ -397,45 +402,47 @@ class PaymentViewController: UIViewController {
             element.text = "Shipping Options"
             element.numberOfLines = 1
             element.textAlignment = .left
-            element.backgroundColor = .systemPink
             element.font = UIFont.boldSystemFont(ofSize: 20)
             element.textColor = .black
             return element
         }()
-        
-        let shippingOptionsStackView: UIStackView = {
-            let element = UIStackView()
-            element.axis = .vertical
-            element.distribution = .fillEqually
-            element.spacing = 10
-
-            element.translatesAutoresizingMaskIntoConstraints = false
-            return element
-        }()
-        
-        let standardButton: UIButton = {
-            let element = UIButton(type: .system)
-            element.setTitle("Standard", for: .normal)
-            element.layer.cornerRadius = 8
+                 
+        let collectionView: UICollectionView = {
+            let layout = UICollectionViewFlowLayout()
+            layout.scrollDirection = .horizontal
+            layout.minimumInteritemSpacing = 10
+            layout.minimumLineSpacing = 10
+            layout.itemSize = CGSize(width: 150, height: 30)
             
-            element.translatesAutoresizingMaskIntoConstraints = false
-            return element
+            let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+            collectionView.register(ShippingOptionCell.self, forCellWithReuseIdentifier: "ShippingOptionCell")
+            collectionView.delegate = self
+            collectionView.dataSource = self
+            collectionView.backgroundColor = .white
+            collectionView.translatesAutoresizingMaskIntoConstraints = false
+            return collectionView
         }()
+        
         
         
         shippingView.addSubview(shippingMainStackView)
         shippingMainStackView.addArrangedSubview(titleLabel)
-        shippingMainStackView.addArrangedSubview(shippingOptionsStackView)
+        shippingMainStackView.addArrangedSubview(collectionView)
         
         
         NSLayoutConstraint.activate([
-            shippingView.heightAnchor.constraint(equalToConstant: 100),
+            shippingView.heightAnchor.constraint(equalToConstant: 250),
             
             shippingMainStackView.topAnchor.constraint(equalTo: shippingView.topAnchor),
             shippingMainStackView.leadingAnchor.constraint(equalTo: shippingView.leadingAnchor, constant: 7),
             shippingMainStackView.widthAnchor.constraint(equalTo: shippingView.widthAnchor),
-            shippingMainStackView.heightAnchor.constraint(equalToConstant: 60),
+            shippingMainStackView.heightAnchor.constraint(equalToConstant: 250),
 
+            titleLabel.heightAnchor.constraint(equalToConstant: 40),
+            
+            collectionView.heightAnchor.constraint(equalToConstant: 100),
+            collectionView.leadingAnchor.constraint(equalTo: shippingMainStackView.leadingAnchor),
+            collectionView.trailingAnchor.constraint(equalTo: shippingMainStackView.trailingAnchor),
 //            titleLabel.topAnchor.constraint(equalTo: shippingStackView.topAnchor),
 //            titleLabel.leadingAnchor.constraint(equalTo: shippingStackView.leadingAnchor),
 //            titleLabel.trailingAnchor.constraint(equalTo: shippingStackView.trailingAnchor),
@@ -515,5 +522,38 @@ extension PaymentViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 80   //высота ячейки
+    }
+}
+
+// MARK: - UICollectionViewDataSource, UICollectionViewDelegate
+extension PaymentViewController: UICollectionViewDataSource, UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return shippingOptions.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ShippingOptionCell", for: indexPath) as? ShippingOptionCell else {
+            return UICollectionViewCell()
+        }
+        let option = shippingOptions[indexPath.item]
+        cell.configure(with: option)
+        return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        // Обработка выбора способа доставки
+        print("Selected option: \(shippingOptions[indexPath.item].name)")
+    }
+}
+
+// MARK: - UICollectionViewDelegateFlowLayout
+
+extension PaymentViewController: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        // Ширина ячейки равна ширине UICollectionView минус отступы
+        let width = collectionView.frame.width - collectionView.contentInset.left - collectionView.contentInset.right
+        // Высота ячейки
+        let height: CGFloat = 50
+        return CGSize(width: width, height: height)
     }
 }
