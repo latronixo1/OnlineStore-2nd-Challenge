@@ -27,6 +27,7 @@ class LoginViewController: UIViewController {
         mainView.loginButton.addTarget(self, action: #selector(loginButtonTapped), for: .touchUpInside)
         mainView.eyeButton.addTarget(self, action: #selector(togglePasswordVisibility), for: .touchUpInside)
     }
+    //MARK: SIGN_IN
     
     @objc func loginButtonTapped() {
         email = mainView.emailTextField.text?.lowercased() ?? ""
@@ -46,8 +47,9 @@ class LoginViewController: UIViewController {
                 print("авторизацию успешна надо прописать пуш на след вью")
             }
         }
-        
     }
+    //MARK: ALERT
+
     func catchError(error: Error) {
         if let cathcError = AuthErrorCode(rawValue: error._code) {
             switch cathcError {
@@ -69,12 +71,15 @@ class LoginViewController: UIViewController {
         alert.addAction(UIAlertAction(title: "OK", style: .default))
         self.present(alert, animated: true)
     }
+    //MARK: NAVIGATION
     @objc func cancelButtonTapped() {
         navigationController?.popViewController(animated: true)
     }
     func goNextView(){
-        navigationController?.pushViewController(HomeViewController(), animated: true)
+        navigationController?.pushViewController(OnboardingViewController(), animated: true)
     }
+    //MARK: VISABLE_PASS
+
     @objc private func togglePasswordVisibility() {
         self.mainView.passwordTextField.isSecureTextEntry.toggle()
         if self.mainView.passwordTextField.isSecureTextEntry {

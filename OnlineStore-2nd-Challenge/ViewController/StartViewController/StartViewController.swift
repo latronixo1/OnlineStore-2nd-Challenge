@@ -22,6 +22,7 @@ class StartViewController: UIViewController {
         mainView.loginButton.addTarget(self, action: #selector(goToAuthorize), for: .touchUpInside)
         
     }
+    //MARK: NAVIGATION
     @objc func getStarted() {
         print("нажал на кнопу")
         let vc = CreatAccountViewController()
