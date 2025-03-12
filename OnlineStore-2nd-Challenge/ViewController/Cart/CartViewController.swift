@@ -10,8 +10,8 @@ import UIKit
 final class CartViewController: UIViewController {
     
     var cartItems: [CartItem] = [
-        CartItem(imageName: "Image", title: "Lorem ipsum dolor sit amet consectetur.", price: "$17,00", quantity: 1),
-        CartItem(imageName: "Image", title: "Lorem ipsum dolor sit amet consectetur.", price: "$25,00", quantity: 1)
+        CartItem(imageName: "blousePink", title: "Fitted cotton blouse with short sleeves and high waist", price: "$17,00", quantity: 2),
+        CartItem(imageName: "dressRed", title: "Strapless Satin Evening Dress with Full Skirt", price: "$25,00", quantity: 1)
     ]
     
     private let titleLabel: UILabel = {
@@ -109,6 +109,7 @@ final class CartViewController: UIViewController {
         bottomView.addSubview(amountLabel)
         bottomView.addSubview(checkoutButton)
         
+        checkoutButton.addTarget(self, action: #selector(checkoutButtonTapped), for: .touchUpInside)
         
         NSLayoutConstraint.activate([
             titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
@@ -146,6 +147,12 @@ final class CartViewController: UIViewController {
             checkoutButton.heightAnchor.constraint(equalToConstant: 40)
         ])
     }
+    
+    @objc func checkoutButtonTapped() {
+        let paymentVC = PaymentViewController(cartItems)
+        self.navigationController?.pushViewController(paymentVC, animated: true)
+    }
+
 }
 
 // MARK: - UITableViewDataSource, UITableViewDelegate

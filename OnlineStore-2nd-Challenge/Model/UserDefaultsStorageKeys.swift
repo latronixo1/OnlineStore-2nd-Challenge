@@ -16,6 +16,7 @@ enum UserDefaultsStorageKeys: String {
     case authIsTrue
     case favoriteProducts
     case category
+    case gender
     var label: String {
         switch self {
         case .name: return "Name"
@@ -24,6 +25,7 @@ enum UserDefaultsStorageKeys: String {
         case .authIsTrue: return "AuthIsTrue"
         case .favoriteProducts: return "FavoriteProducts"
         case .category: return "Category"
+        case .gender: return "Gender"
         }
     }
 }
