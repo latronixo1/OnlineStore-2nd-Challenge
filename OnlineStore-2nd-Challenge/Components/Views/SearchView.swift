@@ -39,21 +39,21 @@ final class SearchView: UIView, UISearchBarDelegate {
 
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         searchBar.resignFirstResponder()
-        pushFinderViewController()
+//        pushFinderViewController()
     }
     
     func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {
         return true
     }
     
-    private func pushFinderViewController() {
-        let searchViewController = FinderViewController()
-        searchViewController.products = products
-        searchViewController.modalPresentationStyle = .overFullScreen
-        if let topVC = UIApplication.shared.windows.first?.rootViewController {
-            topVC.present(searchViewController, animated: true, completion: nil)
-        }
-    }
+//    private func pushFinderViewController() {
+//        let searchViewController = FinderViewController()
+//        searchViewController.products = products
+//        searchViewController.modalPresentationStyle = .overFullScreen
+//        if let topVC = UIApplication.shared.windows.first?.rootViewController {
+//            topVC.present(searchViewController, animated: true, completion: nil)
+//        }
+//    }
     
     private func setupView() {
         backgroundColor = .white
