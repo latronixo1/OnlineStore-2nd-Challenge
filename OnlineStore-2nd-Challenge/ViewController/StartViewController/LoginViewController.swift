@@ -44,7 +44,7 @@ class LoginViewController: UIViewController {
                 self.showAlert(message: self.alertMessage )
             } else {
                 self.goNextView()
-                print("авторизацию успешна надо прописать пуш на след вью")
+                UserDefaults.standard.set(true, forKey: UserDefaultsStorageKeys.authIsTrue.label)
             }
         }
     }

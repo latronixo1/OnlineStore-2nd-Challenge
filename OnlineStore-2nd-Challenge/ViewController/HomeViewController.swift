@@ -42,6 +42,8 @@ class HomeViewController: UIViewController {
     private func setupNavigation() {
         mainView.basketButton.addTarget(self, action: #selector(basketButtonTapped), for: .touchUpInside)
         mainView.categoryButton.addTarget(self, action: #selector(categoriesButtonTapped), for: .touchUpInside)
+        mainView.popularButton.addTarget(self, action: #selector(searchAndPopularButton), for: .touchUpInside)
+        mainView.searchButton.addTarget(self, action: #selector(searchAndPopularButton), for: .touchUpInside)
     }
     
     //MARK: FETCH_PRODUCTS
@@ -79,15 +81,7 @@ class HomeViewController: UIViewController {
         }
     }
     
-    func addToFavorite(item: Product) {
-        if !favoriteItems.contains(where: { $0.id == item.id }) {
-            favoriteItems.append(item)
-            print("Продукт добавлен в избранное: \(item.description)")
-        } else {
-            print("Продукт уже в избранном")
-        }
-    }
-    
+    //MARK: FetchImage
     private func loadImages(from urls: [String], into imageViews: [UIImageView]) {
         for (index, url) in urls.enumerated() {
             guard index < imageViews.count else { break }
@@ -115,6 +109,10 @@ class HomeViewController: UIViewController {
     @objc func categoriesButtonTapped() {
         guard let tapBar = self.tabBarController else { return }
         tapBar.selectedIndex = 2
+    }
+    @objc func searchAndPopularButton() {
+        let vc = WishlistViewController() //заменить на экран поиска
+        navigationController?.pushViewController(vc, animated: true)
     }
 }
 
