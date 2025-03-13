@@ -14,9 +14,10 @@ enum UserDefaultsStorageKeys: String {
     case email
     case password
     case authIsTrue
-    case favoriteProducts
+    case favoriteProducts 
     case category
     case gender
+    case cart //корзина
     var label: String {
         switch self {
         case .name: return "Name"
@@ -26,6 +27,7 @@ enum UserDefaultsStorageKeys: String {
         case .favoriteProducts: return "FavoriteProducts"
         case .category: return "Category"
         case .gender: return "Gender"
+        case .cart: return "Cart"
         }
     }
 }

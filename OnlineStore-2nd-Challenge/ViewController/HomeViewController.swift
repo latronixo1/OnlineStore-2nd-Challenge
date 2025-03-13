@@ -25,12 +25,12 @@ class HomeViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        navigationController?.setNavigationBarHidden(true, animated: false)
         mainView.backgroundColor = .white
         setupCollectionViews()
         makeProduct()
         setupNavigation()
-        navigationController?.setNavigationBarHidden(true, animated: false)
-        
+        chekCart()
     }
     
     private func setupCollectionViews() {
@@ -44,6 +44,22 @@ class HomeViewController: UIViewController {
         mainView.categoryButton.addTarget(self, action: #selector(categoriesButtonTapped), for: .touchUpInside)
         mainView.popularButton.addTarget(self, action: #selector(searchAndPopularButton), for: .touchUpInside)
         mainView.searchButton.addTarget(self, action: #selector(searchAndPopularButton), for: .touchUpInside)
+    }
+    
+    private func chekCart() {
+        guard let cart = UserDefaultsManager.shared.getProducts(UserDefaultsStorageKeys.cart) else {
+            mainView.notificationLabel.isHidden = true
+            return
+        }
+        if cart.isEmpty {
+            mainView.notificationLabel.isHidden = true
+        } else {
+            mainView.notificationLabel.isHidden = false
+            mainView.notificationLabel.backgroundColor = .systemRed
+            mainView.notificationLabel.text = "\(cart.count)"
+            mainView.notificationLabel.textColor = .white
+        }
+        
     }
     
     //MARK: FETCH_PRODUCTS
