@@ -14,9 +14,10 @@ enum UserDefaultsStorageKeys: String {
     case email
     case password
     case authIsTrue
-    case favoriteProducts
+    case favoriteProducts 
     case category
     case gender
+    case cart //корзина
     var label: String {
         switch self {
         case .name: return "Name"
@@ -26,6 +27,7 @@ enum UserDefaultsStorageKeys: String {
         case .favoriteProducts: return "FavoriteProducts"
         case .category: return "Category"
         case .gender: return "Gender"
+        case .cart: return "Cart"
         }
     }
 }
@@ -79,20 +81,20 @@ class UserDefaultsManager {
     }
     
     
-    
-    func saveFavoriteProducts(_ products: [Product]) {
+    //MARK: - Сохранение массив продуктов по ключу
+    func saveProducts(_ products: [Product], _ forKey: UserDefaultsStorageKeys) {
         do {
             let encoder = JSONEncoder()
             let data = try encoder.encode(products)
-            UserDefaults.standard.set(data, forKey: UserDefaultsStorageKeys.favoriteProducts.rawValue)
-            print("Отлично, данные сохранены в UserDefaults")
+            UserDefaults.standard.set(data, forKey: forKey.label)
+            print("Отлично, данные сохранены в UserDefaults по ключу \(forKey)")
         } catch {
             print("Ошибка при сохранении в UserDefaults: \(error)")
         }
     }
-    
-    func getFavoriteProducts() -> [Product]? {
-        guard let data = UserDefaults.standard.data(forKey: UserDefaultsStorageKeys.favoriteProducts.rawValue) else {
+    //MARK: - Получение массив продуктов по ключу
+    func getProducts(_ category: UserDefaultsStorageKeys) -> [Product]? {
+        guard let data = UserDefaults.standard.data(forKey: category.label) else {
             return nil
         }
         do {
@@ -102,9 +104,9 @@ class UserDefaultsManager {
             return nil
         }
     }
-    
-    func searchFavoriteItem(_ idProduct: Int) -> Product? {
-        guard let data = UserDefaults.standard.data(forKey: UserDefaultsStorageKeys.favoriteProducts.rawValue) else { return nil }
+    //MARK: - Поиск проукта по Id
+    func searchFavoriteItem(_ idProduct: Int, _ category: UserDefaultsStorageKeys) -> Product? {
+        guard let data = UserDefaults.standard.data(forKey: category.label) else { return nil }
         do {
             let products = try JSONDecoder().decode([Product].self, from: data)
             return products.first { $0.id == idProduct }
@@ -113,24 +115,24 @@ class UserDefaultsManager {
             return nil
         }
     }
-    
-    func addFavoriteItem(_ product: Product) {
-        var favoriteProducts = getFavoriteProducts() ?? []
-        if !favoriteProducts.contains(where: { $0.id == product.id }) {
-            favoriteProducts.append(product)
-            saveFavoriteProducts(favoriteProducts)
+    //MARK: - Добавление продукта в категорию
+    func addItem(_ product: Product, _ category: UserDefaultsStorageKeys) {
+        var products = self.getProducts(category) ?? []
+        if !products.contains(where: { $0.id == product.id }) {
+            products.append(product)
+            self.saveProducts(products, category)
             print("Товар успешно добавлен в избранное")
         } else {
             print("Товар уже есть в избранном")
         }
     }
-    
-    func deleteFavoriteItem(_ idProduct: Int) {
-        guard var data = getFavoriteProducts() else { return }
+    //MARK: - Удаление продукта в категории по id
+    func deleteItem(_ idProduct: Int, _ category: UserDefaultsStorageKeys) {
+        guard var data = self.getProducts(category) else { return }
         let initialCount = data.count
         data = data.filter { $0.id != idProduct }
         if data.count < initialCount {
-            saveFavoriteProducts(data)
+            self.saveProducts(data, category)
             print("Товар успешно удален из избранного")
         } else {
             print("Товар не найден в избранном")
