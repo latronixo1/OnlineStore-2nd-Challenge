@@ -20,24 +20,25 @@ class HomeView: UIView {
 //        return stackView
 //    }()
 
-    lazy var adress: UIImageView = {
-        let img = UIImageView()
-        img.image = UIImage(named: "HomeViewAdress")
-        img.contentMode = .scaleAspectFit
-        img.translatesAutoresizingMaskIntoConstraints = false
-        return img
-    }()
+//    lazy var adress: UIImageView = {
+//        let img = UIImageView()
+//        img.image = UIImage(named: "HomeViewAdress")
+//        img.contentMode = .scaleAspectFit
+//        img.translatesAutoresizingMaskIntoConstraints = false
+//        return img
+//    }()
 
-    lazy var basketButton: UIButton = {
-        let button = UIButton()
-        button.setImage(UIImage(named: "cart"), for: .normal)
-        button.tintColor = .black
-        button.imageView?.contentMode = .scaleAspectFit
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.isUserInteractionEnabled = true
-
-        return button
-    }()
+//    lazy var basketButton: UIButton = {
+//        let button = UIButton()
+//        button.setImage(UIImage(named: "cart"), for: .normal)
+//        button.tintColor = .black
+//        button.imageView?.contentMode = .scaleAspectFit
+//        button.translatesAutoresizingMaskIntoConstraints = false
+//        button.isUserInteractionEnabled = true
+//
+//        return button
+//    }()
+    
     lazy var notificationLabel: UILabel = {
         let lbl = UILabel()
         lbl.text = ""
@@ -50,16 +51,18 @@ class HomeView: UIView {
         lbl.translatesAutoresizingMaskIntoConstraints = false
         return lbl
     }()
+    
     //MARK: SEARCH_STACK
-    lazy var labelOfScreen: UILabel = {
-        let label = UILabel()
-        label.text = "Shop"
-        label.textAlignment = .left
-        label.textColor = .black
-        label.font = UIFont.systemFont(ofSize: 28, weight: .bold)
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
+//    lazy var labelOfScreen: UILabel = {
+//        let label = UILabel()
+//        label.text = "Shop"
+//        label.textAlignment = .left
+//        label.textColor = .black
+//        label.font = UIFont.systemFont(ofSize: 28, weight: .bold)
+//        label.translatesAutoresizingMaskIntoConstraints = false
+//        return label
+//    }()
+    
     lazy var searchButton: UIButton = {
         let button = UIButton()
         button.setTitle("Search", for: .normal)
@@ -216,19 +219,20 @@ class HomeView: UIView {
     }
     
     func setView() {
-        basketButton.addSubview(notificationLabel)
+        //basketButton.addSubview(notificationLabel)
         categoryCollectionView.register(HomeCategoryCell.self, forCellWithReuseIdentifier: HomeCategoryCell.reuseIdentifier)
         popularCollectionView.register(HomePopularCell.self, forCellWithReuseIdentifier: HomePopularCell.reuseIdentifier)
         
 //        basketAndAdressStackView.addArrangedSubview(adress)
 //        basketAndAdressStackView.addArrangedSubview(basketButton)
 //        addSubview(basketAndAdressStackView)
-        addSubview(adress)
-        addSubview(basketButton)
+        //addSubview(adress)
+        //addSubview(basketButton)
         
-        stackForLabelAndSearchButton.addArrangedSubview(labelOfScreen)
-        stackForLabelAndSearchButton.addArrangedSubview(searchButton)
-        addSubview(stackForLabelAndSearchButton)
+       // stackForLabelAndSearchButton.addArrangedSubview(labelOfScreen)
+        //stackForLabelAndSearchButton.addArrangedSubview(searchButton)
+        //stackForLabelAndSearchButton.addArrangedSubview(finderBar.searchBar)
+        //addSubview(stackForLabelAndSearchButton)
         
         stackForLabelCategory.addArrangedSubview(categoryLabel)
         stackForLabelCategory.addArrangedSubview(categoryButton)
@@ -259,35 +263,37 @@ class HomeView: UIView {
 //            adress.widthAnchor.constraint(equalToConstant: 185.94),
 //                   
 //            basketButton.rightAnchor.constraint(equalTo: basketAndAdressStackView.rightAnchor),
-            adress.leftAnchor.constraint(equalTo: leftAnchor, constant: 20),
-            adress.heightAnchor.constraint(equalToConstant: 28),
-            adress.widthAnchor.constraint(equalToConstant: 185.94),
-            adress.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
             
-            basketButton.rightAnchor.constraint(equalTo: rightAnchor, constant: -20),
-            basketButton.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
-            basketButton.heightAnchor.constraint(equalToConstant: 28),
-            
+//            adress.leftAnchor.constraint(equalTo: leftAnchor, constant: 20),
+//            adress.heightAnchor.constraint(equalToConstant: 28),
+//            adress.widthAnchor.constraint(equalToConstant: 185.94),
+//            adress.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
+//            
+//            basketButton.rightAnchor.constraint(equalTo: rightAnchor, constant: -20),
+//            basketButton.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
+//            basketButton.heightAnchor.constraint(equalToConstant: 28),
+//            
             
             // Уведомление
-            notificationLabel.widthAnchor.constraint(equalToConstant: 12),
-            notificationLabel.heightAnchor.constraint(equalToConstant: 12),
-            notificationLabel.centerXAnchor.constraint(equalTo: basketButton.centerXAnchor, constant: 9),
-            notificationLabel.centerYAnchor.constraint(equalTo: basketButton.centerYAnchor, constant: -9),
-            
+//            notificationLabel.widthAnchor.constraint(equalToConstant: 12),
+//            notificationLabel.heightAnchor.constraint(equalToConstant: 12),
+//            notificationLabel.centerXAnchor.constraint(equalTo: basketButton.centerXAnchor, constant: 9),
+//            notificationLabel.centerYAnchor.constraint(equalTo: basketButton.centerYAnchor, constant: -9),
+//            
             // StackOfSerch
             
-            stackForLabelAndSearchButton.topAnchor.constraint(equalTo: basketButton.bottomAnchor, constant: 20),
-            stackForLabelAndSearchButton.leftAnchor.constraint(equalTo: leftAnchor, constant: 20),
-            stackForLabelAndSearchButton.rightAnchor.constraint(equalTo: rightAnchor, constant: -20),
-            stackForLabelAndSearchButton.heightAnchor.constraint(equalToConstant: 36),
+//            stackForLabelAndSearchButton.topAnchor.constraint(equalTo: basketButton.bottomAnchor, constant: 20),
+//            stackForLabelAndSearchButton.leftAnchor.constraint(equalTo: leftAnchor, constant: 20),
+//            stackForLabelAndSearchButton.rightAnchor.constraint(equalTo: rightAnchor, constant: -20),
+//            stackForLabelAndSearchButton.heightAnchor.constraint(equalToConstant: 36),
             
-            labelOfScreen.widthAnchor.constraint(equalTo: stackForLabelAndSearchButton.widthAnchor, multiplier: 0.3),
-            searchButton.widthAnchor.constraint(equalTo: stackForLabelAndSearchButton.widthAnchor, multiplier: 0.7),
+            //labelOfScreen.widthAnchor.constraint(equalTo: stackForLabelAndSearchButton.widthAnchor, multiplier: 0.3),
+            //finderBar.searchBar.widthAnchor.constraint(equalTo: stackForLabelAndSearchButton.widthAnchor, multiplier: 0.7),
+            //searchButton.widthAnchor.constraint(equalTo: stackForLabelAndSearchButton.widthAnchor, multiplier: 0.7),
             
             
             // Stack For All View
-            stackForAllView.topAnchor.constraint(equalTo: stackForLabelAndSearchButton.bottomAnchor, constant: 20),
+            stackForAllView.topAnchor.constraint(equalTo: topAnchor, constant: 200),
             stackForAllView.leftAnchor.constraint(equalTo: leftAnchor, constant: 20),
             stackForAllView.rightAnchor.constraint(equalTo: rightAnchor, constant: -20),
             stackForAllView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor),

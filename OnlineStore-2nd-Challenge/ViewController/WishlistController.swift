@@ -17,6 +17,7 @@ final class WishlistViewController: UIViewController {
     private let finderBar = SearchView()
     private let favoriteManager = FavoriteManager.shared
     private let titleOfLabel = UILabel.makeLabel(text: "Wishlist", font: .systemFont(ofSize: 28, weight: .bold), textColor: .black)
+    private let labelSearch = UILabel.makeLabel(text: "Search", font: .systemFont(ofSize: 16, weight: .regular), textColor: .systemGray)
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,8 +38,6 @@ final class WishlistViewController: UIViewController {
         collectionView.reloadData()
     }
     
-
-    
     func setupNavigationBar() {
         navigation.barTintColor = .white
         navigation.addSubview(titleOfLabel)
@@ -46,7 +45,7 @@ final class WishlistViewController: UIViewController {
     }
     
     func setupFinderView() {
-        
+        view.addSubview(labelSearch)
         view.addSubview(finderBar.view)
     }
 }
@@ -139,8 +138,11 @@ private extension WishlistViewController {
             titleOfLabel.centerXAnchor.constraint(equalTo: navigation.centerXAnchor),
             titleOfLabel.bottomAnchor.constraint(equalTo: navigation.bottomAnchor, constant: -8),
             
+            labelSearch.centerYAnchor.constraint(equalTo: finderBar.view.centerYAnchor),
+            labelSearch.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 12),
+            
             finderBar.view.topAnchor.constraint(equalTo: navigation.bottomAnchor, constant: 10),
-            finderBar.view.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 12),
+            finderBar.view.leadingAnchor.constraint(equalTo: labelSearch.trailingAnchor, constant: 8),
             finderBar.view.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -12),
             finderBar.view.heightAnchor.constraint(equalToConstant: 40),
             

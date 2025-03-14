@@ -9,6 +9,7 @@ import UIKit
 
 protocol SearchViewDelegate {
     func saveCurrentText(text: String)
+    func finderViewSearchButtonTapped()
     
 }
 

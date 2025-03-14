@@ -152,9 +152,9 @@ final class FinderView: UIView {
             shopLabel.topAnchor.constraint(equalTo: closeButton.bottomAnchor, constant: 4),
             
             closeButton.topAnchor.constraint(equalTo: backView.safeAreaLayoutGuide.topAnchor, constant: 8),
-            closeButton.trailingAnchor.constraint(equalTo: backView.trailingAnchor, constant: -8),
-            closeButton.widthAnchor.constraint(equalToConstant: 24),
-            closeButton.heightAnchor.constraint(equalToConstant: 24),
+            closeButton.trailingAnchor.constraint(equalTo: backView.trailingAnchor, constant: -16),
+            closeButton.widthAnchor.constraint(equalToConstant: 32),
+            closeButton.heightAnchor.constraint(equalToConstant: 32),
             
             searchField.leadingAnchor.constraint(equalTo: shopLabel.trailingAnchor, constant: 12),
             searchField.trailingAnchor.constraint(equalTo: backView.trailingAnchor, constant: -20),
