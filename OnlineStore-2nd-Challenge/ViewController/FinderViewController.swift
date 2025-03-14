@@ -8,13 +8,17 @@
 
 import UIKit
 
-final class FinderViewController: UIViewController {
-    
+final class FinderViewController: UIViewController, SearchViewDelegate, UITextFieldDelegate {
     // MARK: - Properties
+    private var collectionView: UICollectionView!
+    private let reuseIdentifier = "productCell"
+    
     private let finderView = FinderView()
     private var searchHistoryModel: SearchHistoryModel
+    private var emptyHistory: [String] = []
     private var selectedItemIndex: Int?
-    var products: [Product] = []
+    var productsArray: [Product] = []
+    var currentText = String()
     
     // MARK: - Init
     init(initialHistory: [String] = ["Socks", "Red dress", "Sunglasses", "Mustard Pants", "80-s Skirt"]) {
@@ -26,7 +30,6 @@ final class FinderViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: - Lifecycle
     override func loadView() {
         view = finderView
     }
@@ -35,16 +38,34 @@ final class FinderViewController: UIViewController {
         super.viewDidLoad()
         setupUI()
         setupDelegates()
+        
+        setupLayout()
+        collectionView.reloadData()
+        
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        finderView.searchField.text = currentText
     }
     
     // MARK: - Setup Methods
     private func setupUI() {
         view.backgroundColor = .white
+        collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
+        collectionView.register(ShopCollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
+        collectionView.backgroundColor = .white
+        collectionView.dataSource = self
+        collectionView.delegate = self
+        
+        finderView.addSubview(collectionView)
+        
         setupHistoryCollection()
     }
     
     private func setupDelegates() {
         finderView.delegate = self
+        finderView.searchField.delegate = self
     }
     
     private func setupHistoryCollection() {
@@ -54,22 +75,73 @@ final class FinderViewController: UIViewController {
     }
     
     // MARK: - Private Methods
+    
+    func saveCurrentText(text: String) {
+        currentText = text
+        print("\(currentText)")
+    }
+    
     private func performSearch() {
         if let searchText = finderView.searchField.text, !searchText.isEmpty {
             searchHistoryModel.addItem(searchText)
             finderView.historyCollection.reloadData()
-            
-            let resultVC = UIViewController()
-            resultVC.view.backgroundColor = .white
-            resultVC.title = "Results for: \(searchText)"
-            navigationController?.pushViewController(resultVC, animated: true)
         }
         finderView.searchField.resignFirstResponder()
+    }
+ 
+    func setupLayout() {
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            collectionView.topAnchor.constraint(equalTo: view.topAnchor, constant: 280),
+            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+        ])
+    }
+}
+
+private extension FinderViewController {
+    func createLayout() -> UICollectionViewLayout{
+        let itemSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(0.5),
+            heightDimension: .absolute(282)
+        )
+        
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+        
+        let groupSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1),
+            heightDimension: .absolute(282)
+        )
+        
+        let group = NSCollectionLayoutGroup.horizontal(
+            layoutSize: groupSize,
+            subitems: [item]
+        )
+        
+        group.interItemSpacing = .fixed(15)
+        
+        let section = NSCollectionLayoutSection(group: group)
+        section.contentInsets = NSDirectionalEdgeInsets(
+            top: 0,
+            leading: 15,
+            bottom: 0,
+            trailing: 15
+        )
+        return UICollectionViewCompositionalLayout(section: section)
     }
 }
 
 // MARK: - FinderViewDelegate
 extension FinderViewController: FinderViewDelegate {
+    func textFieldDidChange() {
+        finderView.searchField.text = currentText
+    }
+    
+    func closeButtonTapped() {
+        dismiss(animated: true)
+    }
+    
     func finderViewSearchButtonTapped() {
         performSearch()
     }
@@ -81,7 +153,6 @@ extension FinderViewController: FinderViewDelegate {
         } else {
             searchHistoryModel.removeAllItems()
         }
-        finderView.searchField.text = ""
         finderView.historyCollection.reloadData()
     }
     
@@ -89,20 +160,37 @@ extension FinderViewController: FinderViewDelegate {
         performSearch()
     }
 }
-
 // MARK: - UICollectionViewDataSource
 extension FinderViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return searchHistoryModel.items.count
+        if collectionView == finderView.historyCollection {
+            return searchHistoryModel.items.count
+        } else {
+            return productsArray.count
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "HistoryCell", for: indexPath) as? HistoryCell else {
-            return UICollectionViewCell()
+        if collectionView == finderView.historyCollection {
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "HistoryCell", for: indexPath) as? HistoryCell else {
+                return UICollectionViewCell()
+            }
+            let history = searchHistoryModel.items[indexPath.item]
+            cell.configure(with: history)
+            return cell
+        } else {
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as? ShopCollectionViewCell else {
+                return UICollectionViewCell()
+            }
+            
+            if productsArray.isEmpty {
+                print("No products found")
+            } else {
+                let product = productsArray[indexPath.row]
+                cell.configure(model: product)
+            }
+            return cell
         }
-        let history = searchHistoryModel.items[indexPath.item]
-        cell.configure(with: history)
-        return cell
     }
 }
 
@@ -127,7 +215,12 @@ extension FinderViewController: UICollectionViewDelegate {
         }
         
         let selectedText = searchHistoryModel.items[indexPath.item]
-        finderView.searchField.text = selectedText
+        
+        if !selectedText.isEmpty {
+            finderView.searchField.text = selectedText
+        } else {
+            finderView.searchField.text = currentText
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
@@ -141,8 +234,8 @@ extension FinderViewController: UICollectionViewDelegate {
 // MARK: - UICollectionViewDelegateFlowLayout
 extension FinderViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView,
-                       layout collectionViewLayout: UICollectionViewLayout,
-                       sizeForItemAt indexPath: IndexPath) -> CGSize {
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        sizeForItemAt indexPath: IndexPath) -> CGSize {
         let text = searchHistoryModel.items[indexPath.item]
         
         // Создаем временный label для расчета ширины текста
@@ -158,20 +251,20 @@ extension FinderViewController: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView,
-                       layout collectionViewLayout: UICollectionViewLayout,
-                       insetForSectionAt section: Int) -> UIEdgeInsets {
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        insetForSectionAt section: Int) -> UIEdgeInsets {
         return .zero
     }
     
     func collectionView(_ collectionView: UICollectionView,
-                       layout collectionViewLayout: UICollectionViewLayout,
-                       minimumInteritemSpacing: Int) -> CGFloat {
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        minimumInteritemSpacing: Int) -> CGFloat {
         return 4
     }
     
     func collectionView(_ collectionView: UICollectionView,
-                       layout collectionViewLayout: UICollectionViewLayout,
-                       minimumLineSpacing: Int) -> CGFloat {
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        minimumLineSpacing: Int) -> CGFloat {
         return 4
     }
 }

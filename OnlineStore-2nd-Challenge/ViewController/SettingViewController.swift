@@ -241,9 +241,10 @@ private extension SettingViewController {
             genderLabel.centerYAnchor.constraint(equalTo: genderSelection.centerYAnchor),
             
             genderSelection.topAnchor.constraint(equalTo: infoLabelPassword.bottomAnchor, constant: 10),
-            genderSelection.leadingAnchor.constraint(equalTo: genderLabel.trailingAnchor, constant: -8),
+            //genderSelection.leadingAnchor.constraint(equalTo: genderLabel.trailingAnchor, constant: -8),
             genderSelection.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
             genderSelection.heightAnchor.constraint(equalToConstant: 50),
+            genderSelection.widthAnchor.constraint(equalToConstant: 200),
             
             buttonSave.heightAnchor.constraint(equalToConstant: 40),
             buttonSave.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),

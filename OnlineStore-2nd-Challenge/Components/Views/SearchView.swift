@@ -7,95 +7,113 @@
 
 import UIKit
 
-enum SearchSize {
-    case big
-    case small
+protocol SearchViewDelegate {
+    func saveCurrentText(text: String)
+    
 }
 
-final class SearchView: UIView, UISearchBarDelegate {
+final class SearchView: UIViewController, UISearchBarDelegate {
+    private let productURLString = "https://fakestoreapi.com/products"
     let searchBar = UISearchBar()
-    private var products: [Product] = []
+    private var productsArray: [Product] = []
+    private var productsModel: [Product]?
     private let networkManager = NetworkService.shared
-    private let userDefaults = FavoriteManager.shared
-    private let searchLabelSmall = UILabel.makeLabel(text: "Search", font: .systemFont(ofSize: 16, weight: .regular), textColor: .systemGray4)
-    private let searchLabelBig = UILabel.makeLabel(text: "Shop", font: .systemFont(ofSize: 28, weight: .bold), textColor: .black)
+    var delegate: SearchViewDelegate?
     
-    private let searchSize: SearchSize
-
-    init(searchSize: SearchSize) {
-        self.searchSize = searchSize
-        super.init(frame: .zero)
+    private let searchController = UISearchController(searchResultsController: nil)
+    var filteredProducts: [Product] = []
+    
+    private var searchBarIsEmpty: Bool {
+        guard let text = searchController.searchBar.text else {return false}
+        return text.isEmpty
+    }
+    
+    private var isFiltering: Bool {
+        return searchController.isActive && !searchBarIsEmpty
+    }
+    
+    //MARK: - - Life cycle
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.backgroundColor = .white
         
-        setupView()
         setupSearchBar()
-        setupLabel()
         setupTextField()
         setConstraints()
     }
     
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
+    
+    //MARK: - Private Methods
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        searchBar.resignFirstResponder()
-//        pushFinderViewController()
+        if let searchTerm = searchBar.text, !searchTerm.isEmpty {
+            loadArticle(searchTerm)
+        }
     }
     
-    func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {
-        return true
+    private func loadArticle(_ text: String) {
+        networkManager.fetchProducts(from: productURLString) { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let products):
+                    print("Продукты загружены: \(products.count)")
+                    print("Success: \(products)")
+                    self?.productsArray = products
+                    self?.filterContextForSearchText(text)
+                    self?.presentSearchScreen()
+                case .failure(let error):
+                    print(error.localizedDescription)
+                    print("Ошибка загрузки: \(error.localizedDescription)")
+                }
+            }
+        }
     }
     
-//    private func pushFinderViewController() {
-//        let searchViewController = FinderViewController()
-//        searchViewController.products = products
-//        searchViewController.modalPresentationStyle = .overFullScreen
-//        if let topVC = UIApplication.shared.windows.first?.rootViewController {
-//            topVC.present(searchViewController, animated: true, completion: nil)
-//        }
-//    }
-    
-    private func setupView() {
-        backgroundColor = .white
+    func setupSearchController() {
+        searchController.searchResultsUpdater = self
+        searchController.obscuresBackgroundDuringPresentation = false
+        searchController.searchBar.placeholder = "Search"
+        searchController.searchBar.barTintColor = .white
+        navigationItem.searchController = searchController
+        definesPresentationContext = true
+        
+        if let textField = searchController.searchBar.value(forKey: "searchField") as? UITextField {
+            textField.font = UIFont.boldSystemFont(ofSize: 17)
+            textField.textColor = .black
+        }
     }
+    
+    
+    //MARK: - Setup UI
     
     private func setupSearchBar() {
         searchBar.delegate = self
         searchBar.searchTextField.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(searchBar)
+        searchBar.translatesAutoresizingMaskIntoConstraints = false
+        searchBar.backgroundImage = UIImage()
+        searchBar.tintColor = .black
+        
+        view.addSubview(searchBar)
     }
     
     private func setupTextField() {
         if let searchBarTextField = searchBar.value(forKey: "searchField") as? UITextField {
             searchBarTextField.backgroundColor = .systemGray6
             searchBarTextField.textColor = .black
-            searchBarTextField.borderStyle = .none
-            searchBarTextField.leftView = nil
-            searchBar.backgroundImage = UIImage()
-            searchBarTextField.layer.cornerRadius = 24
+            searchBarTextField.attributedPlaceholder = NSAttributedString(string: "Search", attributes: [.foregroundColor: UIColor.lightGray])
+            searchBarTextField.layer.cornerRadius = 12
+            if let glassIconView = searchBarTextField.leftView as? UIImageView {
+                glassIconView.tintColor = .darkGray
+            }
         }
     }
     
-    private func setupLabel() {
-        let label = (searchSize == .big) ? searchLabelBig : searchLabelSmall
-        label.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(label)
-    }
-    
     private func setConstraints() {
-        let label = (searchSize == .big) ? searchLabelBig : searchLabelSmall
-
         NSLayoutConstraint.activate([
-            heightAnchor.constraint(equalToConstant: 40),
-            
-            label.centerYAnchor.constraint(equalTo: centerYAnchor),
-            label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
-            label.heightAnchor.constraint(equalToConstant: (searchSize == .big) ? 40 : 21),
-            
-            searchBar.topAnchor.constraint(equalTo: topAnchor),
-            searchBar.leadingAnchor.constraint(equalTo: label.trailingAnchor, constant: 8),
-            searchBar.trailingAnchor.constraint(equalTo: trailingAnchor),
-            searchBar.bottomAnchor.constraint(equalTo: bottomAnchor),
+            view.heightAnchor.constraint(equalToConstant: 56),
+            searchBar.topAnchor.constraint(equalTo: view.topAnchor),
+            searchBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            searchBar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            searchBar.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             
             searchBar.searchTextField.topAnchor.constraint(equalTo: searchBar.topAnchor),
             searchBar.searchTextField.leadingAnchor.constraint(equalTo: searchBar.leadingAnchor),
@@ -103,4 +121,39 @@ final class SearchView: UIView, UISearchBarDelegate {
             searchBar.searchTextField.bottomAnchor.constraint(equalTo: searchBar.bottomAnchor)
         ])
     }
+    
+    private func presentSearchScreen() {
+        guard let searchText = searchBar.text, !searchText.isEmpty else { return }
+        
+        filterContextForSearchText(searchText)
+       
+        self.delegate?.saveCurrentText(text: searchText)
+        print("\(searchText)")
+        
+        if !filteredProducts.isEmpty {
+            let searchResultVC = FinderViewController()
+            searchResultVC.productsArray = filteredProducts
+            searchResultVC.currentText = searchText 
+            searchResultVC.modalPresentationStyle = .overFullScreen
+            present(searchResultVC, animated: true, completion: nil)
+        } else {
+            print("No products found for search term: \(searchText)")
+        }
+    }
+    
 }
+
+extension SearchView: UISearchResultsUpdating {
+    func updateSearchResults(for searchController: UISearchController) {
+        guard let searchText = searchController.searchBar.text else { return }
+        filterContextForSearchText(searchText)
+        print("Поиск: \(searchText), Найдено: \(filteredProducts.count)")
+    }
+    
+    func filterContextForSearchText(_ searchText: String) {
+        filteredProducts = productsArray.filter { product in
+            product.title.lowercased().contains(searchText.lowercased())
+        }
+    }
+}
+

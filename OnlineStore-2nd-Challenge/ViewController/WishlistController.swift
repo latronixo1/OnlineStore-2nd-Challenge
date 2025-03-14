@@ -14,7 +14,7 @@ final class WishlistViewController: UIViewController {
     private var collectionView: UICollectionView!
     private let reuseIdentifier = "wishlist"
     private let navigation = UINavigationBar()
-    private let finderBar = SearchView(searchSize: .small)
+    private let finderBar = SearchView()
     private let favoriteManager = FavoriteManager.shared
     private let titleOfLabel = UILabel.makeLabel(text: "Wishlist", font: .systemFont(ofSize: 28, weight: .bold), textColor: .black)
     
@@ -46,8 +46,8 @@ final class WishlistViewController: UIViewController {
     }
     
     func setupFinderView() {
-        finderBar.searchBar.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(finderBar)
+        
+        view.addSubview(finderBar.view)
     }
 }
 
@@ -117,6 +117,7 @@ extension WishlistViewController: UICollectionViewDelegate {
         if product.count > 0 {
             let selectedCell = product[indexPath.item]
             let productVC = ProductViewController(product: selectedCell)
+            
             navigationController?.pushViewController(productVC, animated: true)
         }
     }
@@ -126,8 +127,8 @@ private extension WishlistViewController {
     func setupLayout() {
         navigation.translatesAutoresizingMaskIntoConstraints = false
         titleOfLabel.translatesAutoresizingMaskIntoConstraints = false
-        finderBar.translatesAutoresizingMaskIntoConstraints = false
         collectionView.translatesAutoresizingMaskIntoConstraints = false
+        finderBar.view.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             navigation.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -138,12 +139,12 @@ private extension WishlistViewController {
             titleOfLabel.centerXAnchor.constraint(equalTo: navigation.centerXAnchor),
             titleOfLabel.bottomAnchor.constraint(equalTo: navigation.bottomAnchor, constant: -8),
             
-            finderBar.topAnchor.constraint(equalTo: navigation.bottomAnchor, constant: 10),
-            finderBar.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 12),
-            finderBar.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -12),
-            finderBar.heightAnchor.constraint(equalToConstant: 40),
+            finderBar.view.topAnchor.constraint(equalTo: navigation.bottomAnchor, constant: 10),
+            finderBar.view.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 12),
+            finderBar.view.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -12),
+            finderBar.view.heightAnchor.constraint(equalToConstant: 40),
             
-            collectionView.topAnchor.constraint(equalTo: finderBar.bottomAnchor, constant: 10),
+            collectionView.topAnchor.constraint(equalTo: finderBar.view.bottomAnchor, constant: 10),
         ])
     }
 }
