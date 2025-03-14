@@ -12,6 +12,8 @@ protocol FinderViewDelegate: AnyObject {
     func finderViewSearchButtonTapped()
     func finderViewDeleteButtonTapped()
     func finderViewDidPressReturn()
+    func closeButtonTapped()
+    func textFieldDidChange()
 }
 
 final class FinderView: UIView {
@@ -26,6 +28,8 @@ final class FinderView: UIView {
         backView.translatesAutoresizingMaskIntoConstraints = false
         return backView
     }()
+    
+    private var closeButton = UIButton()
     
     private lazy var shopLabel: UILabel = {
         let shopLabel = UILabel()
@@ -66,6 +70,8 @@ final class FinderView: UIView {
         
         searchField.returnKeyType = .search
         searchField.translatesAutoresizingMaskIntoConstraints = false
+        
+        searchField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
         return searchField
     }()
     
@@ -105,6 +111,7 @@ final class FinderView: UIView {
         super.init(frame: frame)
         setupUI()
         setupConstraints()
+        setupCloseButton()
         setupActions()
     }
     
@@ -119,10 +126,18 @@ final class FinderView: UIView {
         addSubview(backView)
         backView.addSubview(shopLabel)
         backView.addSubview(searchField)
+        backView.addSubview(closeButton)
         backView.addSubview(searchHistoryLabel)
         backView.addSubview(deleteButton)
         backView.addSubview(historyCollection)
     }
+    
+    func setupCloseButton() {
+        closeButton.setImage(UIImage(systemName: "xmark"), for: .normal)
+        closeButton.tintColor = .black
+        closeButton.translatesAutoresizingMaskIntoConstraints = false
+    }
+    
     
     private func setupConstraints() {
         NSLayoutConstraint.activate([
@@ -134,7 +149,12 @@ final class FinderView: UIView {
             shopLabel.heightAnchor.constraint(equalToConstant: 36),
             shopLabel.widthAnchor.constraint(equalToConstant: 68),
             shopLabel.leadingAnchor.constraint(equalTo: backView.leadingAnchor, constant: 20),
-            shopLabel.topAnchor.constraint(equalTo: backView.safeAreaLayoutGuide.topAnchor, constant: 12),
+            shopLabel.topAnchor.constraint(equalTo: closeButton.bottomAnchor, constant: 4),
+            
+            closeButton.topAnchor.constraint(equalTo: backView.safeAreaLayoutGuide.topAnchor, constant: 8),
+            closeButton.trailingAnchor.constraint(equalTo: backView.trailingAnchor, constant: -8),
+            closeButton.widthAnchor.constraint(equalToConstant: 24),
+            closeButton.heightAnchor.constraint(equalToConstant: 24),
             
             searchField.leadingAnchor.constraint(equalTo: shopLabel.trailingAnchor, constant: 12),
             searchField.trailingAnchor.constraint(equalTo: backView.trailingAnchor, constant: -20),
@@ -161,6 +181,7 @@ final class FinderView: UIView {
     private func setupActions() {
         deleteButton.addTarget(self, action: #selector(deleteButtonTapped), for: .touchUpInside)
         searchButton.addTarget(self, action: #selector(searchButtonTapped), for: .touchUpInside)
+        closeButton.addTarget(self, action: #selector(tapClose), for: .touchUpInside)
     }
     
     // MARK: - Actions
@@ -171,6 +192,15 @@ final class FinderView: UIView {
     @objc private func searchButtonTapped() {
         delegate?.finderViewSearchButtonTapped()
     }
+    
+    @objc func tapClose() {
+        delegate?.closeButtonTapped()
+    }
+    
+    @objc private func textFieldDidChange(_ textField: UITextField) {
+        delegate?.textFieldDidChange()
+    }
+    
 }
 
 // MARK: - UITextFieldDelegate

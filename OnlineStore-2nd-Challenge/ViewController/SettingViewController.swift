@@ -6,6 +6,8 @@
 //
 
 import UIKit
+import FirebaseAuth
+import Firebase
 
 final class SettingViewController: UIViewController {
     //MARK: - Private Property
@@ -42,6 +44,8 @@ final class SettingViewController: UIViewController {
         font: .systemFont(ofSize: 16, weight: .medium),
         textColor: .black
     )
+    
+    private let logoutButton = UIButton()
     private let genders: [String] = ["Man", "Women"]
     private var currentGender = String()
     private let genderSelection = UIPickerView()
@@ -56,6 +60,7 @@ final class SettingViewController: UIViewController {
         setupLayout()
         setupEditPhotoButton()
         setupSaveButton()
+        setupLogoutButton()
         setupNavigationBar()
         addTapGestureToHideKeyboard()
         let user = UserDefaultsManager.shared.loadUser()
@@ -85,6 +90,10 @@ final class SettingViewController: UIViewController {
         
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        navigationController?.navigationBar.isHidden = true
+    }
+    
     //MARK: - Private methods
     //скрывает клавиатуру по нажатию на внешнюю область
     private func addTapGestureToHideKeyboard() {
@@ -106,8 +115,8 @@ final class SettingViewController: UIViewController {
         currentGender = gender
         
         if let index = genders.firstIndex(of: gender) {
-                genderSelection.selectRow(index, inComponent: 0, animated: false)
-            }
+            genderSelection.selectRow(index, inComponent: 0, animated: false)
+        }
         
     }
     
@@ -126,7 +135,15 @@ final class SettingViewController: UIViewController {
         navigation.barTintColor = .white
         navigation.addSubview(titleOfLabel)
         navigation.addSubview(subTitleOfLabel)
+        navigation.addSubview(logoutButton)
         view.addSubview(navigation)
+    }
+    
+    private func setupLogoutButton() {
+        logoutButton.setImage(UIImage(systemName: "rectangle.portrait.and.arrow.right"), for: .normal)
+        logoutButton.tintColor = .black
+        logoutButton.addTarget(self, action: #selector(tapLogoutButton), for: .touchUpInside)
+        
     }
     
     private func setupSaveButton() {
@@ -157,6 +174,17 @@ final class SettingViewController: UIViewController {
         present(vc, animated: true)
         print("button edit tapped")
     }
+    
+    @objc func tapLogoutButton() {
+        print("Logout button tapped")
+        do {
+            try Auth.auth().signOut()
+            navigationController?.pushViewController(LoginViewController(), animated: true)
+            print("LogOut")
+        } catch let error {
+            print("\(error.localizedDescription)")
+        }
+    }
 }
 
 private extension SettingViewController {
@@ -175,7 +203,8 @@ private extension SettingViewController {
             infoLabelEmail,
             infoLabelPassword,
             genderSelection,
-            genderLabel
+            genderLabel,
+            logoutButton
         ].forEach {
             view.addSubview($0)
             $0.translatesAutoresizingMaskIntoConstraints = false
@@ -185,14 +214,19 @@ private extension SettingViewController {
     func setupLayout() {
         NSLayoutConstraint.activate([
             
-            navigation.topAnchor.constraint(equalTo: view.topAnchor, constant: 80),
+            navigation.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             navigation.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             navigation.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             navigation.heightAnchor.constraint(equalToConstant: 80),
             
+            logoutButton.centerYAnchor.constraint(equalTo: titleOfLabel.centerYAnchor),
+            logoutButton.trailingAnchor.constraint(equalTo: navigation.trailingAnchor,constant: -12),
+            logoutButton.widthAnchor.constraint(equalToConstant: 24),
+            logoutButton.heightAnchor.constraint(equalToConstant: 24),
+            
             titleOfLabel.leadingAnchor.constraint(equalTo: navigation.leadingAnchor, constant: 24),
             titleOfLabel.topAnchor.constraint(equalTo: navigation.topAnchor, constant: 12),
-            titleOfLabel.trailingAnchor.constraint(equalTo: navigation.trailingAnchor, constant: -12),
+            titleOfLabel.trailingAnchor.constraint(equalTo: logoutButton.leadingAnchor, constant: -12),
             titleOfLabel.heightAnchor.constraint(equalToConstant: 36),
             
             subTitleOfLabel.topAnchor.constraint(equalTo: titleOfLabel.bottomAnchor, constant: 8),
@@ -241,9 +275,10 @@ private extension SettingViewController {
             genderLabel.centerYAnchor.constraint(equalTo: genderSelection.centerYAnchor),
             
             genderSelection.topAnchor.constraint(equalTo: infoLabelPassword.bottomAnchor, constant: 10),
-            genderSelection.leadingAnchor.constraint(equalTo: genderLabel.trailingAnchor, constant: -8),
+            //genderSelection.leadingAnchor.constraint(equalTo: genderLabel.trailingAnchor, constant: -8),
             genderSelection.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
             genderSelection.heightAnchor.constraint(equalToConstant: 50),
+            genderSelection.widthAnchor.constraint(equalToConstant: 200),
             
             buttonSave.heightAnchor.constraint(equalToConstant: 40),
             buttonSave.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
