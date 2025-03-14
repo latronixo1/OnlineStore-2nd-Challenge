@@ -6,6 +6,8 @@
 //
 
 import UIKit
+import FirebaseAuth
+import Firebase
 
 final class SettingViewController: UIViewController {
     //MARK: - Private Property
@@ -88,6 +90,10 @@ final class SettingViewController: UIViewController {
         
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        navigationController?.navigationBar.isHidden = true
+    }
+    
     //MARK: - Private methods
     //скрывает клавиатуру по нажатию на внешнюю область
     private func addTapGestureToHideKeyboard() {
@@ -109,8 +115,8 @@ final class SettingViewController: UIViewController {
         currentGender = gender
         
         if let index = genders.firstIndex(of: gender) {
-                genderSelection.selectRow(index, inComponent: 0, animated: false)
-            }
+            genderSelection.selectRow(index, inComponent: 0, animated: false)
+        }
         
     }
     
@@ -135,7 +141,8 @@ final class SettingViewController: UIViewController {
     
     private func setupLogoutButton() {
         logoutButton.setImage(UIImage(systemName: "rectangle.portrait.and.arrow.right"), for: .normal)
-        logoutButton.tintColor = .blue
+        logoutButton.tintColor = .black
+        logoutButton.addTarget(self, action: #selector(tapLogoutButton), for: .touchUpInside)
         
     }
     
@@ -167,6 +174,17 @@ final class SettingViewController: UIViewController {
         present(vc, animated: true)
         print("button edit tapped")
     }
+    
+    @objc func tapLogoutButton() {
+        print("Logout button tapped")
+        do {
+            try Auth.auth().signOut()
+            navigationController?.pushViewController(LoginViewController(), animated: true)
+            print("LogOut")
+        } catch let error {
+            print("\(error.localizedDescription)")
+        }
+    }
 }
 
 private extension SettingViewController {
@@ -196,7 +214,7 @@ private extension SettingViewController {
     func setupLayout() {
         NSLayoutConstraint.activate([
             
-            navigation.topAnchor.constraint(equalTo: view.topAnchor, constant: 80),
+            navigation.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             navigation.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             navigation.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             navigation.heightAnchor.constraint(equalToConstant: 80),
