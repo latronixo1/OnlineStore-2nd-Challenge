@@ -16,6 +16,20 @@ class HomeViewController: UIViewController {
     private var sortedPopularItems: [Product] = []
     private var favoriteItems: [Product] = []
     private var makeImageForCategory: [String: [String]] = [:]
+    private let finderBar = SearchView()
+    private let labelShop = UILabel.makeLabel(text: "Shop", font: .systemFont(ofSize: 20, weight: .black), textColor: .black)
+    private let labelDelivery = UILabel.makeLabel(text: "Delivery address", font: .systemFont(ofSize: 14, weight: .light), textColor: .systemGray)
+    private let labelAdress = UILabel.makeLabel(text: "Salatiga City, Central Java", font: .systemFont(ofSize: 16, weight: .regular), textColor: .black)
+    
+    lazy var basketButton: UIButton = {
+        let button = UIButton()
+        button.setImage(UIImage(named: "cart"), for: .normal)
+        button.tintColor = .black
+        button.imageView?.contentMode = .scaleAspectFit
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.isUserInteractionEnabled = true
+        return button
+    }()
     
     private let favoriteManager = FavoriteManager.shared
     
@@ -30,7 +44,18 @@ class HomeViewController: UIViewController {
         setupCollectionViews()
         makeProduct()
         setupNavigation()
+        setupView()
+        setupLayout()
         chekCart()
+    }
+    
+    private func setupView() {
+        view.addSubview(labelShop)
+        view.addSubview(finderBar.view)
+        view.addSubview(labelDelivery)
+        view.addSubview(labelAdress)
+        view.addSubview(basketButton)
+        basketButton.addTarget(self, action: #selector(basketButtonTapped), for: .touchUpInside)
     }
     
     private func setupCollectionViews() {
@@ -40,7 +65,6 @@ class HomeViewController: UIViewController {
         mainView.popularCollectionView.dataSource = self
     }
     private func setupNavigation() {
-        mainView.basketButton.addTarget(self, action: #selector(basketButtonTapped), for: .touchUpInside)
         mainView.categoryButton.addTarget(self, action: #selector(categoriesButtonTapped), for: .touchUpInside)
         mainView.popularButton.addTarget(self, action: #selector(searchAndPopularButton), for: .touchUpInside)
         mainView.searchButton.addTarget(self, action: #selector(searchAndPopularButton), for: .touchUpInside)
@@ -59,7 +83,36 @@ class HomeViewController: UIViewController {
             mainView.notificationLabel.text = "\(cart.count)"
             mainView.notificationLabel.textColor = .white
         }
+    }
+    
+    private func setupLayout() {
+        labelShop.translatesAutoresizingMaskIntoConstraints = false
+        finderBar.view.translatesAutoresizingMaskIntoConstraints = false
+        labelDelivery.translatesAutoresizingMaskIntoConstraints = false
+        labelAdress.translatesAutoresizingMaskIntoConstraints = false
+        basketButton.translatesAutoresizingMaskIntoConstraints = false
         
+        NSLayoutConstraint.activate([
+            
+            labelDelivery.topAnchor.constraint(equalTo: view.topAnchor, constant: 80),
+            labelDelivery.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            
+            labelAdress.topAnchor.constraint(equalTo: labelDelivery.bottomAnchor, constant: 4),
+            labelAdress.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            
+            basketButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            basketButton.centerYAnchor.constraint(equalTo: labelAdress.centerYAnchor),
+            basketButton.heightAnchor.constraint(equalToConstant: 32),
+            basketButton.widthAnchor.constraint(equalToConstant: 32),
+            
+            labelShop.centerYAnchor.constraint(equalTo: finderBar.view.centerYAnchor),
+            labelShop.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 12),
+            
+            finderBar.view.topAnchor.constraint(equalTo: basketButton.bottomAnchor, constant: 12),
+            finderBar.view.leadingAnchor.constraint(equalTo: labelShop.trailingAnchor, constant: 8),
+            finderBar.view.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            finderBar.view.heightAnchor.constraint(equalToConstant: 44),
+        ])
     }
     
     //MARK: FETCH_PRODUCTS
@@ -127,7 +180,7 @@ class HomeViewController: UIViewController {
         tapBar.selectedIndex = 2
     }
     @objc func searchAndPopularButton() {
-        let vc = WishlistViewController() //заменить на экран поиска
+        let vc = FinderViewController() //заменить на экран поиска
         navigationController?.pushViewController(vc, animated: true)
     }
 }
