@@ -29,24 +29,24 @@ final class SettingViewController: UIViewController {
         textColor: .white,
         fontSize: .big
     )
-    private let infoLabelName = UILabel.makeLabel(text: "Имя не может быть пустым", font: .systemFont(ofSize: 14, weight: .regular), textColor: .red)
-    private let infoLabelEmail = UILabel.makeLabel(text: "Email не может быть пустым", font: .systemFont(ofSize: 14, weight: .regular), textColor: .red)
-    private let infoLabelPassword = UILabel.makeLabel(text: "Пароль не может быть пустым", font: .systemFont(ofSize: 14, weight: .regular), textColor: .red)
-    private let genderLabel = UILabel.makeLabel(text: "Выберите пол", font: .systemFont(ofSize: 17, weight: .regular), textColor: .black)
+    private let infoLabelName = UILabel.makeLabel(text: "Имя не может быть пустым", font: .systemFont(ofSize: 14, weight: .regular), textColor: .red, numberOfLines: 1)
+    private let infoLabelEmail = UILabel.makeLabel(text: "Email не может быть пустым", font: .systemFont(ofSize: 14, weight: .regular), textColor: .red, numberOfLines: 1)
+    private let infoLabelPassword = UILabel.makeLabel(text: "Пароль не может быть пустым", font: .systemFont(ofSize: 14, weight: .regular), textColor: .red, numberOfLines: 1)
+    private let genderLabel = UILabel.makeLabel(text: "Выберите пол", font: .systemFont(ofSize: 17, weight: .regular), textColor: .black, numberOfLines: 1)
     private let navigation = UINavigationBar()
     private let titleOfLabel = UILabel.makeLabel(
         text: "Settings",
         font: .systemFont(ofSize: 28, weight: .bold),
-        textColor: .black
+        textColor: .black, numberOfLines: 1
     )
     private let subTitleOfLabel = UILabel.makeLabel(
         text: "Your Profile",
         font: .systemFont(ofSize: 16, weight: .medium),
-        textColor: .black
+        textColor: .black, numberOfLines: 1
     )
     
     private let logoutButton = UIButton()
-    private let genders: [String] = ["Man", "Women"]
+    private let genders: [String] = ["Mуж.", "Жен."]
     private var currentGender = String()
     private let genderSelection = UIPickerView()
     
@@ -70,7 +70,6 @@ final class SettingViewController: UIViewController {
             email: user?.email ?? "ivan@mail",
             password: user?.password ?? "1234",
             gender: user?.gender ?? "пол не определен"
-            
         )
         
         nameTextField.delegate = self

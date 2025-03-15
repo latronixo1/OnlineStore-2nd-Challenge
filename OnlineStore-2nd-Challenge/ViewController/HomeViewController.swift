@@ -17,9 +17,9 @@ class HomeViewController: UIViewController {
     private var favoriteItems: [Product] = []
     private var makeImageForCategory: [String: [String]] = [:]
     private let finderBar = SearchView()
-    private let labelShop = UILabel.makeLabel(text: "Shop", font: .systemFont(ofSize: 20, weight: .black), textColor: .black)
-    private let labelDelivery = UILabel.makeLabel(text: "Delivery address", font: .systemFont(ofSize: 14, weight: .light), textColor: .systemGray)
-    private let labelAdress = UILabel.makeLabel(text: "Salatiga City, Central Java", font: .systemFont(ofSize: 16, weight: .regular), textColor: .black)
+    private let labelShop = UILabel.makeLabel(text: "Shop", font: .systemFont(ofSize: 20, weight: .black), textColor: .black, numberOfLines: 1)
+    private let labelDelivery = UILabel.makeLabel(text: "Delivery address", font: .systemFont(ofSize: 14, weight: .light), textColor: .systemGray, numberOfLines: 1)
+    private let labelAdress = UILabel.makeLabel(text: "Salatiga City, Central Java", font: .systemFont(ofSize: 16, weight: .regular), textColor: .black, numberOfLines: 1)
     
     lazy var basketButton: UIButton = {
         let button = UIButton()

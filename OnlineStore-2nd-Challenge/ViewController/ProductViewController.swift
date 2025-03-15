@@ -12,9 +12,9 @@ final class ProductViewController: UIViewController {
     var product: Product
     var favoriteManager = FavoriteManager.shared
     
-    private let priceLabel = UILabel.makeLabel(text: "17", font: UIFont.systemFont(ofSize: 26, weight: .bold), textColor: .black)
-    private let descriptionLabel = UILabel.makeLabel(text: "descriptionLabel", font: UIFont.systemFont(ofSize: 15, weight: .regular), textColor: .black)
-    private let variationsLabel = UILabel.makeLabel(text: "Variations", font: UIFont.systemFont(ofSize: 20, weight: .bold), textColor: .black)
+    private let priceLabel = UILabel.makeLabel(text: "17", font: UIFont.systemFont(ofSize: 26, weight: .bold), textColor: .black, numberOfLines: 1)
+    private let descriptionLabel = UILabel.makeLabel(text: "descriptionLabel", font: UIFont.systemFont(ofSize: 15, weight: .regular), textColor: .black, numberOfLines: 2)
+    private let variationsLabel = UILabel.makeLabel(text: "Variations", font: UIFont.systemFont(ofSize: 20, weight: .bold), textColor: .black, numberOfLines: 1)
     
     private let buttonLike = UIButton()
     private let buttonBuy = CustomButton(title: "Buy now", backgroundColor: .blue, textColor: .white, fontSize: .big)
@@ -40,6 +40,46 @@ final class ProductViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .white
         setup()
+        addTarget()
+        setupNavBar()
+        priceLabel.text = product.price.formatted()
+        descriptionLabel.text = product.description
+       
+        if let imageURL = URL(string: product.image) {
+            URLSession.shared.dataTask(with: imageURL) { data, response, error in
+                if let data = data, let image = UIImage(data: data) {
+                    DispatchQueue.main.async {
+                        self.mainImage.image = image
+                        self.imageVariations1.image = image
+                        self.imageVariations2.image = image
+                        self.imageVariations3.image = image
+                    }
+                }
+            }.resume()
+        }
+        
+    }
+    private func setupNavBar() {
+        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "arrow.backward"), style: .plain, target: self, action: #selector(tapBackButton))
+    }
+    
+    @objc func tapBackButton() {
+        print("back button tap")
+        navigationController?.popToRootViewController(animated: true)
+    }
+//    override func viewWillAppear(_ animated: Bool) {
+//        super.viewWillAppear(animated)
+//        navigationController?.navigationBar.isHidden = true
+//    }
+    
+    private func addTarget() {
+        buttonBuy.addTarget(self, action: #selector(tapAddCard), for: .touchUpInside)
+        buttonAddCart.addTarget(self, action: #selector(tapAddCard), for: .touchUpInside)
+    }
+    
+    @objc func tapAddCard() {
+        favoriteManager.addToCart(product: product)
+        print("product add to cart")
     }
 }
 
@@ -89,7 +129,7 @@ private extension ProductViewController {
 private extension ProductViewController {
     private func setupLayout() {
         NSLayoutConstraint.activate([
-            mainImage.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            mainImage.topAnchor.constraint(equalTo: view.topAnchor),
             mainImage.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             mainImage.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             
