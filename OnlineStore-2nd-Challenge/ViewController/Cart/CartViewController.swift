@@ -1,14 +1,8 @@
-//
-//  CartViewController.swift
-//  OnlineStore-2nd-Challenge
-//
-//  Created by vp.off on 04.03.2025.
-//
-
 import UIKit
 
 final class CartViewController: UIViewController {
     
+
     private var cartItems: [Product] = FavoriteManager.shared.loadCartProducts()
 //    var cartItems: [CartItem] = [
 //        CartItem(imageName: "blousePink", title: "Fitted cotton blouse with short sleeves and high waist", price: "$17,00", quantity: 2),
@@ -17,19 +11,19 @@ final class CartViewController: UIViewController {
     
     private let favoriteManager = FavoriteManager.shared
     var sum = 0.00
+
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.text = "Cart"
         label.textColor = .black
-        label.font = UIFont.systemFont(ofSize: 28, weight: .bold)
+        label.font = UIFont.systemFont(ofSize: 24, weight: .bold)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
-    private let badgeLabel: UILabel = {
+     let badgeLabel: UILabel = {
         let label = UILabel()
         label.backgroundColor = UIColor(red: 229/255, green: 235/255, blue: 252/255, alpha: 1.0)
-        label.text = "2"
         label.textAlignment = .center
         label.textColor = .black
         label.layer.cornerRadius = 15
@@ -39,12 +33,11 @@ final class CartViewController: UIViewController {
         return label
     }()
     
-    private let addressImageView: UIImageView = {
-        let imageView = UIImageView(image: UIImage(named: "mockaddress"))
-        imageView.contentMode = .scaleAspectFit
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        return imageView
-    }()
+     var badgeQuantity: Int = 1 {
+        didSet {
+            badgeLabel.text = "\(badgeQuantity)"
+        }
+    }
     
     private let tableView: UITableView = {
         let tableView = UITableView()
@@ -56,7 +49,7 @@ final class CartViewController: UIViewController {
     
     private let bottomView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor(red: 245/255, green: 245/255, blue: 245/255, alpha: 1.0)
+        view.backgroundColor = UIColor(white: 0.95, alpha: 1.0)
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
@@ -88,13 +81,13 @@ final class CartViewController: UIViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
         setupTableView()
         setupUI()
-        
+
         DispatchQueue.main.async {
             self.reloadCartProducts()
             self.totalSum()
@@ -106,6 +99,7 @@ final class CartViewController: UIViewController {
     func reloadCartProducts() {
         cartItems = favoriteManager.cartArray
         print("добавленные товары \(cartItems.count)")
+        updateTotalAmount()
     }
     
     private func setupTableView() {
@@ -124,7 +118,6 @@ final class CartViewController: UIViewController {
     private func setupUI() {
         view.addSubview(titleLabel)
         view.addSubview(badgeLabel)
-        view.addSubview(addressImageView)
         view.addSubview(tableView)
         view.addSubview(bottomView)
         bottomView.addSubview(totalLabel)
@@ -142,16 +135,11 @@ final class CartViewController: UIViewController {
             badgeLabel.widthAnchor.constraint(equalToConstant: 30),
             badgeLabel.heightAnchor.constraint(equalToConstant: 30),
             
-            addressImageView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 15),
-            addressImageView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            addressImageView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            addressImageView.heightAnchor.constraint(equalToConstant: 100),
-            
-            tableView.topAnchor.constraint(equalTo: addressImageView.bottomAnchor, constant: 10),
+            tableView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 20),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor,constant: -20),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             tableView.bottomAnchor.constraint(equalTo: bottomView.topAnchor, constant: -10),
-
+            
             bottomView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             bottomView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             bottomView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
@@ -172,42 +160,34 @@ final class CartViewController: UIViewController {
     
     @objc func checkoutButtonTapped() {
         let paymentVC = PaymentViewController(cartItems)
-        self.navigationController?.pushViewController(paymentVC, animated: true)
+        navigationController?.pushViewController(paymentVC, animated: true)
     }
-
+    
+    private func updateTotalAmount() {
+        let total = cartItems.reduce(0.0) { result, item in
+            let price = Double(item.price.replacingOccurrences(of: "$", with: "")) ?? 0.0
+            return result + (price * Double(item.quantity))
+        }
+        amountLabel.text = String(format: "$%.2f", total)
+        badgeLabel.text = "\(cartItems.reduce(0) { $0 + $1.quantity })"
+    }
 }
 
 // MARK: - UITableViewDataSource, UITableViewDelegate
 extension CartViewController: UITableViewDelegate, UITableViewDataSource {
-    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         cartItems.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "CartCell", for: indexPath) as? CartCell else {
-            return UITableViewCell()
-        }
-        let item = cartItems[indexPath.row]
-        cell.selectionStyle = .none
-        cell.configure(with: item)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "CartCell", for: indexPath) as! CartCell
+        cell.configure(with: cartItems[indexPath.row])
         return cell
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 109
     }
-    
-    func didTapIncreaseButton(on cell: CartCell) {
-        print("Increase button tapped")
-    }
-
-    func didTapDecreaseButton(on cell: CartCell) {
-        print("Decrease button tapped")
-    }
-
-    func didTapDeleteButton(on cell: CartCell) {
-        print("Delete button tapped")
-    }
 }
+
 
