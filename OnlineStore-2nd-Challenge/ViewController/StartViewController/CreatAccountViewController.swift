@@ -31,7 +31,16 @@ class CreatAccountViewController: UIViewController {
         mainView.eyeButton.addTarget(self, action: #selector (togglePasswordVisibility), for: .touchUpInside)
         
     }
-    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        tabBarController?.tabBar.isHidden = true
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        tabBarController?.tabBar.isHidden = false
+    }
+
     //MARK: CREATE_USER
     
     @objc func doneButtonTapped() {
@@ -53,6 +62,7 @@ class CreatAccountViewController: UIViewController {
                 UserDefaults.standard.set("\(self.gender)", forKey: UserDefaultsStorageKeys.gender.label)
                 UserDefaults.standard.set("\(self.password)", forKey: UserDefaultsStorageKeys.password.label)
                 self.nextView()
+                
               //self.goToLoginView()
             }
         }
@@ -64,7 +74,7 @@ class CreatAccountViewController: UIViewController {
         navigationController?.popViewController(animated: true)
     }
     func nextView() {
-        let nextVc = LoginViewController()
+        let nextVc = OnboardingViewController()
         navigationController?.pushViewController(nextVc, animated: true)
     }
     

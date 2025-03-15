@@ -185,7 +185,25 @@ class HomeViewController: UIViewController {
     }
 }
 
-extension HomeViewController: UICollectionViewDelegate {}
+extension HomeViewController: UICollectionViewDelegate {
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        switch collectionView {
+        case mainView.categoryCollectionView:
+            print("выбран товар ")
+        case mainView.popularCollectionView:
+            print("выбран товар ")
+            let product = sortedPopularItems[indexPath.row]
+            
+            let VC = ProductViewController(product: product)
+            navigationController?.pushViewController(VC, animated: true)
+        default:
+            print("")
+        }
+        
+    }
+    
+}
 
 //MARK: UICollectionViewDataSource
 

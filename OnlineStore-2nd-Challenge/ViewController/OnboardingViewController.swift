@@ -16,7 +16,16 @@ class OnboardingViewController: UIViewController {
         ("onbording3", "Easy Checkout", "Add to cart, choose payment, and order in seconds."),
         ("onbording4", "Manage Your Store", "Become a manager, add products, and control your catalog!")
     ]
-    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        tabBarController?.tabBar.isHidden = true
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        tabBarController?.tabBar.isHidden = false
+    }
+
     private lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal

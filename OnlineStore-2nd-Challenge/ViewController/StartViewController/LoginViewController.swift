@@ -27,6 +27,17 @@ class LoginViewController: UIViewController {
         mainView.loginButton.addTarget(self, action: #selector(loginButtonTapped), for: .touchUpInside)
         mainView.eyeButton.addTarget(self, action: #selector(togglePasswordVisibility), for: .touchUpInside)
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        tabBarController?.tabBar.isHidden = true
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        tabBarController?.tabBar.isHidden = false
+    }
+
     //MARK: SIGN_IN
     
     @objc func loginButtonTapped() {
@@ -76,7 +87,7 @@ class LoginViewController: UIViewController {
         navigationController?.popViewController(animated: true)
     }
     func goNextView(){
-        navigationController?.pushViewController(OnboardingViewController(), animated: true)
+        navigationController?.pushViewController(HomeViewController(), animated: true)
     }
     //MARK: VISABLE_PASS
 
