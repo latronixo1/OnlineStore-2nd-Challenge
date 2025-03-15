@@ -9,10 +9,12 @@ import UIKit
 
 final class CartViewController: UIViewController {
     
-    var cartItems: [CartItem] = [
-        CartItem(imageName: "blousePink", title: "Fitted cotton blouse with short sleeves and high waist", price: "$17,00", quantity: 2),
-        CartItem(imageName: "dressRed", title: "Strapless Satin Evening Dress with Full Skirt", price: "$25,00", quantity: 1)
-    ]
+    private var cartItems: [Product] = FavoriteManager.shared.loadCartProducts()
+//    var cartItems: [CartItem] = [
+//        CartItem(imageName: "blousePink", title: "Fitted cotton blouse with short sleeves and high waist", price: "$17,00", quantity: 2),
+//        CartItem(imageName: "dressRed", title: "Strapless Satin Evening Dress with Full Skirt", price: "$25,00", quantity: 1)
+//    ]
+    private let favoriteManager = FavoriteManager.shared
     
     private let titleLabel: UILabel = {
         let label = UILabel()
@@ -91,6 +93,16 @@ final class CartViewController: UIViewController {
         view.backgroundColor = .white
         setupTableView()
         setupUI()
+        
+        DispatchQueue.main.async {
+            self.reloadCartProducts()
+            self.tableView.reloadData()
+        }
+    }
+    
+    func reloadCartProducts() {
+        cartItems = favoriteManager.cartArray
+        print("добавленные товары \(cartItems.count)")
     }
     
     private func setupTableView() {
@@ -149,8 +161,8 @@ final class CartViewController: UIViewController {
     }
     
     @objc func checkoutButtonTapped() {
-        let paymentVC = PaymentViewController(cartItems)
-        self.navigationController?.pushViewController(paymentVC, animated: true)
+//        let paymentVC = PaymentViewController(cartItems)
+//        self.navigationController?.pushViewController(paymentVC, animated: true)
     }
 
 }
@@ -159,7 +171,7 @@ final class CartViewController: UIViewController {
 extension CartViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return cartItems.count
+        cartItems.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

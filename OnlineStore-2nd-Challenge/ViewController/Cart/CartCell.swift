@@ -168,10 +168,16 @@ final class CartCell: UITableViewCell {
         delegate?.didTapDeleteButton(on: self)
     }
     
-    func configure(with item: CartItem) {
-        productImageView.image = UIImage(named: item.imageName)
+//    func configure(with item: CartItem) {
+//        productImageView.image = UIImage(named: item.imageName)
+//        titleLabel.text = item.title
+//        priceLabel.text = item.price
+//    }
+    
+    func configure(with item: Product) {
+        productImageView.image = UIImage(named: item.image)
         titleLabel.text = item.title
-        priceLabel.text = item.price
+        priceLabel.text = item.price.formatted()
     }
     
     required init?(coder: NSCoder) {

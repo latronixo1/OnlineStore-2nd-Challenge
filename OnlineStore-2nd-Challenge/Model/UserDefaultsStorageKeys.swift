@@ -161,6 +161,16 @@ final class FavoriteManager {
         }
     }
     
+    var cartArray: [Product] {
+        get {
+            return cartProduct
+        }
+        set {
+            cartProduct = newValue
+            saveCardProduct()
+        }
+    }
+    
     private init() {
         //loadFavoriteProducts()
     }
@@ -184,7 +194,7 @@ final class FavoriteManager {
     
     func addToCart(product: Product) {
         guard !isSelected(product: product) else { return}
-        favoriteProduct.append(product)
+        cartProduct.append(product)
         saveCardProduct()
     }
     
@@ -216,17 +226,22 @@ final class FavoriteManager {
         }
     }
     
-    private func loadCartProducts() {
-        guard let savedData = defaults.data(forKey: cartKey.rawValue) else {
-            print("Нет сохраненных избранных товаров")
-            return }
-        
-        do {
-            cartProduct = try JSONDecoder().decode([Product].self, from: savedData)
-            print("Избранные товары загружены: \(favoriteProduct.count)")
-        } catch {
-            print("Ошибка загрузки избранных товаров: \(error)")
+    func loadCartProducts() -> [Product]{
+        if let addToCardProducts = UserDefaults.standard.data(forKey: cartKey.rawValue),
+           let products = try? JSONDecoder().decode([Product].self, from: addToCardProducts) {
+            return products
         }
+        return []
+//        guard let savedData = defaults.data(forKey: cartKey.rawValue) else {
+//            print("Нет сохраненных избранных товаров")
+//            return }
+//        
+//        do {
+//            cartProduct = try JSONDecoder().decode([Product].self, from: savedData)
+//            print("Избранные товары загружены: \(favoriteProduct.count)")
+//        } catch {
+//            print("Ошибка загрузки избранных товаров: \(error)")
+//        }
     }
     
     
