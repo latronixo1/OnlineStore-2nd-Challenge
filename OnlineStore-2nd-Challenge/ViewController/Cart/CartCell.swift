@@ -168,16 +168,23 @@ final class CartCell: UITableViewCell {
         delegate?.didTapDeleteButton(on: self)
     }
     
-//    func configure(with item: CartItem) {
-//        productImageView.image = UIImage(named: item.imageName)
-//        titleLabel.text = item.title
-//        priceLabel.text = item.price
-//    }
-    
     func configure(with item: Product) {
-        productImageView.image = UIImage(named: item.image)
         titleLabel.text = item.title
         priceLabel.text = item.price.formatted()
+        sizeLabel.text = item.category
+        if let imageURL = URL(string: item.image) {
+            NetworkService.shared.fetchImage(from: imageURL.absoluteString) { result in
+                DispatchQueue.main.async {
+                    switch result {
+                    case .success(let image):
+                        self.productImageView.image = image
+                    case .failure(let error):
+                        print("Ошибка загрузки изображения: \(error.localizedDescription)")
+                        self.productImageView.image = UIImage(systemName: "xmark.circle")
+                    }
+                }
+            }
+        }
     }
     
     required init?(coder: NSCoder) {

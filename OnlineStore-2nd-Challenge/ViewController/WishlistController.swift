@@ -33,11 +33,25 @@ final class WishlistViewController: UIViewController {
             self.reloadFavorite()
             self.collectionView.reloadData()
         }
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(handleFavoriteUpdate), name: Notification.Name("DidUpdateFavorites"), object: nil)
+            
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        reloadFavorite()
         collectionView.reloadData()
+    }
+    
+    @objc func handleFavoriteUpdate() {
+        reloadFavorite()
+        collectionView.reloadData()
+    }
+
+    deinit {
+        // Отписываемся от уведомления при деинициализации
+        NotificationCenter.default.removeObserver(self, name: Notification.Name("DidUpdateFavorites"), object: nil)
     }
     
     func reloadFavorite() {

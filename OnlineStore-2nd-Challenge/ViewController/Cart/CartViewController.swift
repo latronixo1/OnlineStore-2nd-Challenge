@@ -14,8 +14,9 @@ final class CartViewController: UIViewController {
 //        CartItem(imageName: "blousePink", title: "Fitted cotton blouse with short sleeves and high waist", price: "$17,00", quantity: 2),
 //        CartItem(imageName: "dressRed", title: "Strapless Satin Evening Dress with Full Skirt", price: "$25,00", quantity: 1)
 //    ]
-    private let favoriteManager = FavoriteManager.shared
     
+    private let favoriteManager = FavoriteManager.shared
+    var sum = 0.00
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.text = "Cart"
@@ -69,9 +70,9 @@ final class CartViewController: UIViewController {
         return label
     }()
     
-    private let amountLabel: UILabel = {
+     var amountLabel: UILabel = {
         let label = UILabel()
-        label.text = "$34,00"
+        label.text = "n"
         label.textColor = .black
         label.font = UIFont.systemFont(ofSize: 18)
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -96,8 +97,10 @@ final class CartViewController: UIViewController {
         
         DispatchQueue.main.async {
             self.reloadCartProducts()
+            self.totalSum()
             self.tableView.reloadData()
         }
+        
     }
     
     func reloadCartProducts() {
@@ -109,6 +112,13 @@ final class CartViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(CartCell.self, forCellReuseIdentifier: "CartCell")
+    }
+    
+    func totalSum() {
+        sum = Double(cartItems.reduce(0.00) { partialResult, nextValue in
+            return partialResult + nextValue.price
+        })
+        amountLabel.text = sum.formatted()
     }
     
     private func setupUI() {
@@ -161,8 +171,8 @@ final class CartViewController: UIViewController {
     }
     
     @objc func checkoutButtonTapped() {
-//        let paymentVC = PaymentViewController(cartItems)
-//        self.navigationController?.pushViewController(paymentVC, animated: true)
+        let paymentVC = PaymentViewController(cartItems)
+        self.navigationController?.pushViewController(paymentVC, animated: true)
     }
 
 }
