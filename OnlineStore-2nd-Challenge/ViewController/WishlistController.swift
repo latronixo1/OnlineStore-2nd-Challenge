@@ -35,10 +35,14 @@ final class WishlistViewController: UIViewController {
         }
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        collectionView.reloadData()
+    }
+    
     func reloadFavorite() {
         product = favoriteManager.favoriteArray
         print("Обновление избранных товаров, найдено: \(product.count)")
-        
     }
     
     func setupNavigationBar() {

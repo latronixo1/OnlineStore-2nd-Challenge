@@ -43,12 +43,12 @@ final class FinderViewController: UIViewController, SearchViewDelegate, UITextFi
         setupLayout()
         collectionView.reloadData()
         loadImages(for: productsArray)
-        
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         finderView.searchField.text = currentText
+        collectionView.reloadData()
     }
     
     // MARK: - Setup Methods
