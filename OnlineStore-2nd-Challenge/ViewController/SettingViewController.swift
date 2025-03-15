@@ -178,7 +178,7 @@ final class SettingViewController: UIViewController {
         print("Logout button tapped")
         do {
             try Auth.auth().signOut()
-            navigationController?.pushViewController(LoginViewController(), animated: true)
+            navigationController?.pushViewController(StartViewController(), animated: true)
             print("LogOut")
         } catch let error {
             print("\(error.localizedDescription)")

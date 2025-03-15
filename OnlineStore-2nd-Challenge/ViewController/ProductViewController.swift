@@ -101,6 +101,8 @@ final class ProductViewController: UIViewController {
         isSelect.toggle()
         print("Like tapped")
     }
+    
+    
 }
 
 
@@ -162,21 +164,21 @@ private extension ProductViewController {
             priceLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             priceLabel.heightAnchor.constraint(equalToConstant: 31),
             
-            descriptionLabel.topAnchor.constraint(equalTo: priceLabel.bottomAnchor, constant: 14),
+            descriptionLabel.topAnchor.constraint(equalTo: priceLabel.bottomAnchor, constant: 5),
             descriptionLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             descriptionLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            descriptionLabel.heightAnchor.constraint(equalToConstant: 40),
+            descriptionLabel.heightAnchor.constraint(equalToConstant: 30),
             
-            variationsLabel.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 20),
+            variationsLabel.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 5),
             variationsLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             variationsLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             variationsLabel.heightAnchor.constraint(equalToConstant: 26),
             
-            stackForImage.topAnchor.constraint(equalTo: variationsLabel.bottomAnchor, constant: 12),
+            stackForImage.topAnchor.constraint(equalTo: variationsLabel.bottomAnchor, constant: 4),
             stackForImage.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             
-            stackForButton.topAnchor.constraint(equalTo: stackForImage.bottomAnchor, constant: 40),
             stackForButton.heightAnchor.constraint(equalToConstant: 40),
+            stackForButton.topAnchor.constraint(equalTo: stackForImage.bottomAnchor, constant: 20),
             stackForButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             stackForButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             
