@@ -17,6 +17,7 @@ final class SearchView: UIViewController, UISearchBarDelegate {
     private let productURLString = "https://fakestoreapi.com/products"
     let searchBar = UISearchBar()
     private var productsArray: [Product] = []
+    private var imageArray: [UIImageView] = []
     private var productsModel: [Product]?
     private let networkManager = NetworkService.shared
     var delegate: SearchViewDelegate?
@@ -47,11 +48,12 @@ final class SearchView: UIViewController, UISearchBarDelegate {
     //MARK: - Private Methods
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         if let searchTerm = searchBar.text, !searchTerm.isEmpty {
-            loadArticle(searchTerm)
+            loadProducts(searchTerm)
+            
         }
     }
     
-    private func loadArticle(_ text: String) {
+    private func loadProducts(_ text: String) {
         networkManager.fetchProducts(from: productURLString) { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
@@ -61,6 +63,7 @@ final class SearchView: UIViewController, UISearchBarDelegate {
                     self?.productsArray = products
                     self?.filterContextForSearchText(text)
                     self?.presentSearchScreen()
+                    
                 case .failure(let error):
                     print(error.localizedDescription)
                     print("Ошибка загрузки: \(error.localizedDescription)")
@@ -68,6 +71,7 @@ final class SearchView: UIViewController, UISearchBarDelegate {
             }
         }
     }
+    
     
     func setupSearchController() {
         searchController.searchResultsUpdater = self
@@ -132,11 +136,18 @@ final class SearchView: UIViewController, UISearchBarDelegate {
         print("\(searchText)")
         
         if !filteredProducts.isEmpty {
-            let searchResultVC = FinderViewController()
-            searchResultVC.productsArray = filteredProducts
-            searchResultVC.currentText = searchText 
-            searchResultVC.modalPresentationStyle = .overFullScreen
-            present(searchResultVC, animated: true, completion: nil)
+            let finderVC = FinderViewController()
+            finderVC.productsArray = filteredProducts
+            finderVC.currentText = searchText
+            let navController = UINavigationController(rootViewController: finderVC)
+            navController.sheetPresentationController?.prefersGrabberVisible = true
+            present(navController, animated: true, completion: nil)
+            
+//            let searchResultVC = FinderViewController()
+//            searchResultVC.productsArray = filteredProducts
+//            searchResultVC.currentText = searchText 
+//            searchResultVC.modalPresentationStyle = .pageSheet
+//            present(searchResultVC, animated: true, completion: nil)
         } else {
             print("No products found for search term: \(searchText)")
         }

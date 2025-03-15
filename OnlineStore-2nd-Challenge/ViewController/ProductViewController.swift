@@ -12,11 +12,12 @@ final class ProductViewController: UIViewController {
     var product: Product
     var favoriteManager = FavoriteManager.shared
     
-    private let priceLabel = UILabel.makeLabel(text: "17", font: UIFont.systemFont(ofSize: 26, weight: .bold), textColor: .black)
-    private let descriptionLabel = UILabel.makeLabel(text: "descriptionLabel", font: UIFont.systemFont(ofSize: 15, weight: .regular), textColor: .black)
-    private let variationsLabel = UILabel.makeLabel(text: "Variations", font: UIFont.systemFont(ofSize: 20, weight: .bold), textColor: .black)
+    private let priceLabel = UILabel.makeLabel(text: "17", font: UIFont.systemFont(ofSize: 26, weight: .bold), textColor: .black, numberOfLines: 1)
+    private let descriptionLabel = UILabel.makeLabel(text: "descriptionLabel", font: UIFont.systemFont(ofSize: 15, weight: .regular), textColor: .black, numberOfLines: 2)
+    private let variationsLabel = UILabel.makeLabel(text: "Variations", font: UIFont.systemFont(ofSize: 20, weight: .bold), textColor: .black, numberOfLines: 1)
     
     private let buttonLike = UIButton()
+    var isSelect: Bool = true
     private let buttonBuy = CustomButton(title: "Buy now", backgroundColor: .blue, textColor: .white, fontSize: .big)
     private let buttonAddCart = CustomButton(title: "Add to cart", backgroundColor: .black, textColor: .white, fontSize: .big)
     private let stackForButton = UIStackView()
@@ -26,6 +27,7 @@ final class ProductViewController: UIViewController {
     private let imageVariations2 = UIImageView.makeImage(named: "Image", cornerRadius: 4, heightAnchor: 75, widthAnchor: 75, border: false, shadow: false)
     private let imageVariations3 = UIImageView.makeImage(named: "Image", cornerRadius: 4, heightAnchor: 75, widthAnchor: 75, border: false, shadow: false)
     private let stackForImage = UIStackView()
+    var currentProduct: Product?
     
     init(product: Product) {
         self.product = product
@@ -40,6 +42,64 @@ final class ProductViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .white
         setup()
+        addTarget()
+        setupNavBar()
+        priceLabel.text = product.price.formatted()
+        descriptionLabel.text = product.description
+        currentProduct = product
+        
+        isSelect = favoriteManager.isFavorite(product: currentProduct ?? product)
+        buttonLike.setImage(UIImage(resource: isSelect ? .heartFill : .heart), for: .normal)
+        
+        if let imageURL = URL(string: product.image) {
+            URLSession.shared.dataTask(with: imageURL) { data, response, error in
+                if let data = data, let image = UIImage(data: data) {
+                    DispatchQueue.main.async {
+                        self.mainImage.image = image
+                        self.imageVariations1.image = image
+                        self.imageVariations2.image = image
+                        self.imageVariations3.image = image
+                    }
+                }
+            }.resume()
+        }
+        
+    }
+    private func setupNavBar() {
+        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "arrow.backward"), style: .plain, target: self, action: #selector(tapBackButton))
+    }
+    
+    @objc func tapBackButton() {
+        print("back button tap")
+        navigationController?.popToRootViewController(animated: true)
+    }
+//    override func viewWillAppear(_ animated: Bool) {
+//        super.viewWillAppear(animated)
+//        navigationController?.navigationBar.isHidden = true
+//    }
+    
+    private func addTarget() {
+        buttonBuy.addTarget(self, action: #selector(tapAddCard), for: .touchUpInside)
+        buttonAddCart.addTarget(self, action: #selector(tapAddCard), for: .touchUpInside)
+        buttonLike.addTarget(self, action: #selector(tapButtonLike), for: .touchUpInside)
+    }
+    
+    @objc func tapAddCard() {
+        favoriteManager.addToCart(product: product)
+        print("product add to cart")
+    }
+    
+    @objc func tapButtonLike() {
+        guard let product = currentProduct else {return}
+        if isSelect {
+            buttonLike.setImage(UIImage(resource: .heart), for: .normal)
+            favoriteManager.removeFromFavorite(product: product)
+        } else {
+            buttonLike.setImage(UIImage(resource: .heartFill), for: .normal)
+            favoriteManager.addToFavorite(product: product)
+        }
+        isSelect.toggle()
+        print("Like tapped")
     }
     
     
@@ -56,7 +116,7 @@ private extension ProductViewController {
     }
     
     func addSubviews() {
-        [priceLabel, descriptionLabel, variationsLabel, buttonLike, buttonBuy, buttonAddCart, mainImage, imageVariations1, imageVariations2, imageVariations3, stackForImage, stackForButton].forEach { view.addSubview($0)
+        [priceLabel, descriptionLabel, variationsLabel, buttonLike, buttonBuy, buttonAddCart, mainImage, imageVariations1, imageVariations2, imageVariations3, stackForImage, stackForButton, buttonLike].forEach { view.addSubview($0)
         }
     }
     
@@ -69,11 +129,15 @@ private extension ProductViewController {
     }
     
     func setupStackForButton() {
+        buttonLike.translatesAutoresizingMaskIntoConstraints = false
+        buttonLike.widthAnchor.constraint(equalToConstant: 24).isActive = true
+        buttonLike.heightAnchor.constraint(equalToConstant: 24).isActive = true
+        stackForButton.addArrangedSubview(buttonLike)
         stackForButton.addArrangedSubview(buttonAddCart)
         stackForButton.addArrangedSubview(buttonBuy)
         stackForButton.axis = .horizontal
-        stackForButton.distribution = .fillEqually
-        stackForButton.spacing = 16
+        stackForButton.distribution = .fillProportionally
+        stackForButton.spacing = 8
         stackForButton.translatesAutoresizingMaskIntoConstraints = false
     }
     
@@ -91,7 +155,7 @@ private extension ProductViewController {
 private extension ProductViewController {
     private func setupLayout() {
         NSLayoutConstraint.activate([
-            mainImage.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            mainImage.topAnchor.constraint(equalTo: view.topAnchor),
             mainImage.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             mainImage.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             
@@ -113,6 +177,7 @@ private extension ProductViewController {
             stackForImage.topAnchor.constraint(equalTo: variationsLabel.bottomAnchor, constant: 4),
             stackForImage.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             
+            stackForButton.heightAnchor.constraint(equalToConstant: 40),
             stackForButton.topAnchor.constraint(equalTo: stackForImage.bottomAnchor, constant: 20),
             stackForButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             stackForButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),

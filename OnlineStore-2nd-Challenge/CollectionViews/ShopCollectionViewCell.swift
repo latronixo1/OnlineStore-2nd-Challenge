@@ -14,9 +14,9 @@ final class ShopCollectionViewCell: UICollectionViewCell {
     private let favoriteManager = FavoriteManager.shared
     
     private let viewBg = UIView()
-    private let imageView = UIImageView.makeImage(named: "Image", cornerRadius: 4, heightAnchor: 170, widthAnchor: 160, border: false, shadow: false)
-    private let descriptionLabel = UILabel.makeLabel(text: "Lorem ipsum dolor sit amet consectetur", font: UIFont.systemFont(ofSize: 12, weight: .regular), textColor: .black)
-    private let priceLabel = UILabel.makeLabel(text: "$17,00", font: UIFont.systemFont(ofSize: 17, weight: .bold), textColor: .black)
+    let imageView = UIImageView.makeImage(named: "Image", cornerRadius: 4, heightAnchor: 170, widthAnchor: 160, border: false, shadow: false)
+    private let descriptionLabel = UILabel.makeLabel(text: "Lorem ipsum dolor sit amet consectetur", font: UIFont.systemFont(ofSize: 12, weight: .regular), textColor: .black, numberOfLines: 2)
+    private let priceLabel = UILabel.makeLabel(text: "$17,00", font: UIFont.systemFont(ofSize: 17, weight: .bold), textColor: .black, numberOfLines: 1)
     private let buttonLike = UIButton()
     private let buttonBuy = CustomButton(title: "Add to cart", backgroundColor: .blue, textColor: .white, fontSize: .small)
     var isSelect: Bool = true
@@ -33,12 +33,32 @@ final class ShopCollectionViewCell: UICollectionViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
     func configure(model: Product) {
-        imageView.largeContentImage = UIImage(named: "Image")
+        imageView.image = UIImage(named: model.image)
         descriptionLabel.text = model.description
         priceLabel.text = model.price.formatted()
+        currentProduct = model
+        
+        isSelect = favoriteManager.isFavorite(product: model)
+        buttonLike.setImage(UIImage(resource: isSelect ? .heartFill : .heart), for: .normal)
+        
+        if let imageURL = URL(string: model.image) {
+            NetworkService.shared.fetchImage(from: imageURL.absoluteString) { result in
+                DispatchQueue.main.async {
+                    switch result {
+                    case .success(let image):
+                        self.imageView.image = image
+                    case .failure(let error):
+                        print("Ошибка загрузки изображения: \(error.localizedDescription)")
+                        self.imageView.image = UIImage(systemName: "xmark.circle")
+                    }
+                }
+            }
+        }
     }
 }
+
 
 
 private extension ShopCollectionViewCell {
@@ -53,17 +73,28 @@ private extension ShopCollectionViewCell {
         viewBg.backgroundColor = .white
         setupLayout()
         setupButtonLike()
+        setupButtonAddCard()
+    }
+    
+    func setupButtonAddCard() {
+        buttonBuy.addTarget(self, action: #selector(tapAddCard), for: .touchUpInside)
     }
     
     func setupButtonLike() {
-        buttonLike.setImage(UIImage(resource: .heartFill), for: .normal)
+        //buttonLike.setImage(UIImage(resource: .heartFill), for: .normal)
         buttonLike.widthAnchor.constraint(equalToConstant: 24).isActive = true
         buttonLike.heightAnchor.constraint(equalToConstant: 24).isActive = true
         
-        buttonLike.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
+        buttonLike.addTarget(self, action: #selector(buttonLikeTapped), for: .touchUpInside)
     }
     
-    @objc func buttonTapped() {
+    @objc func tapAddCard() {
+        guard let product = currentProduct else {return}
+        favoriteManager.addToCart(product: product)
+        print("product add to cart")
+    }
+    
+    @objc func buttonLikeTapped() {
         guard let product = currentProduct else {return}
         if isSelect {
             buttonLike.setImage(UIImage(resource: .heart), for: .normal)

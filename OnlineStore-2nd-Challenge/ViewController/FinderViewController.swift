@@ -15,6 +15,7 @@ final class FinderViewController: UIViewController, SearchViewDelegate, UITextFi
     
     private let finderView = FinderView()
     private var searchHistoryModel: SearchHistoryModel
+    private let favoriteManager = FavoriteManager.shared
     private var emptyHistory: [String] = []
     private var selectedItemIndex: Int?
     var productsArray: [Product] = []
@@ -41,12 +42,13 @@ final class FinderViewController: UIViewController, SearchViewDelegate, UITextFi
         
         setupLayout()
         collectionView.reloadData()
-        
+        loadImages(for: productsArray)
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         finderView.searchField.text = currentText
+        collectionView.reloadData()
     }
     
     // MARK: - Setup Methods
@@ -74,6 +76,34 @@ final class FinderViewController: UIViewController, SearchViewDelegate, UITextFi
         finderView.historyCollection.register(HistoryCell.self, forCellWithReuseIdentifier: "HistoryCell")
     }
     
+    private func loadImages(for products: [Product]) {
+        for product in products {
+            guard let imageURL = URL(string: product.image) else {
+                print("Invalid image URL: \(product.image)")
+                continue
+            }
+            
+            NetworkService.shared.fetchImage(from: imageURL.absoluteString) { [weak self] result in
+                DispatchQueue.main.async {
+                    switch result {
+                    case .success(let image):
+                        // Находим индекс продукта
+                        if let index = self?.productsArray.firstIndex(where: { $0.id == product.id }) {
+                            // Обновляем ячейку
+                            let indexPath = IndexPath(item: index, section: 0)
+                            if let cell = self?.collectionView.cellForItem(at: indexPath) as? ShopCollectionViewCell {
+                                cell.imageView.image = image
+                            }
+                        }
+                    case .failure(let error):
+                        print("Ошибка загрузки изображения: \(error.localizedDescription)")
+                    }
+                }
+            }
+        }
+    }
+    
+    
     // MARK: - Private Methods
     
     func saveCurrentText(text: String) {
@@ -88,11 +118,11 @@ final class FinderViewController: UIViewController, SearchViewDelegate, UITextFi
         }
         finderView.searchField.resignFirstResponder()
     }
- 
+    
     func setupLayout() {
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            collectionView.topAnchor.constraint(equalTo: view.topAnchor, constant: 280),
+            collectionView.topAnchor.constraint(equalTo: view.topAnchor, constant: 220),
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
@@ -187,6 +217,7 @@ extension FinderViewController: UICollectionViewDataSource {
                 print("No products found")
             } else {
                 let product = productsArray[indexPath.row]
+                
                 cell.configure(model: product)
             }
             return cell
@@ -196,6 +227,7 @@ extension FinderViewController: UICollectionViewDataSource {
 
 // MARK: - UICollectionViewDelegate
 extension FinderViewController: UICollectionViewDelegate {
+    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if indexPath.item == selectedItemIndex {
             collectionView.deselectItem(at: indexPath, animated: true)
@@ -203,6 +235,16 @@ extension FinderViewController: UICollectionViewDelegate {
             finderView.searchField.text = ""
             return
         }
+        
+        guard !productsArray.isEmpty, indexPath.item < productsArray.count else {
+            print("No products available or invalid index")
+            return
+        }
+        
+        let selectedCell = productsArray[indexPath.item]
+        let productVC = ProductViewController(product: selectedCell)
+        
+        navigationController?.pushViewController(productVC, animated: true)
         
         selectedItemIndex = indexPath.item
         
@@ -220,13 +262,6 @@ extension FinderViewController: UICollectionViewDelegate {
             finderView.searchField.text = selectedText
         } else {
             finderView.searchField.text = currentText
-        }
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
-        if indexPath.item == selectedItemIndex {
-            selectedItemIndex = nil
-            finderView.searchField.text = ""
         }
     }
 }

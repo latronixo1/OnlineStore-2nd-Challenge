@@ -9,33 +9,40 @@ import UIKit
 
 final class WishlistViewController: UIViewController {
     
-    private var product: [Product] = []
+    //private var product: [Product] = []
+    private var product: [Product] = FavoriteManager.shared.loadFavoriteProducts()
     
     private var collectionView: UICollectionView!
     private let reuseIdentifier = "wishlist"
     private let navigation = UINavigationBar()
     private let finderBar = SearchView()
     private let favoriteManager = FavoriteManager.shared
-    private let titleOfLabel = UILabel.makeLabel(text: "Wishlist", font: .systemFont(ofSize: 28, weight: .bold), textColor: .black)
-    private let labelSearch = UILabel.makeLabel(text: "Search", font: .systemFont(ofSize: 16, weight: .regular), textColor: .systemGray)
+    private let titleOfLabel = UILabel.makeLabel(text: "Wishlist", font: .systemFont(ofSize: 28, weight: .bold), textColor: .black, numberOfLines: 1)
+    private let labelSearch = UILabel.makeLabel(text: "Search", font: .systemFont(ofSize: 16, weight: .regular), textColor: .systemGray, numberOfLines: 1)
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
+        
         setupView()
         setupNavigationBar()
         setupFinderView()
         setupLayout()
+        
+        DispatchQueue.main.async {
+            self.reloadFavorite()
+            self.collectionView.reloadData()
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        reloadFavorite()
+        collectionView.reloadData()
     }
     
     func reloadFavorite() {
         product = favoriteManager.favoriteArray
-        collectionView.reloadData()
+        print("Обновление избранных товаров, найдено: \(product.count)")
     }
     
     func setupNavigationBar() {
@@ -98,13 +105,15 @@ private extension WishlistViewController {
 extension WishlistViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        favoriteManager.favoriteArray.count
+         //favoriteManager.favoriteArray.count
+        product.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as? ShopCollectionViewCell else {return UICollectionViewCell()}
         
-        let content = favoriteManager.favoriteArray[indexPath.row]
+       // let content = favoriteManager.favoriteArray[indexPath.row]
+        let content = product[indexPath.row]
         cell.configure(model: content)
         return cell
     }
@@ -130,7 +139,7 @@ private extension WishlistViewController {
         finderBar.view.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            navigation.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            navigation.topAnchor.constraint(equalTo: view.topAnchor, constant: 80),
             navigation.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             navigation.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             navigation.heightAnchor.constraint(equalToConstant: 44),
@@ -147,6 +156,9 @@ private extension WishlistViewController {
             finderBar.view.heightAnchor.constraint(equalToConstant: 40),
             
             collectionView.topAnchor.constraint(equalTo: finderBar.view.bottomAnchor, constant: 10),
+            collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
     }
 }

@@ -111,7 +111,7 @@ final class FinderView: UIView {
         super.init(frame: frame)
         setupUI()
         setupConstraints()
-        setupCloseButton()
+        //setupCloseButton()
         setupActions()
     }
     
@@ -126,7 +126,7 @@ final class FinderView: UIView {
         addSubview(backView)
         backView.addSubview(shopLabel)
         backView.addSubview(searchField)
-        backView.addSubview(closeButton)
+        //backView.addSubview(closeButton)
         backView.addSubview(searchHistoryLabel)
         backView.addSubview(deleteButton)
         backView.addSubview(historyCollection)
@@ -149,12 +149,12 @@ final class FinderView: UIView {
             shopLabel.heightAnchor.constraint(equalToConstant: 36),
             shopLabel.widthAnchor.constraint(equalToConstant: 68),
             shopLabel.leadingAnchor.constraint(equalTo: backView.leadingAnchor, constant: 20),
-            shopLabel.topAnchor.constraint(equalTo: closeButton.bottomAnchor, constant: 4),
+            shopLabel.topAnchor.constraint(equalTo: backView.topAnchor, constant: 24),
             
-            closeButton.topAnchor.constraint(equalTo: backView.safeAreaLayoutGuide.topAnchor, constant: 8),
-            closeButton.trailingAnchor.constraint(equalTo: backView.trailingAnchor, constant: -16),
-            closeButton.widthAnchor.constraint(equalToConstant: 32),
-            closeButton.heightAnchor.constraint(equalToConstant: 32),
+//            closeButton.topAnchor.constraint(equalTo: backView.safeAreaLayoutGuide.topAnchor, constant: 8),
+//            closeButton.trailingAnchor.constraint(equalTo: backView.trailingAnchor, constant: -16),
+//            closeButton.widthAnchor.constraint(equalToConstant: 32),
+//            closeButton.heightAnchor.constraint(equalToConstant: 32),
             
             searchField.leadingAnchor.constraint(equalTo: shopLabel.trailingAnchor, constant: 12),
             searchField.trailingAnchor.constraint(equalTo: backView.trailingAnchor, constant: -20),
