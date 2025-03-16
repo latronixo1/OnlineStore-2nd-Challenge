@@ -16,6 +16,7 @@ protocol CartCellDelegate: AnyObject {
 final class CartCell: UITableViewCell {
     
     weak var delegate: CartCellDelegate?
+    private var product: Product?
     
     private let productImageView: UIImageView = {
         let imageView = UIImageView()
@@ -82,7 +83,7 @@ final class CartCell: UITableViewCell {
         return button
     }()
     
-    private let quantityLabel: UILabel = {
+    let quantityLabel: UILabel = {
         let label = UILabel()
         label.backgroundColor = UIColor(red: 229/255, green: 235/255, blue: 252/255, alpha: 1.0)
         label.layer.cornerRadius = 7
@@ -95,7 +96,7 @@ final class CartCell: UITableViewCell {
         return label
     }()
     
-    private var quantity: Int = 1 {
+    var quantity: Int = 1 {
         didSet {
             quantityLabel.text = "\(quantity)"
         }
@@ -169,6 +170,7 @@ final class CartCell: UITableViewCell {
     }
     
     func configure(with item: Product) {
+        self.product = item
         titleLabel.text = item.title
         priceLabel.text = item.price.formatted()
         sizeLabel.text = item.category

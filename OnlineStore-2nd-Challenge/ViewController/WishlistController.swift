@@ -35,7 +35,7 @@ final class WishlistViewController: UIViewController {
         }
         
         NotificationCenter.default.addObserver(self, selector: #selector(handleFavoriteUpdate), name: Notification.Name("DidUpdateFavorites"), object: nil)
-            
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -48,9 +48,8 @@ final class WishlistViewController: UIViewController {
         reloadFavorite()
         collectionView.reloadData()
     }
-
+    
     deinit {
-        // Отписываемся от уведомления при деинициализации
         NotificationCenter.default.removeObserver(self, name: Notification.Name("DidUpdateFavorites"), object: nil)
     }
     
@@ -119,14 +118,14 @@ private extension WishlistViewController {
 extension WishlistViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-         //favoriteManager.favoriteArray.count
+        //favoriteManager.favoriteArray.count
         product.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as? ShopCollectionViewCell else {return UICollectionViewCell()}
         
-       // let content = favoriteManager.favoriteArray[indexPath.row]
+        // let content = favoriteManager.favoriteArray[indexPath.row]
         let content = product[indexPath.row]
         cell.configure(model: content)
         return cell

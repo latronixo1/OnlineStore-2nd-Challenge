@@ -256,13 +256,13 @@ extension FinderViewController: UICollectionViewDelegate {
             }
         }
         
-        let selectedText = searchHistoryModel.items[indexPath.item]
+        //let selectedText = searchHistoryModel.items[indexPath.item]
         
-        if !selectedText.isEmpty {
-            finderView.searchField.text = selectedText
-        } else {
-            finderView.searchField.text = currentText
-        }
+//        if !selectedText.isEmpty {
+//            finderView.searchField.text = selectedText
+//        } else {
+//            finderView.searchField.text = currentText
+//        }
     }
 }
 
