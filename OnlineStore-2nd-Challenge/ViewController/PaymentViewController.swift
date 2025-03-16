@@ -13,8 +13,11 @@ class PaymentViewController: UIViewController {
     
     var cartItems: [Product] = FavoriteManager.shared.loadCartProducts()
     private let favoriteManager = FavoriteManager.shared
-    init(_ cartItems: [Product]) {
+    var totalAmount: Double
+    
+    init(_ cartItems: [Product], totalAmount: Double) {
         self.cartItems = cartItems
+        self.totalAmount = totalAmount
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -138,10 +141,24 @@ class PaymentViewController: UIViewController {
         setupCollectionView()
         setupViews()
         setConstraints()
+        
+        DispatchQueue.main.async {
+            self.reloadCartProducts()
+            self.createTotalView()
+            //self.totalSum()
+            self.tableView.reloadData()
+        }
     }
     
-    // MARK: - UI Setup
+    func reloadCartProducts() {
+        cartItems = favoriteManager.cartArray
+        print("добавленные товары \(cartItems.count)")
+        //updateTotalAmount()
+    }
     
+    
+    
+    // MARK: - UI Setup
     private func setupViews() {
         
         navigationItem.hidesBackButton = false
@@ -296,7 +313,7 @@ class PaymentViewController: UIViewController {
     }
     
     //создание раздела с товарами
-    private func createItemsView() -> UIView {
+    func createItemsView() -> UIView {
         let itemsView: UIView = {
             let element = UIView()
             //element.backgroundColor = .yellow
@@ -526,7 +543,7 @@ class PaymentViewController: UIViewController {
         return paymentMethodView
     }
     
-    private func createTotalView() -> UIView {
+    func createTotalView() -> UIView {
         let bottomView: UIView = {
             let view = UIView()
             view.backgroundColor = UIColor(red: 245/255, green: 245/255, blue: 245/255, alpha: 1.0)
@@ -545,12 +562,13 @@ class PaymentViewController: UIViewController {
         
         let amountLabel: UILabel = {
             let label = UILabel()
-            label.text = "$34,00"
+            label.text = String(format: "$%.2f", totalAmount)
             label.textColor = .black
             label.font = UIFont.systemFont(ofSize: 18)
             label.translatesAutoresizingMaskIntoConstraints = false
             return label
         }()
+       
         
         bottomView.addSubview(totalLabel)
         bottomView.addSubview(amountLabel)

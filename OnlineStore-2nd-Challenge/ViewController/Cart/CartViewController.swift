@@ -2,16 +2,16 @@ import UIKit
 
 final class CartViewController: UIViewController {
     
-
+    
     private var cartItems: [Product] = FavoriteManager.shared.loadCartProducts()
-//    var cartItems: [CartItem] = [
-//        CartItem(imageName: "blousePink", title: "Fitted cotton blouse with short sleeves and high waist", price: "$17,00", quantity: 2),
-//        CartItem(imageName: "dressRed", title: "Strapless Satin Evening Dress with Full Skirt", price: "$25,00", quantity: 1)
-//    ]
+    //    var cartItems: [CartItem] = [
+    //        CartItem(imageName: "blousePink", title: "Fitted cotton blouse with short sleeves and high waist", price: "$17,00", quantity: 2),
+    //        CartItem(imageName: "dressRed", title: "Strapless Satin Evening Dress with Full Skirt", price: "$25,00", quantity: 1)
+    //    ]
     
     private let favoriteManager = FavoriteManager.shared
     var sum = 0.00
-
+    
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.text = "Cart"
@@ -21,7 +21,7 @@ final class CartViewController: UIViewController {
         return label
     }()
     
-     let badgeLabel: UILabel = {
+    let badgeLabel: UILabel = {
         let label = UILabel()
         label.backgroundColor = UIColor(red: 229/255, green: 235/255, blue: 252/255, alpha: 1.0)
         label.textAlignment = .center
@@ -33,7 +33,7 @@ final class CartViewController: UIViewController {
         return label
     }()
     
-     var badgeQuantity: Int = 1 {
+    var badgeQuantity: Int = 1 {
         didSet {
             badgeLabel.text = "\(badgeQuantity)"
         }
@@ -63,7 +63,7 @@ final class CartViewController: UIViewController {
         return label
     }()
     
-     var amountLabel: UILabel = {
+    var amountLabel: UILabel = {
         let label = UILabel()
         label.text = "n"
         label.textColor = .black
@@ -88,22 +88,25 @@ final class CartViewController: UIViewController {
         setupTableView()
         setupUI()
         
-        reFreshCart()
-    }
-    
-    private func reFreshCart() {
         DispatchQueue.main.async {
             self.reloadCartProducts()
             self.totalSum()
-            self.tableView.reloadData()
         }
 
     }
     
-    private func reloadCartProducts() {
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        reloadCartProducts()
+        tableView.reloadData()
+    }
+    
+    
+    func reloadCartProducts() {
         cartItems = favoriteManager.cartArray
         print("добавленные товары \(cartItems.count)")
-//        updateTotalAmount()
+        tableView.reloadData()
+        //updateTotalAmount()
     }
     
     private func setupTableView() {
@@ -163,18 +166,18 @@ final class CartViewController: UIViewController {
     }
     
     @objc func checkoutButtonTapped() {
-        let paymentVC = PaymentViewController(cartItems)
+        let paymentVC = PaymentViewController(cartItems, totalAmount: sum)
         navigationController?.pushViewController(paymentVC, animated: true)
     }
     
-//    private func updateTotalAmount() {
-//        let total = cartItems.reduce(0.0) { result, item in
-//            let price = Double(item.price.replacingOccurrences(of: "$", with: "")) ?? 0.0
-//            return result + (price * Double(item.quantity))
-//        }
-//        amountLabel.text = String(format: "$%.2f", total)
-//        badgeLabel.text = "\(cartItems.reduce(0) { $0 + $1.quantity })"
-//    }
+    //    private func updateTotalAmount() {
+    //        let total = cartItems.reduce(0.0) { result, item in
+    //            let price = Double(item.price.replacingOccurrences(of: "$", with: "")) ?? 0.0
+    //            return result + (price * Double(item.quantity))
+    //        }
+    //        amountLabel.text = String(format: "$%.2f", total)
+    //        badgeLabel.text = "\(cartItems.reduce(0) { $0 + $1.quantity })"
+    //    }
 }
 
 // MARK: - UITableViewDataSource, UITableViewDelegate
@@ -195,26 +198,32 @@ extension CartViewController: UITableViewDelegate, UITableViewDataSource {
     }
 }
 
-
-// MARK: - Delegate of cells
-
 extension CartViewController: CartCellDelegate {
     func didTapIncreaseButton(on cell: CartCell) {
-        
+        guard let indexPath = tableView.indexPath(for: cell) else { return }
+        let product = cartItems[indexPath.row]
+        sum += product.price
+        updateTotalAmount()
     }
+    
     func didTapDecreaseButton(on cell: CartCell) {
-        
+        guard let indexPath = tableView.indexPath(for: cell) else { return }
+        let product = cartItems[indexPath.row]
+        sum -= product.price
+        updateTotalAmount()
     }
+    
     func didTapDeleteButton(on cell: CartCell) {
-        //удаляем товар из корзины
-        if let index = cartItems.firstIndex(where: { $0.id == cell.idProduct }) {
-            cartItems.remove(at: index)
-            
-            // Удаляем строку из таблицы
-            tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
-        }
-
+        guard let indexPath = tableView.indexPath(for: cell) else { return }
+        let product = cartItems[indexPath.row]
+        sum -= product.price * Double(cell.quantity)
+        cartItems.remove(at: indexPath.row)
+        tableView.deleteRows(at: [indexPath], with: .automatic)
+        updateTotalAmount()
     }
-
+    
+    private func updateTotalAmount() {
+        amountLabel.text = String(format: "$%.2f", sum)
+    }
+    
 }
-

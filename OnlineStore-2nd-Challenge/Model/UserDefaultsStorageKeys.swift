@@ -195,6 +195,7 @@ final class FavoriteManager {
     func addToCart(product: Product) {
         guard !isSelected(product: product) else { return}
         cartProduct.append(product)
+        //NotificationCenter.default.post(name: .cartDidUpdate, object: nil)
         saveCardProduct()
     }
     
@@ -232,16 +233,6 @@ final class FavoriteManager {
             return products
         }
         return []
-//        guard let savedData = defaults.data(forKey: cartKey.rawValue) else {
-//            print("Нет сохраненных избранных товаров")
-//            return }
-//        
-//        do {
-//            cartProduct = try JSONDecoder().decode([Product].self, from: savedData)
-//            print("Избранные товары загружены: \(favoriteProduct.count)")
-//        } catch {
-//            print("Ошибка загрузки избранных товаров: \(error)")
-//        }
     }
     
     
@@ -251,12 +242,5 @@ final class FavoriteManager {
             return products
         }
         return []
-        //        guard let savedData = defaults.data(forKey: favoriteKey.rawValue) else { return }
-        //        do {
-        //            favoriteProduct = try JSONDecoder().decode([Product].self, from: savedData)
-        //        } catch {
-        //            print("Ошибка загрузки избранных товаров: \(error)")
-        //        }
-        //    }
     }
 }
