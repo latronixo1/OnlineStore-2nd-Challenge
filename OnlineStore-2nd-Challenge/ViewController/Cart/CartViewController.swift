@@ -87,19 +87,23 @@ final class CartViewController: UIViewController {
         view.backgroundColor = .white
         setupTableView()
         setupUI()
-
+        
+        reFreshCart()
+    }
+    
+    private func reFreshCart() {
         DispatchQueue.main.async {
             self.reloadCartProducts()
             self.totalSum()
             self.tableView.reloadData()
         }
-        
+
     }
     
-    func reloadCartProducts() {
+    private func reloadCartProducts() {
         cartItems = favoriteManager.cartArray
         print("добавленные товары \(cartItems.count)")
-        //updateTotalAmount()
+//        updateTotalAmount()
     }
     
     private func setupTableView() {
@@ -182,6 +186,7 @@ extension CartViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "CartCell", for: indexPath) as! CartCell
         cell.configure(with: cartItems[indexPath.row])
+        cell.delegate = self
         return cell
     }
     
@@ -190,4 +195,26 @@ extension CartViewController: UITableViewDelegate, UITableViewDataSource {
     }
 }
 
+
+// MARK: - Delegate of cells
+
+extension CartViewController: CartCellDelegate {
+    func didTapIncreaseButton(on cell: CartCell) {
+        
+    }
+    func didTapDecreaseButton(on cell: CartCell) {
+        
+    }
+    func didTapDeleteButton(on cell: CartCell) {
+        //удаляем товар из корзины
+        if let index = cartItems.firstIndex(where: { $0.id == cell.idProduct }) {
+            cartItems.remove(at: index)
+            
+            // Удаляем строку из таблицы
+            tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
+        }
+
+    }
+
+}
 
