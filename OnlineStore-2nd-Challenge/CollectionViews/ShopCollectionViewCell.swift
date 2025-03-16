@@ -105,6 +105,8 @@ private extension ShopCollectionViewCell {
         }
         isSelect.toggle()
         print("Like tapped")
+        
+        NotificationCenter.default.post(name: Notification.Name("DidUpdateFavorites"), object: nil)
     }
 }
 

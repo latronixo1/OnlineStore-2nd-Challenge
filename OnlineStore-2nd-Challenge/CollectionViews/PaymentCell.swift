@@ -126,11 +126,23 @@ final class PaymentCell: UITableViewCell {
         ])
     }
     
-     func configure(with item: CartItem) {
-        productImageView.image = UIImage(named: item.imageName)
+    func configure(with item: Product) {
         titleLabel.text = item.title
-        priceLabel.text = item.price
-        quantityLabel.text = String(item.quantity)
+        priceLabel.text = item.price.formatted()
+        quantityLabel.text = "1"
+        if let imageURL = URL(string: item.image) {
+            NetworkService.shared.fetchImage(from: imageURL.absoluteString) { result in
+                DispatchQueue.main.async {
+                    switch result {
+                    case .success(let image):
+                        self.productImageView.image = image
+                    case .failure(let error):
+                        print("Ошибка загрузки изображения: \(error.localizedDescription)")
+                        self.productImageView.image = UIImage(systemName: "xmark.circle")
+                    }
+                }
+            }
+        }
     }
     
     required init?(coder: NSCoder) {

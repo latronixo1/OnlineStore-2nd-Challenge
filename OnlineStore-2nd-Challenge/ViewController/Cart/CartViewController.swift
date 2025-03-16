@@ -2,24 +2,16 @@ import UIKit
 
 final class CartViewController: UIViewController {
     
-//    var cartItemsMock: [Product] = []
-//   
-//    init(cartItemsMock: [Product]) {
-//        self.cartItemsMock = cartItemsMock
-//        super.init(nibName: nil, bundle: nil)
-//        print(cartItemsMock)
-//    }
-//    
-//    required init?(coder: NSCoder) {
-//        fatalError("init(coder:) has not been implemented")
-//    }
-//    
-    var cartItems: [CartItem] = [
-        CartItem(imageName: "blousePink", title: "Fitted cotton blouse with short sleeves and high waist", price: "$17.00", quantity: 2),
-        CartItem(imageName: "dressRed", title: "Strapless Satin Evening Dress with Full Skirt", price: "$25.00", quantity: 1)
-    ]
+
+    private var cartItems: [Product] = FavoriteManager.shared.loadCartProducts()
+//    var cartItems: [CartItem] = [
+//        CartItem(imageName: "blousePink", title: "Fitted cotton blouse with short sleeves and high waist", price: "$17,00", quantity: 2),
+//        CartItem(imageName: "dressRed", title: "Strapless Satin Evening Dress with Full Skirt", price: "$25,00", quantity: 1)
+//    ]
     
-    
+    private let favoriteManager = FavoriteManager.shared
+    var sum = 0.00
+
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.text = "Cart"
@@ -71,8 +63,9 @@ final class CartViewController: UIViewController {
         return label
     }()
     
-    private let amountLabel: UILabel = {
+     var amountLabel: UILabel = {
         let label = UILabel()
+        label.text = "n"
         label.textColor = .black
         label.font = UIFont.systemFont(ofSize: 18)
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -94,13 +87,32 @@ final class CartViewController: UIViewController {
         view.backgroundColor = .white
         setupTableView()
         setupUI()
-        updateTotalAmount()
+
+        DispatchQueue.main.async {
+            self.reloadCartProducts()
+            self.totalSum()
+            self.tableView.reloadData()
+        }
+        
+    }
+    
+    func reloadCartProducts() {
+        cartItems = favoriteManager.cartArray
+        print("добавленные товары \(cartItems.count)")
+        //updateTotalAmount()
     }
     
     private func setupTableView() {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(CartCell.self, forCellReuseIdentifier: "CartCell")
+    }
+    
+    func totalSum() {
+        sum = Double(cartItems.reduce(0.00) { partialResult, nextValue in
+            return partialResult + nextValue.price
+        })
+        amountLabel.text = sum.formatted()
     }
     
     private func setupUI() {
@@ -151,20 +163,20 @@ final class CartViewController: UIViewController {
         navigationController?.pushViewController(paymentVC, animated: true)
     }
     
-    private func updateTotalAmount() {
-        let total = cartItems.reduce(0.0) { result, item in
-            let price = Double(item.price.replacingOccurrences(of: "$", with: "")) ?? 0.0
-            return result + (price * Double(item.quantity))
-        }
-        amountLabel.text = String(format: "$%.2f", total)
-        badgeLabel.text = "\(cartItems.reduce(0) { $0 + $1.quantity })"
-    }
+//    private func updateTotalAmount() {
+//        let total = cartItems.reduce(0.0) { result, item in
+//            let price = Double(item.price.replacingOccurrences(of: "$", with: "")) ?? 0.0
+//            return result + (price * Double(item.quantity))
+//        }
+//        amountLabel.text = String(format: "$%.2f", total)
+//        badgeLabel.text = "\(cartItems.reduce(0) { $0 + $1.quantity })"
+//    }
 }
 
 // MARK: - UITableViewDataSource, UITableViewDelegate
 extension CartViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return cartItems.count
+        cartItems.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
