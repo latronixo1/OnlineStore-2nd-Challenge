@@ -79,12 +79,15 @@ final class ProductViewController: UIViewController {
 //    }
     
     private func addTarget() {
-        buttonBuy.addTarget(self, action: #selector(tapAddCard), for: .touchUpInside)
-        buttonAddCart.addTarget(self, action: #selector(tapAddCard), for: .touchUpInside)
+        buttonBuy.addTarget(self, action: #selector(tapAddCard(_:)), for: .touchUpInside)
+        buttonAddCart.addTarget(self, action: #selector(tapAddCard(_:)), for: .touchUpInside)
         buttonLike.addTarget(self, action: #selector(tapButtonLike), for: .touchUpInside)
     }
     
-    @objc func tapAddCard() {
+    @objc func tapAddCard(_ sender: UIButton) {
+        // Анимация для кнопки
+        animateButton(sender)
+
         favoriteManager.addToCart(product: product)
         print("product add to cart")
     }
@@ -102,6 +105,17 @@ final class ProductViewController: UIViewController {
         print("Like tapped")
     }
     
+    private func animateButton(_ button: UIButton) {
+        // Анимация уменьшения масштаба
+        UIView.animate(withDuration: 0.1, animations: {
+            button.transform = CGAffineTransform(scaleX: 0.95, y: 0.95)
+        }) { _ in
+            // Возвращаем кнопку к исходному размеру
+            UIView.animate(withDuration: 0.1) {
+                button.transform = CGAffineTransform.identity
+            }
+        }
+    }
     
 }
 
