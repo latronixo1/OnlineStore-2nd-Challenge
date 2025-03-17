@@ -44,7 +44,7 @@ final class ProductViewController: UIViewController {
         setup()
         addTarget()
         setupNavBar()
-        priceLabel.text = product.price.formatted()
+        priceLabel.text = "$" + product.price.formatted()
         descriptionLabel.text = product.description
         currentProduct = product
         
