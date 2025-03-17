@@ -227,6 +227,12 @@ final class FavoriteManager {
         }
     }
     
+    func removeProductsFromCart(product: Product) {
+        guard let index = cartProduct.firstIndex(of: product) else { return }
+        cartArray.remove(at: index)
+        saveFavoriteProduct()
+    }
+    
     func loadCartProducts() -> [Product]{
         if let addToCardProducts = UserDefaults.standard.data(forKey: cartKey.rawValue),
            let products = try? JSONDecoder().decode([Product].self, from: addToCardProducts) {

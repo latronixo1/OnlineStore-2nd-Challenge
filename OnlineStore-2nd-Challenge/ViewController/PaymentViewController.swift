@@ -13,7 +13,7 @@ class PaymentViewController: UIViewController {
     
     var cartItems: [Product] = FavoriteManager.shared.loadCartProducts()
     private let favoriteManager = FavoriteManager.shared
-    var totalAmount: Double
+    var totalAmount: Double = 0.00
     
     init(_ cartItems: [Product], totalAmount: Double) {
         self.cartItems = cartItems
@@ -132,6 +132,31 @@ class PaymentViewController: UIViewController {
         return button
     }()
     
+    let bottomView: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor(red: 245/255, green: 245/255, blue: 245/255, alpha: 1.0)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
+    let totalLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Total"
+        label.textColor = .black
+        label.font = UIFont.systemFont(ofSize: 20, weight: .bold)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    let amountLabel: UILabel = {
+        let label = UILabel()
+        label.text = "0"
+        label.textColor = .black
+        label.font = UIFont.systemFont(ofSize: 18)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
     // MARK: - Lifecycle
     
     override func viewDidLoad() {
@@ -144,16 +169,21 @@ class PaymentViewController: UIViewController {
         
         DispatchQueue.main.async {
             self.reloadCartProducts()
-            self.createTotalView()
-            //self.totalSum()
             self.tableView.reloadData()
+            self.collectionView.reloadData()
         }
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        updateTotalAmountLabel()
+        print("общая сумма\(totalAmount)")
     }
     
     func reloadCartProducts() {
         cartItems = favoriteManager.cartArray
+        updateTotalAmountLabel()
         print("добавленные товары \(cartItems.count)")
-        //updateTotalAmount()
     }
     
     
@@ -543,33 +573,11 @@ class PaymentViewController: UIViewController {
         return paymentMethodView
     }
     
+    func updateTotalAmountLabel() {
+        amountLabel.text = String(format: "$%.2f", totalAmount)
+    }
+    
     func createTotalView() -> UIView {
-        let bottomView: UIView = {
-            let view = UIView()
-            view.backgroundColor = UIColor(red: 245/255, green: 245/255, blue: 245/255, alpha: 1.0)
-            view.translatesAutoresizingMaskIntoConstraints = false
-            return view
-        }()
-        
-        let totalLabel: UILabel = {
-            let label = UILabel()
-            label.text = "Total"
-            label.textColor = .black
-            label.font = UIFont.systemFont(ofSize: 20, weight: .bold)
-            label.translatesAutoresizingMaskIntoConstraints = false
-            return label
-        }()
-        
-        let amountLabel: UILabel = {
-            let label = UILabel()
-            label.text = String(format: "$%.2f", totalAmount)
-            label.textColor = .black
-            label.font = UIFont.systemFont(ofSize: 18)
-            label.translatesAutoresizingMaskIntoConstraints = false
-            return label
-        }()
-       
-        
         bottomView.addSubview(totalLabel)
         bottomView.addSubview(amountLabel)
         bottomView.addSubview(payButton)
@@ -678,10 +686,23 @@ extension PaymentViewController: UICollectionViewDataSource, UICollectionViewDel
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         // Обработка выбора способа доставки
         print("Selected option: \(shippingOptions[indexPath.item].name) \(indexPath.item)")
+        print("Итог: \(self.totalAmount)")
+        
+        let selectedOption = shippingOptions[indexPath.item]
+            
+            if selectedOption.name == "Express" {
+                totalAmount += 12.00
+            } else {
+                totalAmount -= 12.00
+            }
+            
+            updateTotalAmountLabel()
+        
         if indexPath.item == 0 {
             deliveryDateLabel.text = "It will be delivered on " + afterNDays(7)
         } else {
             deliveryDateLabel.text = "It will be delivered on " + afterNDays(2)
+            
         }
     }
 }

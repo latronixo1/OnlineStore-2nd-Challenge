@@ -47,7 +47,7 @@ final class CartCell: UITableViewCell {
     
     private let priceLabel: UILabel = {
         let label = UILabel()
-        label.text = "$17,00"
+        label.text = "0"
         label.font = UIFont.boldSystemFont(ofSize: 16)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -155,16 +155,18 @@ final class CartCell: UITableViewCell {
     
     @objc private func increaseButtonTapped() {
         quantity += 1
+        decreaseButton.isEnabled = true
         delegate?.didTapIncreaseButton(on: self)
     }
-
+    
     @objc private func decreaseButtonTapped() {
         if quantity > 1 {
             quantity -= 1
         }
+        decreaseButton.isEnabled = quantity > 1
         delegate?.didTapDecreaseButton(on: self)
     }
-
+    
     @objc private func deleteButtonTapped() {
         delegate?.didTapDeleteButton(on: self)
     }
@@ -172,7 +174,7 @@ final class CartCell: UITableViewCell {
     func configure(with item: Product) {
         self.product = item
         titleLabel.text = item.title
-        priceLabel.text = item.price.formatted()
+        priceLabel.text = String(format: "$%.2f", item.price) 
         sizeLabel.text = item.category
         if let imageURL = URL(string: item.image) {
             NetworkService.shared.fetchImage(from: imageURL.absoluteString) { result in
