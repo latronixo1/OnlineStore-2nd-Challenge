@@ -37,7 +37,7 @@ final class ShopCollectionViewCell: UICollectionViewCell {
     func configure(model: Product) {
         imageView.image = UIImage(named: model.image)
         descriptionLabel.text = model.description
-        priceLabel.text = model.price.formatted()
+        priceLabel.text = "$" + model.price.formatted()
         currentProduct = model
         
         isSelect = favoriteManager.isFavorite(product: model)
