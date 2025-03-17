@@ -9,7 +9,7 @@ import FirebaseAuth
 
 class CreatAccountViewController: UIViewController {
     private let mainView: CreateAccountView = .init()
-    private let pickerData: [String] = ["", "Мужской","Женский"]
+    private let pickerData: [String] = ["", "Man","Woman"]
     private var gender: String = ""
     private var email: String = ""
     private var password: String = ""
