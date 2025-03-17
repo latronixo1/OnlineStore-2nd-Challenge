@@ -206,7 +206,7 @@ private extension ProductViewController {
             stackForImage.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             
             stackForButton.heightAnchor.constraint(equalToConstant: 40),
-            stackForButton.topAnchor.constraint(equalTo: stackForImage.bottomAnchor, constant: 20),
+            stackForButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -10),
             stackForButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             stackForButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             
