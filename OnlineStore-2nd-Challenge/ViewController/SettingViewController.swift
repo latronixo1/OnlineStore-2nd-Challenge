@@ -32,7 +32,7 @@ final class SettingViewController: UIViewController {
     private let infoLabelName = UILabel.makeLabel(text: "Имя не может быть пустым", font: .systemFont(ofSize: 14, weight: .regular), textColor: .red, numberOfLines: 1)
     private let infoLabelEmail = UILabel.makeLabel(text: "Email не может быть пустым", font: .systemFont(ofSize: 14, weight: .regular), textColor: .red, numberOfLines: 1)
     private let infoLabelPassword = UILabel.makeLabel(text: "Пароль не может быть пустым", font: .systemFont(ofSize: 14, weight: .regular), textColor: .red, numberOfLines: 1)
-    private let genderLabel = UILabel.makeLabel(text: "Выберите пол", font: .systemFont(ofSize: 17, weight: .regular), textColor: .black, numberOfLines: 1)
+    private let genderLabel = UILabel.makeLabel(text: "Choose your gender", font: .systemFont(ofSize: 17, weight: .regular), textColor: .black, numberOfLines: 1)
     private let navigation = UINavigationBar()
     private let titleOfLabel = UILabel.makeLabel(
         text: "Settings",
