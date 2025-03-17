@@ -180,6 +180,17 @@ class PaymentViewController: UIViewController {
         print("общая сумма\(totalAmount)")
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        // Выбираем первый способ доставки (Standard) после загрузки данных
+        let firstItemPath = IndexPath(item: 0, section: 0)
+        collectionView.selectItem(at: firstItemPath, animated: false, scrollPosition: .left)
+        
+        // Обновляем дату доставки
+        deliveryDateLabel.text = "It will be delivered on " + afterNDays(7)
+
+    }
+    
     func reloadCartProducts() {
         cartItems = favoriteManager.cartArray
         updateTotalAmountLabel()
