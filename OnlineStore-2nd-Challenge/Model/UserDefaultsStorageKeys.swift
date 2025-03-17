@@ -147,9 +147,11 @@ final class FavoriteManager {
     
     private var favoriteProduct: [Product] = []
     private var cartProduct: [Product] = []
+    var quantityProductsInCart: [QuantityProductsInCart] = []
     private let defaults = UserDefaults.standard
     private let favoriteKey = UserDefaultsStorageKeys.favoriteProducts
     private let cartKey = UserDefaultsStorageKeys.cart
+    private let quantityKey = "quantityProductsInCart"  //новый ключ для сохранения количества товаров в корзине
     
     var favoriteArray: [Product] {
         get {
@@ -171,8 +173,20 @@ final class FavoriteManager {
         }
     }
     
+    var quantityProductsInCartArray: [QuantityProductsInCart] {
+        get {
+            return quantityProductsInCart
+        }
+        set {
+            quantityProductsInCart = newValue
+            saveQuantityInCart()
+        }
+    }
+    
     private init() {
-        //loadFavoriteProducts()
+//        loadFavoriteProducts()
+//        loadCartProducts()
+//        loadQuantityInCart()
     }
     
     func userDefaultsExists(key: String) -> Bool {
@@ -193,15 +207,27 @@ final class FavoriteManager {
     }
     
     func addToCart(product: Product) {
-        guard !isSelected(product: product) else { return}
-        cartProduct.append(product)
+        //guard !isSelected(product: product) else { return }
+        
+        if cartProduct.isEmpty {
+            cartProduct.append(product)
+            quantityProductsInCart.append(QuantityProductsInCart(id: product.id, quantity: 1)) //= [product.id: 1]
+        } else {
+            for (index, quantity) in quantityProductsInCart.enumerated() {
+                if quantity.id == product.id {
+                    quantityProductsInCart[index].quantity += 1
+                    print("quantityProductsInCart[index] = \(quantityProductsInCart[index])")
+                }
+            }
+        }
         //NotificationCenter.default.post(name: .cartDidUpdate, object: nil)
         saveCardProduct()
+        saveQuantityInCart()
     }
     
-    func isSelected(product: Product) -> Bool {
-        cartProduct.contains(product)
-    }
+//    func isSelected(product: Product) -> Bool {
+//        cartProduct.contains(product)
+//    }
     
     func removeFromFavorite(product: Product) {
         guard let index = favoriteProduct.firstIndex(of: product) else { return }
@@ -227,10 +253,27 @@ final class FavoriteManager {
         }
     }
     
+    private func saveQuantityInCart() {
+        do {
+            let encodeData = try JSONEncoder().encode(quantityProductsInCart)
+            defaults.set(encodeData, forKey: quantityKey)
+        } catch {
+            print("Ошибка сохранения количества товаров в корзине: \(error)")
+        }
+    }
+    
     func loadCartProducts() -> [Product]{
         if let addToCardProducts = UserDefaults.standard.data(forKey: cartKey.rawValue),
            let products = try? JSONDecoder().decode([Product].self, from: addToCardProducts) {
             return products
+        }
+        return []
+    }
+    
+    func loadQuantityInCart() -> [QuantityProductsInCart] {
+        if let quantityData = UserDefaults.standard.data(forKey: quantityKey),
+           let quantity = try? JSONDecoder().decode([QuantityProductsInCart].self, from: quantityData) {
+            return quantity
         }
         return []
     }

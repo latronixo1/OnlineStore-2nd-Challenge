@@ -4,12 +4,15 @@ final class CartViewController: UIViewController {
     
     
     private var cartItems: [Product] = FavoriteManager.shared.loadCartProducts()
+    private var quantityCartItems: [QuantityProductsInCart] = FavoriteManager.shared.loadQuantityInCart()
     //    var cartItems: [CartItem] = [
     //        CartItem(imageName: "blousePink", title: "Fitted cotton blouse with short sleeves and high waist", price: "$17,00", quantity: 2),
     //        CartItem(imageName: "dressRed", title: "Strapless Satin Evening Dress with Full Skirt", price: "$25,00", quantity: 1)
     //    ]
     
     private let favoriteManager = FavoriteManager.shared
+    //favoriteManager.quantityProductsInCart
+//    favoriteManager.quantityProductsInCart[cartItems[indexPath.row].id]
     var sum = 0.00
     
     private let titleLabel: UILabel = {
@@ -92,7 +95,7 @@ final class CartViewController: UIViewController {
             self.reloadCartProducts()
             self.totalSum()
         }
-
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -170,14 +173,6 @@ final class CartViewController: UIViewController {
         navigationController?.pushViewController(paymentVC, animated: true)
     }
     
-    //    private func updateTotalAmount() {
-    //        let total = cartItems.reduce(0.0) { result, item in
-    //            let price = Double(item.price.replacingOccurrences(of: "$", with: "")) ?? 0.0
-    //            return result + (price * Double(item.quantity))
-    //        }
-    //        amountLabel.text = String(format: "$%.2f", total)
-    //        badgeLabel.text = "\(cartItems.reduce(0) { $0 + $1.quantity })"
-    //    }
 }
 
 // MARK: - UITableViewDataSource, UITableViewDelegate
@@ -188,7 +183,12 @@ extension CartViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "CartCell", for: indexPath) as! CartCell
-        cell.configure(with: cartItems[indexPath.row])
+        for (index, count) in quantityCartItems.enumerated() {
+            if cartItems[indexPath.row].id == count.id {
+                cell.configure(with: cartItems[indexPath.row], count: quantityCartItems[index].quantity)
+                //print("cartItems[indexPath.row] = \(cartItems[indexPath.row]), quantityCartItems[index].quantity = \(quantityCartItems[index].quantity)")
+            }
+        }
         cell.delegate = self
         return cell
     }

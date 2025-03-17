@@ -172,11 +172,12 @@ final class CartCell: UITableViewCell {
         print("кнопка удаления товара из корзины нажата")
     }
     
-    func configure(with item: Product) {
+    func configure(with item: Product, count: Int) {
         self.product = item
         titleLabel.text = item.title
         priceLabel.text = item.price.formatted()
         sizeLabel.text = item.category
+        quantity = count
         if let imageURL = URL(string: item.image) {
             NetworkService.shared.fetchImage(from: imageURL.absoluteString) { result in
                 DispatchQueue.main.async {

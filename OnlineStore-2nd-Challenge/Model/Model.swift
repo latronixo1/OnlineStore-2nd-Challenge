@@ -21,6 +21,12 @@ struct Rating: Codable, Equatable {
     let rate: Double
     let count: Int
 }
+
+struct QuantityProductsInCart: Codable, Equatable {
+    let id: Int
+    var quantity: Int
+}
+
 // -MARK: USER
 struct User: Codable, Identifiable {
     let id: Int

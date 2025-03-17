@@ -79,9 +79,22 @@ final class ProductViewController: UIViewController {
 //    }
     
     private func addTarget() {
-        buttonBuy.addTarget(self, action: #selector(tapAddCard(_:)), for: .touchUpInside)
+        buttonBuy.addTarget(self, action: #selector(tapBuyNow(_:)), for: .touchUpInside)
         buttonAddCart.addTarget(self, action: #selector(tapAddCard(_:)), for: .touchUpInside)
         buttonLike.addTarget(self, action: #selector(tapButtonLike), for: .touchUpInside)
+    }
+    
+    @objc func tapBuyNow(_ sender: UIButton) {
+        // Анимация для кнопки
+        animateButton(sender)
+        
+        guard let product = currentProduct else {return}
+
+        let paymentVC = PaymentViewController(Array(arrayLiteral: product), totalAmount: product.price)
+        navigationController?.pushViewController(paymentVC, animated: true)
+
+        favoriteManager.addToCart(product: product)
+        print("button Buy now tapped")
     }
     
     @objc func tapAddCard(_ sender: UIButton) {
@@ -91,7 +104,7 @@ final class ProductViewController: UIViewController {
         favoriteManager.addToCart(product: product)
         print("product add to cart")
     }
-    
+
     @objc func tapButtonLike() {
         guard let product = currentProduct else {return}
         if isSelect {
