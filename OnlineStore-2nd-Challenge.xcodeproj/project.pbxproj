@@ -8,10 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		3E4B8F6E2D75A68D00FE765C /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 3E4B8F6D2D75A68D00FE765C /* FirebaseAuth */; };
+		CEF3C2C62D887815008CBE8B /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = CEF3C2C52D887815008CBE8B /* README.md */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		6BD3A27F2D74A9C500034C10 /* OnlineStore-2nd-Challenge.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "OnlineStore-2nd-Challenge.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		CEF3C2C52D887815008CBE8B /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -50,6 +52,7 @@
 		6BD3A2762D74A9C500034C10 = {
 			isa = PBXGroup;
 			children = (
+				CEF3C2C52D887815008CBE8B /* README.md */,
 				6BD3A2812D74A9C600034C10 /* OnlineStore-2nd-Challenge */,
 				6BD3A2802D74A9C500034C10 /* Products */,
 			);
@@ -131,6 +134,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CEF3C2C62D887815008CBE8B /* README.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
