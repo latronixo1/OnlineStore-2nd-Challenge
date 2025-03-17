@@ -141,7 +141,7 @@ final class FinderView: UIView {
     
     private func setupConstraints() {
         NSLayoutConstraint.activate([
-            backView.topAnchor.constraint(equalTo: topAnchor),
+            backView.topAnchor.constraint(equalTo: topAnchor, constant: 50),
             backView.bottomAnchor.constraint(equalTo: bottomAnchor),
             backView.leadingAnchor.constraint(equalTo: leadingAnchor),
             backView.trailingAnchor.constraint(equalTo: trailingAnchor),
