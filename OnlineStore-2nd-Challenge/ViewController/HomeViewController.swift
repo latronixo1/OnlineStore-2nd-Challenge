@@ -244,7 +244,7 @@ extension HomeViewController: UICollectionViewDataSource {
                 return UICollectionViewCell()
             }
             cell.discriptionOfProduct.text = sortedPopularItems[indexPath.row].description
-            cell.priceOfProducts.text = "\(sortedPopularItems[indexPath.row].price) ₽"
+            cell.priceOfProducts.text = "$\(sortedPopularItems[indexPath.row].price)"
             let urlOfImage = self.sortedPopularItems[indexPath.row].image
             cell.photoOfProduct.image = nil
             NetworkService.shared.fetchImage(from: urlOfImage) { result in
