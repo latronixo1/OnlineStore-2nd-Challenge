@@ -12,8 +12,10 @@ class PaymentViewController: UIViewController {
     // MARK: - Variables
     
     var cartItems: [Product] = FavoriteManager.shared.loadCartProducts()
+    
     private let favoriteManager = FavoriteManager.shared
     var totalAmount: Double = 0.00
+    var priceShipping: Double = 0.00
     
     init(_ cartItems: [Product], totalAmount: Double) {
         self.cartItems = cartItems
@@ -22,11 +24,6 @@ class PaymentViewController: UIViewController {
     }
     
     required init?(coder: NSCoder) {
-        //значение по умолчанию
-        //        cartItems = [
-        //            CartItem(imageName: "Image", title: "Lorem ipsum dolor sit amet consectetur.", price: "$99,00", quantity: 2),
-        //            CartItem(imageName: "Image", title: "Lorem ipsum dolor sit amet consectetur.", price: "$99,00", quantity: 1)
-        //        ]
         fatalError("init(coder:) has not been implemented")
     }
     
@@ -69,7 +66,7 @@ class PaymentViewController: UIViewController {
     private let mainStackView: UIStackView = {
         let element = UIStackView()
         element.axis = .vertical
-        element.spacing = 10
+        element.spacing = 20
         
         element.translatesAutoresizingMaskIntoConstraints = false
         return element
@@ -93,35 +90,6 @@ class PaymentViewController: UIViewController {
         return element
     }()
     
-    //    private let shippingOptionsLabel: UILabel = {
-    //        let label = UILabel()
-    //        label.text = "Shipping Options\n- [ ] Standard 5-7 days\n  FREE\n\n- [ ] Express 1-2 days\n  $12,00\n\nDelivered on or before Thursday, 23 April 2020"
-    //        label.numberOfLines = 0
-    //        label.font = UIFont.systemFont(ofSize: 14)
-    //        label.textColor = .darkGray
-    //        label.translatesAutoresizingMaskIntoConstraints = false
-    //        return label
-    //    }()
-    
-    //    private let paymentMethodLabel: UILabel = {
-    //        let label = UILabel()
-    //        label.text = "Payment Method\n- [ ] Card"
-    //        label.numberOfLines = 0
-    //        label.font = UIFont.systemFont(ofSize: 16)
-    //        label.textColor = .darkGray
-    //        label.translatesAutoresizingMaskIntoConstraints = false
-    //        return label
-    //    }()
-    
-    //    private let totalLabel: UILabel = {
-    //        let label = UILabel()
-    //        label.text = "Total $34,00"
-    //        label.font = UIFont.boldSystemFont(ofSize: 18)
-    //        label.textColor = .black
-    //        label.translatesAutoresizingMaskIntoConstraints = false
-    //        return label
-    //    }()
-    
     let payButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Pay", for: .normal)
@@ -132,7 +100,7 @@ class PaymentViewController: UIViewController {
         return button
     }()
     
-    let bottomView: UIView = {
+    var bottomView: UIView = {
         let view = UIView()
         view.backgroundColor = UIColor(red: 245/255, green: 245/255, blue: 245/255, alpha: 1.0)
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -180,6 +148,17 @@ class PaymentViewController: UIViewController {
         print("общая сумма\(totalAmount)")
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        // Выбираем первый способ доставки (Standard) после загрузки данных
+        let firstItemPath = IndexPath(item: 0, section: 0)
+        collectionView.selectItem(at: firstItemPath, animated: false, scrollPosition: .left)
+        
+        // Обновляем дату доставки
+        deliveryDateLabel.text = "It will be delivered on " + afterNDays(7)
+
+    }
+    
     func reloadCartProducts() {
         cartItems = favoriteManager.cartArray
         updateTotalAmountLabel()
@@ -205,8 +184,6 @@ class PaymentViewController: UIViewController {
         
         navigationItem.leftBarButtonItem = backButton
         
-        
-        
         // Добавляем ScrollView
         view.addSubview(scrollView)
         scrollView.addSubview(contentView)
@@ -218,16 +195,14 @@ class PaymentViewController: UIViewController {
         mainStackView.addArrangedSubview(createShippingView())
         setupCollectionView()
         mainStackView.addArrangedSubview(createPaymentMethodView())
-        mainStackView.addArrangedSubview(createTotalView())
+        //mainStackView.addArrangedSubview(createTotalView())
         
         contentView.addSubview(mainStackView)
+        bottomView = createTotalView()
+        view.addSubview(bottomView)
         
         // Добавляем действие для кнопки Pay
         payButton.addTarget(self, action: #selector(payButtonTapped), for: .touchUpInside)
-    }
-    
-    @objc func goBack() {
-        navigationController?.popViewController(animated: true)
     }
     
     // MARK: - Set Constraints
@@ -245,7 +220,7 @@ class PaymentViewController: UIViewController {
             scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: bottomView.topAnchor),
             
             contentView.topAnchor.constraint(equalTo: scrollView.topAnchor),
             contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
@@ -258,8 +233,11 @@ class PaymentViewController: UIViewController {
             mainStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             mainStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16),
             
-            
-            payButton.heightAnchor.constraint(equalToConstant: 50)
+            bottomView.heightAnchor.constraint(equalToConstant: 50),
+            bottomView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            bottomView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            bottomView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            //payButton.heightAnchor.constraint(equalToConstant: 50)
         ])
     }
     
@@ -324,6 +302,8 @@ class PaymentViewController: UIViewController {
         grayView.addSubview(editShippingButton)
         stackView.addArrangedSubview(titleLabel)
         stackView.addArrangedSubview(textLabel)
+        
+        editShippingButton.addTarget(self, action: #selector(tapEditShippingButton(_:)), for: .touchUpInside)
         
         NSLayoutConstraint.activate([
             grayView.heightAnchor.constraint(equalToConstant: 60),
@@ -398,7 +378,9 @@ class PaymentViewController: UIViewController {
         titleItemsStackView.addArrangedSubview(titleLabel)
         titleItemsStackView.addArrangedSubview(countItemsInCart)
         titleItemsStackView.addArrangedSubview(addVaucherButton)
-        
+
+        addVaucherButton.addTarget(self, action: #selector(tapAddVaucherButton(_:)), for: .touchUpInside)
+
         itemsView.addSubview(tableView)
         NSLayoutConstraint.activate([
             
@@ -550,6 +532,9 @@ class PaymentViewController: UIViewController {
         paymentMethodView.addSubview(editPaymentMethodButton)
         paymentMethodView.addSubview(editCardButton)
         
+        editPaymentMethodButton.addTarget(self, action: #selector(tapEditPaymentMethodButton(_:)), for: .touchUpInside)
+        editCardButton.addTarget(self, action: #selector(tapEditCardButton(_:)), for: .touchUpInside)
+
         NSLayoutConstraint.activate([
             paymentMethodView.heightAnchor.constraint(equalToConstant: 60),
             
@@ -573,11 +558,21 @@ class PaymentViewController: UIViewController {
         return paymentMethodView
     }
     
-    func updateTotalAmountLabel() {
+    private func updateTotalAmountLabel() {
+        
+        var sumPrices: Double = 0.00
+        
+        for cartItem in self.cartItems {
+            sumPrices += cartItem.price
+        }
+        totalAmount = sumPrices + priceShipping
+
         amountLabel.text = String(format: "$%.2f", totalAmount)
     }
     
     func createTotalView() -> UIView {
+        //let bottomView = UIView()
+        
         bottomView.addSubview(totalLabel)
         bottomView.addSubview(amountLabel)
         bottomView.addSubview(payButton)
@@ -604,7 +599,41 @@ class PaymentViewController: UIViewController {
     
     // MARK: - Actions
     
-    @objc func payButtonTapped() {
+    @objc func goBack() {
+        navigationController?.popViewController(animated: true)
+    }
+    
+    @objc func tapEditShippingButton(_ sender: UIButton) {
+        // Анимация для кнопки
+        animateButton(sender)
+    }
+    
+    @objc func tapAddVaucherButton(_ sender: UIButton) {
+        // Анимация для кнопки
+        animateButton(sender)
+    }
+    
+    @objc func tapEditPaymentMethodButton(_ sender: UIButton) {
+        // Анимация для кнопки
+        animateButton(sender)
+    }
+    
+    @objc func tapEditCardButton(_ sender: UIButton) {
+        // Анимация для кнопки
+        animateButton(sender)
+    }
+
+    @objc func payButtonTapped(_ sender: UIButton) {
+        // Анимация для кнопки
+        animateButton(sender)
+        //очищаем корзину
+        for product in cartItems{
+            favoriteManager.removeProductsFromCart(product: product)
+        }
+        //возврат на экран корзины (пустой)
+        goBack()
+        //navigationController?.popViewController(animated: T##Bool)
+
         // Создаем кастомный UIAlertController
         let customAlert = CustomAlertViewController()
         customAlert.modalPresentationStyle = .overCurrentContext  //прозрачный фон
@@ -614,6 +643,18 @@ class PaymentViewController: UIViewController {
         present(customAlert, animated: true, completion: nil)
     }
     
+    private func animateButton(_ button: UIButton) {
+        // Анимация уменьшения масштаба
+        UIView.animate(withDuration: 0.1, animations: {
+            button.transform = CGAffineTransform(scaleX: 0.95, y: 0.95)
+        }) { _ in
+            // Возвращаем кнопку к исходному размеру
+            UIView.animate(withDuration: 0.1) {
+                button.transform = CGAffineTransform.identity
+            }
+        }
+    }
+
     // MARK: - Set delegates
     
     private func setupTableView() {
@@ -689,15 +730,16 @@ extension PaymentViewController: UICollectionViewDataSource, UICollectionViewDel
         print("Итог: \(self.totalAmount)")
         
         let selectedOption = shippingOptions[indexPath.item]
-            
-            if selectedOption.name == "Express" {
-                totalAmount += 12.00
-            } else {
-                totalAmount -= 12.00
-            }
-            
-            updateTotalAmountLabel()
         
+        if selectedOption.name == "Express" {
+            priceShipping = 12.0
+        } else {
+            priceShipping = 0.0
+        }
+        
+        updateTotalAmountLabel()
+        
+        //пересчет даты доставки
         if indexPath.item == 0 {
             deliveryDateLabel.text = "It will be delivered on " + afterNDays(7)
         } else {

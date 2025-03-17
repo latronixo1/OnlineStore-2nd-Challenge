@@ -82,6 +82,16 @@ final class CartViewController: UIViewController {
         return button
     }()
     
+    private lazy var cartIsEmpty: UILabel = {
+        let element = UILabel()
+        element.text = "There's nothing here yet"
+        element.font = UIFont.systemFont(ofSize: 30)
+        element.textColor = .black
+        element.isHidden = true
+        element.translatesAutoresizingMaskIntoConstraints = false
+        return element
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
@@ -128,6 +138,7 @@ final class CartViewController: UIViewController {
         view.addSubview(badgeLabel)
         view.addSubview(tableView)
         view.addSubview(bottomView)
+        view.addSubview(cartIsEmpty)
         bottomView.addSubview(totalLabel)
         bottomView.addSubview(amountLabel)
         bottomView.addSubview(checkoutButton)
@@ -147,6 +158,9 @@ final class CartViewController: UIViewController {
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             tableView.bottomAnchor.constraint(equalTo: bottomView.topAnchor, constant: -10),
+            
+            cartIsEmpty.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            cartIsEmpty.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             
             bottomView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             bottomView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
@@ -171,14 +185,6 @@ final class CartViewController: UIViewController {
         navigationController?.pushViewController(paymentVC, animated: true)
     }
     
-    //    private func updateTotalAmount() {
-    //        let total = cartItems.reduce(0.0) { result, item in
-    //            let price = Double(item.price.replacingOccurrences(of: "$", with: "")) ?? 0.0
-    //            return result + (price * Double(item.quantity))
-    //        }
-    //        amountLabel.text = String(format: "$%.2f", total)
-    //        badgeLabel.text = "\(cartItems.reduce(0) { $0 + $1.quantity })"
-    //    }
 }
 
 // MARK: - UITableViewDataSource, UITableViewDelegate
@@ -229,6 +235,16 @@ extension CartViewController: CartCellDelegate {
     }
     
     private func updateTotalAmount() {
+        totalSum()
+        if sum == 0.00 {
+            cartIsEmpty.isHidden = false
+            checkoutButton.isEnabled = false
+            checkoutButton.backgroundColor = #colorLiteral(red: 0.8235358596, green: 0.8059974909, blue: 0.7952066064, alpha: 1)
+        } else {
+            cartIsEmpty.isHidden = true
+            checkoutButton.isEnabled = true
+            checkoutButton.backgroundColor = .blue
+        }
         amountLabel.text = String(format: "$%.2f", sum)
         badgeLabel.text = "\(cartItems.count)"
     }
