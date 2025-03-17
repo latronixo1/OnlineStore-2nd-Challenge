@@ -168,14 +168,9 @@ extension CategoryViewController: UICollectionViewDelegate {
         } else {
             // Получаем название выбранной подкатегории
             let category = categories[indexPath.section]
-            let selectedSubcategory = category.subcategories[indexPath.item - 1]
-
             
             // Создаем и настраиваем HomeViewController
             let homeVC = HomeViewController()
-//            homeVC.selectedSubcategory = selectedSubcategory
-            
-            // Переходим на HomeViewController
             navigationController?.pushViewController(homeVC, animated: true)
             
             collectionView.deselectItem(at: indexPath, animated: true)
