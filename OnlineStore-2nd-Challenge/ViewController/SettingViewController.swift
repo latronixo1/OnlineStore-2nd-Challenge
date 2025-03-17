@@ -46,7 +46,7 @@ final class SettingViewController: UIViewController {
     )
     
     private let logoutButton = UIButton()
-    private let genders: [String] = ["Mуж.", "Жен."]
+    private let genders: [String] = ["Man", "Woman"]
     private var currentGender = String()
     private let genderSelection = UIPickerView()
     
