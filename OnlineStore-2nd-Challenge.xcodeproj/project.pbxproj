@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		3E4B8F6E2D75A68D00FE765C /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 3E4B8F6D2D75A68D00FE765C /* FirebaseAuth */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		6BD3A27F2D74A9C500034C10 /* OnlineStore-2nd-Challenge.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "OnlineStore-2nd-Challenge.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -36,6 +40,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3E4B8F6E2D75A68D00FE765C /* FirebaseAuth in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,6 +83,7 @@
 			);
 			name = "OnlineStore-2nd-Challenge";
 			packageProductDependencies = (
+				3E4B8F6D2D75A68D00FE765C /* FirebaseAuth */,
 			);
 			productName = "OnlineStore-2nd-Challenge";
 			productReference = 6BD3A27F2D74A9C500034C10 /* OnlineStore-2nd-Challenge.app */;
@@ -107,6 +113,9 @@
 			);
 			mainGroup = 6BD3A2762D74A9C500034C10;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				3E4B8F6C2D75A68D00FE765C /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 6BD3A2802D74A9C500034C10 /* Products */;
 			projectDirPath = "";
@@ -148,6 +157,7 @@
 				DEVELOPMENT_TEAM = Z4PKJ57KTJ;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "OnlineStore-2nd-Challenge/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = Shopping;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -180,6 +190,7 @@
 				DEVELOPMENT_TEAM = Z4PKJ57KTJ;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "OnlineStore-2nd-Challenge/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = Shopping;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -343,6 +354,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		3E4B8F6C2D75A68D00FE765C /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 11.9.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		3E4B8F6D2D75A68D00FE765C /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3E4B8F6C2D75A68D00FE765C /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 6BD3A2772D74A9C500034C10 /* Project object */;
 }
