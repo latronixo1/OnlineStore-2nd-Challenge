@@ -128,7 +128,7 @@ final class PaymentCell: UITableViewCell {
     
     func configure(with item: Product) {
         titleLabel.text = item.title
-        priceLabel.text = item.price.formatted()
+        priceLabel.text =  String(format: "$%.2f", item.price)
         quantityLabel.text = "1"
         if let imageURL = URL(string: item.image) {
             NetworkService.shared.fetchImage(from: imageURL.absoluteString) { result in

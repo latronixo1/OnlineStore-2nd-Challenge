@@ -302,7 +302,7 @@ class HomeView: UIView {
             stackForCategoryView.topAnchor.constraint(equalTo: stackForAllView.topAnchor),
             stackForCategoryView.leftAnchor.constraint(equalTo: stackForAllView.leftAnchor),
             stackForCategoryView.rightAnchor.constraint(equalTo: stackForAllView.rightAnchor),
-            stackForCategoryView.heightAnchor.constraint(equalToConstant: 300),
+            stackForCategoryView.heightAnchor.constraint(equalToConstant: 350),
             
             // Stack For Label Category
             stackForLabelCategory.topAnchor.constraint(equalTo: stackForCategoryView.topAnchor),

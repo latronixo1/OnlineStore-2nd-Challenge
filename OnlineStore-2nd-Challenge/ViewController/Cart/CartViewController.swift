@@ -35,7 +35,7 @@ final class CartViewController: UIViewController {
     
     var badgeQuantity: Int = 1 {
         didSet {
-            badgeLabel.text = "\(badgeQuantity)"
+            badgeLabel.text = "\(cartItems.count)"
         }
     }
     
@@ -65,7 +65,7 @@ final class CartViewController: UIViewController {
     
     var amountLabel: UILabel = {
         let label = UILabel()
-        label.text = "n"
+        label.text = "$%.2f"
         label.textColor = .black
         label.font = UIFont.systemFont(ofSize: 18)
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -91,6 +91,7 @@ final class CartViewController: UIViewController {
         DispatchQueue.main.async {
             self.reloadCartProducts()
             self.totalSum()
+            self.updateTotalAmount()
         }
 
     }
@@ -98,6 +99,8 @@ final class CartViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         reloadCartProducts()
+        //totalSum()
+        updateTotalAmount()
         tableView.reloadData()
     }
     
@@ -106,7 +109,6 @@ final class CartViewController: UIViewController {
         cartItems = favoriteManager.cartArray
         print("добавленные товары \(cartItems.count)")
         tableView.reloadData()
-        //updateTotalAmount()
     }
     
     private func setupTableView() {
@@ -119,7 +121,6 @@ final class CartViewController: UIViewController {
         sum = Double(cartItems.reduce(0.00) { partialResult, nextValue in
             return partialResult + nextValue.price
         })
-        amountLabel.text = sum.formatted()
     }
     
     private func setupUI() {
@@ -189,6 +190,7 @@ extension CartViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "CartCell", for: indexPath) as! CartCell
         cell.configure(with: cartItems[indexPath.row])
+        cell.selectionStyle = .none
         cell.delegate = self
         return cell
     }
@@ -203,6 +205,7 @@ extension CartViewController: CartCellDelegate {
         guard let indexPath = tableView.indexPath(for: cell) else { return }
         let product = cartItems[indexPath.row]
         sum += product.price
+        favoriteManager.addToCart(product: product)
         updateTotalAmount()
     }
     
@@ -210,6 +213,7 @@ extension CartViewController: CartCellDelegate {
         guard let indexPath = tableView.indexPath(for: cell) else { return }
         let product = cartItems[indexPath.row]
         sum -= product.price
+        favoriteManager.removeProductsFromCart(product: product)
         updateTotalAmount()
     }
     
@@ -217,13 +221,16 @@ extension CartViewController: CartCellDelegate {
         guard let indexPath = tableView.indexPath(for: cell) else { return }
         let product = cartItems[indexPath.row]
         sum -= product.price * Double(cell.quantity)
+        
         cartItems.remove(at: indexPath.row)
         tableView.deleteRows(at: [indexPath], with: .automatic)
+        favoriteManager.removeProductsFromCart(product: product)
         updateTotalAmount()
     }
     
     private func updateTotalAmount() {
         amountLabel.text = String(format: "$%.2f", sum)
+        badgeLabel.text = "\(cartItems.count)"
     }
     
 }
