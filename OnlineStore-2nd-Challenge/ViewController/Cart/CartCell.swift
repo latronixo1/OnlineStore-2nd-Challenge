@@ -18,6 +18,8 @@ final class CartCell: UITableViewCell {
     weak var delegate: CartCellDelegate?
     private var product: Product?
     
+    var idProduct: Int = -1
+    
     private let productImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
@@ -75,7 +77,7 @@ final class CartCell: UITableViewCell {
         return button
     }()
     
-    private let deleteButton: UIButton = {
+    var deleteButton: UIButton = {
         let button = UIButton(type: .system)
         button.setImage(UIImage(systemName: "trash"), for: .normal)
         button.tintColor = .red
@@ -166,9 +168,10 @@ final class CartCell: UITableViewCell {
         decreaseButton.isEnabled = quantity > 1
         delegate?.didTapDecreaseButton(on: self)
     }
-    
-    @objc private func deleteButtonTapped() {
+
+    @objc func deleteButtonTapped() {
         delegate?.didTapDeleteButton(on: self)
+        print("кнопка удаления товара из корзины нажата")
     }
     
     func configure(with item: Product) {

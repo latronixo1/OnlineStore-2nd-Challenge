@@ -93,7 +93,7 @@ final class CartViewController: UIViewController {
             self.totalSum()
             self.updateTotalAmount()
         }
-        
+
     }
     
     override func viewWillAppear(_ animated: Bool) {
