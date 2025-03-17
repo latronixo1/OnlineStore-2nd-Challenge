@@ -229,6 +229,7 @@ extension CartViewController: CartCellDelegate {
     }
     
     private func updateTotalAmount() {
+        totalSum()
         amountLabel.text = String(format: "$%.2f", sum)
         badgeLabel.text = "\(cartItems.count)"
     }

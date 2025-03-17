@@ -12,6 +12,7 @@ class PaymentViewController: UIViewController {
     // MARK: - Variables
     
     var cartItems: [Product] = FavoriteManager.shared.loadCartProducts()
+    
     private let favoriteManager = FavoriteManager.shared
     var totalAmount: Double = 0.00
     var priceShipping: Double = 0.00
@@ -557,7 +558,7 @@ class PaymentViewController: UIViewController {
         return paymentMethodView
     }
     
-    func updateTotalAmountLabel() {
+    private func updateTotalAmountLabel() {
         
         var sumPrices: Double = 0.00
         
@@ -565,11 +566,7 @@ class PaymentViewController: UIViewController {
             sumPrices += cartItem.price
         }
         totalAmount = sumPrices + priceShipping
-//        if selectedOption.name == "Express" {
-//            
-//        } else {
-//            totalAmount = sumPrices
-//        }
+
         amountLabel.text = String(format: "$%.2f", totalAmount)
     }
     
@@ -629,6 +626,13 @@ class PaymentViewController: UIViewController {
     @objc func payButtonTapped(_ sender: UIButton) {
         // Анимация для кнопки
         animateButton(sender)
+        //очищаем корзину
+        for product in cartItems{
+            favoriteManager.removeProductsFromCart(product: product)
+        }
+        //возврат на экран корзины (пустой)
+        goBack()
+        //navigationController?.popViewController(animated: T##Bool)
 
         // Создаем кастомный UIAlertController
         let customAlert = CustomAlertViewController()
