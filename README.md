@@ -9,10 +9,10 @@
 ![Swift Version](https://img.shields.io/badge/Swift-5.5-orange?style=flat&logo=swift)
  [![latronixo](https://img.shields.io/badge/latronixo-181717?style=flat&logo=github&logoColor=white)](https://github.com/latronixo)
 [!
-    [AlexCoder13](https://avatars.githubusercontent.com/u/187362864?v=4 )](https://github.com/AlexCoder13)
- [![vvp-off](https://avatars.githubusercontent.com/u/181551753?v=4)](https://github.com/vvp-off)
- [![Barneyandswift](https://avatars.githubusercontent.com/u/194626455?v=4)](https://github.com/Barneyandswift)
- [![Julia4723](https://avatars.githubusercontent.com/u/58484455?v=4](https://github.com/Julia4723)
+    [AlexCoder13](https://img.shields.io/badge/latronixo-181717?style=flat&logo=github&logoColor=white )](https://github.com/AlexCoder13)
+ [![vvp-off](https://img.shields.io/badge/latronixo-181717?style=flat&logo=github&logoColor=white)](https://github.com/vvp-off)
+ [![Barneyandswift](https://img.shields.io/badge/latronixo-181717?style=flat&logo=github&logoColor=white)](https://github.com/Barneyandswift)
+ [![Julia4723](https://img.shields.io/badge/latronixo-181717?style=flat&logo=github&logoColor=white](https://github.com/Julia4723)
 
 «OnlineStore» — онлайн-магазин, где пользователи могут искать и заказывать товары, добавлять их в избранное и оформлять покупки..
 
