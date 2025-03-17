@@ -701,14 +701,21 @@ extension PaymentViewController: UICollectionViewDataSource, UICollectionViewDel
         
         let selectedOption = shippingOptions[indexPath.item]
             
-            if selectedOption.name == "Express" {
-                totalAmount += 12.00
-            } else {
-                totalAmount -= 12.00
-            }
-            
-            updateTotalAmountLabel()
+        var sumPrices: Double = 0.00
         
+        for cartItem in self.cartItems {
+            sumPrices += cartItem.price
+        }
+        
+        if selectedOption.name == "Express" {
+            totalAmount = sumPrices + 12.00
+        } else {
+            totalAmount = sumPrices
+        }
+        
+        updateTotalAmountLabel()
+        
+        //пересчет даты доставки
         if indexPath.item == 0 {
             deliveryDateLabel.text = "It will be delivered on " + afterNDays(7)
         } else {
