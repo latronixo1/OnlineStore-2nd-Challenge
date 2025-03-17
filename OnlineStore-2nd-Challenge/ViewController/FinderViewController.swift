@@ -122,7 +122,7 @@ final class FinderViewController: UIViewController, SearchViewDelegate, UITextFi
     func setupLayout() {
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            collectionView.topAnchor.constraint(equalTo: view.topAnchor, constant: 220),
+            collectionView.topAnchor.constraint(equalTo: view.topAnchor, constant: 270),
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
