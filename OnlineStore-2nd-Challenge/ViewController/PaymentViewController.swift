@@ -11,9 +11,9 @@ class PaymentViewController: UIViewController {
     
     // MARK: - Variables
     
-    var cartItems: [Product] = FavoriteManager.shared.loadCartProducts()
+    var cartItems: [Product] = SaveToCartManager.shared.loadCartProducts()
     
-    private let favoriteManager = FavoriteManager.shared
+    private let favoriteManager = SaveToCartManager.shared
     var totalAmount: Double = 0.00
     var priceShipping: Double = 0.00
     

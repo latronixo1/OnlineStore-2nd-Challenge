@@ -10,6 +10,7 @@ import UIKit
 final class ProductViewController: UIViewController {
     
     var product: Product
+    var saveToCartManager = SaveToCartManager.shared
     var favoriteManager = FavoriteManager.shared
     
     private let priceLabel = UILabel.makeLabel(text: "17", font: UIFont.systemFont(ofSize: 26, weight: .bold), textColor: .black, numberOfLines: 1)
@@ -93,7 +94,7 @@ final class ProductViewController: UIViewController {
          let paymentVC = PaymentViewController(Array(arrayLiteral: product), totalAmount: product.price)
          navigationController?.pushViewController(paymentVC, animated: true)
 
-         favoriteManager.addToCart(product: product)
+         saveToCartManager.addToCart(product: product)
          print("button Buy now tapped")
      }
 
@@ -101,7 +102,7 @@ final class ProductViewController: UIViewController {
         // Анимация для кнопки
         animateButton(sender)
 
-        favoriteManager.addToCart(product: product)
+        saveToCartManager.addToCart(product: product)
         print("product add to cart")
     }
     
