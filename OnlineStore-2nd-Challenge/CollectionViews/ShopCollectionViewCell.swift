@@ -12,6 +12,7 @@ final class ShopCollectionViewCell: UICollectionViewCell {
     //MARK: - Private Property
     static let identifier = "ShopCell"
     private let favoriteManager = FavoriteManager.shared
+    private let saveToCartManager = SaveToCartManager.shared
     
     private let viewBg = UIView()
     let imageView = UIImageView.makeImage(named: "Image", cornerRadius: 4, heightAnchor: 170, widthAnchor: 160, border: false, shadow: false)
@@ -81,7 +82,6 @@ private extension ShopCollectionViewCell {
     }
     
     func setupButtonLike() {
-        //buttonLike.setImage(UIImage(resource: .heartFill), for: .normal)
         buttonLike.widthAnchor.constraint(equalToConstant: 24).isActive = true
         buttonLike.heightAnchor.constraint(equalToConstant: 24).isActive = true
         
@@ -90,7 +90,7 @@ private extension ShopCollectionViewCell {
     
     @objc func tapAddCard(_ sender: UIButton) {
         guard let product = currentProduct else {return}
-        favoriteManager.addToCart(product: product)
+        saveToCartManager.addToCart(product: product)
         print("product add to cart")
 
         animateButton(sender)
