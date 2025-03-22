@@ -136,12 +136,12 @@ final class SearchView: UIViewController, UISearchBarDelegate {
         print("\(searchText)")
         
         if !filteredProducts.isEmpty {
-            let finderVC = FinderViewController()
-            finderVC.productsArray = filteredProducts
-            finderVC.currentText = searchText
-            let navController = UINavigationController(rootViewController: finderVC)
-            navController.sheetPresentationController?.prefersGrabberVisible = true
-            present(navController, animated: true, completion: nil)
+            //let finderVC = FinderViewController()
+//            finderVC.productsArray = filteredProducts
+//            finderVC.currentText = searchText
+//            let navController = UINavigationController(rootViewController: finderVC)
+//            navController.sheetPresentationController?.prefersGrabberVisible = true
+//            present(navController, animated: true, completion: nil)
             
 //            let searchResultVC = FinderViewController()
 //            searchResultVC.productsArray = filteredProducts

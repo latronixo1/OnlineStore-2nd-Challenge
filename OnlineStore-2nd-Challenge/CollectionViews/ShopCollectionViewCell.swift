@@ -10,7 +10,7 @@ import UIKit
 final class ShopCollectionViewCell: UICollectionViewCell {
     
     //MARK: - Private Property
-    static let identifier = "ShopCell"
+    static let identifier = ShopCollectionViewCell.description()
     private let favoriteManager = FavoriteManager.shared
     private let saveToCartManager = SaveToCartManager.shared
     

@@ -10,6 +10,8 @@ import UIKit
 
 final class HistoryCell: UICollectionViewCell {
     
+    private var onDelete: (() -> Void)?
+    
     // MARK: - UI Elements
     lazy var titleLabel: UILabel = {
         let titleLabel = UILabel()
@@ -47,8 +49,13 @@ final class HistoryCell: UICollectionViewCell {
     }
     
     // MARK: - Configuration
-    func configure(with history: String) {
+    func configure(with history: String, onDelete: @escaping() -> Void) {
         titleLabel.text = history
+        self.onDelete = onDelete
+    }
+    
+    @objc private func deleteTapped() {
+        onDelete?()
     }
     
     // MARK: - Selection
