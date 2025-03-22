@@ -32,7 +32,7 @@ final class ShopViewController: UIViewController {
     
     private lazy var historyLabel: UILabel = {
         let label = UILabel()
-        label.text = "Search history"
+        //label.text = "Search history"
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = .systemFont(ofSize: 17, weight: .bold)
         label.textColor = .black
