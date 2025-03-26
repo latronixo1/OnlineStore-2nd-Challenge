@@ -8,11 +8,11 @@
 ![iOS Version](https://img.shields.io/badge/iOS-15.0+-blue?style=flat&logo=apple)
 ![Swift Version](https://img.shields.io/badge/Swift-5.5-orange?style=flat&logo=swift)
  [![latronixo](https://img.shields.io/badge/latronixo1-181717?style=flat&logo=github&logoColor=white)](https://github.com/latronixo1)
- [![AlexCoder13](https://img.shields.io/badge/latronixo-181717?style=flat&logo=github&logoColor=white)](https://github.com/AlexCoder13)
- [![vvp-off](https://img.shields.io/badge/latronixo-181717?style=flat&logo=github&logoColor=white)](https://github.com/vvp-off)
- [![Barneyandswift](https://img.shields.io/badge/latronixo-181717?style=flat&logo=github&logoColor=white)](https://github.com/Barneyandswift)
- [![Julia4723](https://img.shields.io/badge/latronixo-181717?style=flat&logo=github&logoColor=white)](https://github.com/Julia4723)
-
+ [![Julia4723](https://img.shields.io/badge/Julia4723-181717?style=flat&logo=github&logoColor=white)](https://github.com/Julia4723)
+ [![Julia4723](https://img.shields.io/badge/boytik-181717?style=flat&logo=github&logoColor=white)](https://github.com/boytik)
+ [![AlexCoder13](https://img.shields.io/badge/AlexCoder13-181717?style=flat&logo=github&logoColor=white)](https://github.com/AlexCoder13)
+ [![vvp-off](https://img.shields.io/badge/vvp--off-181717?style=flat&logo=github&logoColor=white)](https://github.com/vvp-off)
+ 
 «OnlineStore» — онлайн-магазин, где пользователи могут искать и заказывать товары, добавлять их в избранное и оформлять покупки..
 
 ---
