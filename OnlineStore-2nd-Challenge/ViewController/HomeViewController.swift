@@ -131,11 +131,12 @@ class HomeViewController: UIViewController {
             basketButton.widthAnchor.constraint(equalToConstant: 32),
             
             labelShop.centerYAnchor.constraint(equalTo: searchTextField.centerYAnchor),
-            labelShop.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 12),
+            labelShop.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            labelShop.widthAnchor.constraint(equalToConstant: 60),
             
             searchTextField.topAnchor.constraint(equalTo: basketButton.bottomAnchor, constant: 12),
             searchTextField.leadingAnchor.constraint(equalTo: labelShop.trailingAnchor, constant: 8),
-            searchTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            searchTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             searchTextField.heightAnchor.constraint(equalToConstant: 44),
 
         ])

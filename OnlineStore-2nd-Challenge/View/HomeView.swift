@@ -9,36 +9,6 @@ import UIKit
 
 class HomeView: UIView {
     
-    //MARK: Bascket and Adress
-//    lazy var basketAndAdressStackView: UIStackView = {
-//        let stackView = UIStackView()
-//        stackView.axis = .horizontal
-//        stackView.distribution = .fillProportionally
-//        stackView.alignment = .trailing
-//        stackView.spacing = 10
-//        stackView.translatesAutoresizingMaskIntoConstraints = false
-//        return stackView
-//    }()
-
-//    lazy var adress: UIImageView = {
-//        let img = UIImageView()
-//        img.image = UIImage(named: "HomeViewAdress")
-//        img.contentMode = .scaleAspectFit
-//        img.translatesAutoresizingMaskIntoConstraints = false
-//        return img
-//    }()
-
-//    lazy var basketButton: UIButton = {
-//        let button = UIButton()
-//        button.setImage(UIImage(named: "cart"), for: .normal)
-//        button.tintColor = .black
-//        button.imageView?.contentMode = .scaleAspectFit
-//        button.translatesAutoresizingMaskIntoConstraints = false
-//        button.isUserInteractionEnabled = true
-//
-//        return button
-//    }()
-    
     // MARK: - Main Scroll View
     private lazy var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
@@ -67,15 +37,6 @@ class HomeView: UIView {
     }()
     
     //MARK: SEARCH_STACK
-//    lazy var labelOfScreen: UILabel = {
-//        let label = UILabel()
-//        label.text = "Shop"
-//        label.textAlignment = .left
-//        label.textColor = .black
-//        label.font = UIFont.systemFont(ofSize: 28, weight: .bold)
-//        label.translatesAutoresizingMaskIntoConstraints = false
-//        return label
-//    }()
     
     lazy var searchButton: UIButton = {
         let button = UIButton()
@@ -97,7 +58,8 @@ class HomeView: UIView {
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
-    //MARK: CATEGORY
+    
+    //MARK: CATEGORIES
     lazy var layOutForCategory: UICollectionViewFlowLayout = {
         let layOut = UICollectionViewFlowLayout()
         layOut.scrollDirection = .vertical
@@ -272,30 +234,12 @@ class HomeView: UIView {
         stackForLabelPopular.addArrangedSubview(popularButton)
 
         stackForPopularView.addArrangedSubview(popularCollectionView)
-
-  
+      }
     
-        
-//        stackForLabelCategory.addArrangedSubview(categoryLabel)
-//        stackForLabelCategory.addArrangedSubview(categoryButton)
-//        stackForCategoryView.addArrangedSubview(stackForLabelCategory)
-//        stackForCategoryView.addArrangedSubview(categoryCollectionView)
-//        
-//        stackForLabelPopular.addArrangedSubview(popularLabel)
-//        stackForLabelPopular.addArrangedSubview(popularButton)
-//        stackForPopularView.addArrangedSubview(stackForLabelPopular)
-//        stackForPopularView.addArrangedSubview(popularCollectionView)
-//        
-//        stackForCollectionView.addArrangedSubview(stackForCategoryView)
-//        stackForCollectionView.addArrangedSubview(stackForPopularView)
-//        
-//        stackForAllView.addArrangedSubview(stackForCollectionView)
-//        addSubview(stackForAllView)
-    }
     func setConstraint() {
         NSLayoutConstraint.activate([
             // Scroll View
-            scrollView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
+            scrollView.topAnchor.constraint(equalTo: topAnchor, constant: 190),
             scrollView.leadingAnchor.constraint(equalTo: leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: trailingAnchor),
             scrollView.bottomAnchor.constraint(equalTo: bottomAnchor),
@@ -308,65 +252,33 @@ class HomeView: UIView {
             contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
             
             // Main Stack View
-            mainStackView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 120),
+            mainStackView.topAnchor.constraint(equalTo: contentView.topAnchor),
             mainStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
             mainStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
             mainStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -20),
             
             // Category Section
             stackForLabelCategory.heightAnchor.constraint(equalToConstant: 30),
+            stackForLabelCategory.leadingAnchor.constraint(equalTo: mainStackView.leadingAnchor),
+            stackForLabelCategory.trailingAnchor.constraint(equalTo: mainStackView.trailingAnchor),
+            
+            categoryButton.trailingAnchor.constraint(equalTo: mainStackView.trailingAnchor),
+            
             categoryCollectionView.heightAnchor.constraint(equalToConstant: 400),
             categoryCollectionView.leadingAnchor.constraint(equalTo: mainStackView.leadingAnchor),
             categoryCollectionView.trailingAnchor.constraint(equalTo: mainStackView.trailingAnchor),
             
             // Popular Section
             stackForLabelPopular.heightAnchor.constraint(equalToConstant: 30),
+            stackForLabelPopular.leadingAnchor.constraint(equalTo: mainStackView.leadingAnchor),
+            stackForLabelPopular.trailingAnchor.constraint(equalTo: mainStackView.trailingAnchor),
+            
+            popularButton.trailingAnchor.constraint(equalTo: mainStackView.trailingAnchor),
+
             popularCollectionView.heightAnchor.constraint(equalToConstant: 250),
             popularCollectionView.leadingAnchor.constraint(equalTo: mainStackView.leadingAnchor),
             popularCollectionView.trailingAnchor.constraint(equalTo: mainStackView.trailingAnchor),
 
-
-//            // Stack For All View
-//            stackForAllView.topAnchor.constraint(equalTo: topAnchor, constant: 200),
-//            stackForAllView.leftAnchor.constraint(equalTo: leftAnchor, constant: 20),
-//            stackForAllView.rightAnchor.constraint(equalTo: rightAnchor, constant: -20),
-//            stackForAllView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor),
-//            
-//            // Stack For Category View
-//            stackForCategoryView.topAnchor.constraint(equalTo: stackForAllView.topAnchor),
-//            stackForCategoryView.leftAnchor.constraint(equalTo: stackForAllView.leftAnchor),
-//            stackForCategoryView.rightAnchor.constraint(equalTo: stackForAllView.rightAnchor),
-//            stackForCategoryView.heightAnchor.constraint(equalToConstant: 350),
-//            
-//            // Stack For Label Category
-//            stackForLabelCategory.topAnchor.constraint(equalTo: stackForCategoryView.topAnchor),
-//            stackForLabelCategory.leftAnchor.constraint(equalTo: stackForCategoryView.leftAnchor, constant: 10),
-//            stackForLabelCategory.rightAnchor.constraint(equalTo: stackForCategoryView.rightAnchor, constant: -10),
-//            stackForLabelCategory.heightAnchor.constraint(equalToConstant: 30),
-//            
-//            // Category Collection View
-//            categoryCollectionView.topAnchor.constraint(equalTo: stackForLabelCategory.bottomAnchor, constant: 8),
-//            categoryCollectionView.leftAnchor.constraint(equalTo: stackForCategoryView.leftAnchor),
-//            categoryCollectionView.rightAnchor.constraint(equalTo: stackForCategoryView.rightAnchor),
-//            categoryCollectionView.bottomAnchor.constraint(equalTo: stackForCategoryView.bottomAnchor),
-//            
-//            // Stack For Popular View
-//            stackForPopularView.topAnchor.constraint(equalTo: stackForCategoryView.bottomAnchor),
-//            stackForPopularView.leftAnchor.constraint(equalTo: stackForAllView.leftAnchor),
-//            stackForPopularView.rightAnchor.constraint(equalTo: stackForAllView.rightAnchor),
-//            stackForPopularView.heightAnchor.constraint(equalToConstant: 250),
-//            
-//            // Stack For Label Popular
-//            stackForLabelPopular.topAnchor.constraint(equalTo: stackForPopularView.topAnchor, constant: 5),
-//            stackForLabelPopular.leftAnchor.constraint(equalTo: stackForPopularView.leftAnchor, constant: 10),
-//            stackForLabelPopular.rightAnchor.constraint(equalTo: stackForPopularView.rightAnchor, constant: -10),
-//            stackForLabelPopular.heightAnchor.constraint(equalTo: stackForPopularView.heightAnchor, multiplier: 0.15),
-//            
-//            // Popular Collection View
-//            popularCollectionView.topAnchor.constraint(equalTo: stackForLabelPopular.bottomAnchor, constant: 8),
-//            popularCollectionView.leftAnchor.constraint(equalTo: stackForPopularView.leftAnchor),
-//            popularCollectionView.rightAnchor.constraint(equalTo: stackForPopularView.rightAnchor),
-//            popularCollectionView.heightAnchor.constraint(equalTo: stackForPopularView.heightAnchor, multiplier: 0.85),
         ])
     }
 }
