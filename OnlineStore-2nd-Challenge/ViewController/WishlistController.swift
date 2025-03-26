@@ -9,16 +9,28 @@ import UIKit
 
 final class WishlistViewController: UIViewController {
     
-    //private var product: [Product] = []
     private var product: [Product] = FavoriteManager.shared.loadFavoriteProducts()
     
     private var collectionView: UICollectionView!
-    private let reuseIdentifier = "wishlist"
+    private let reuseIdentifier = "ProductCollectionViewCell"
     private let navigation = UINavigationBar()
-    private let finderBar = SearchView()
     private let favoriteManager = FavoriteManager.shared
     private let titleOfLabel = UILabel.makeLabel(text: "Wishlist", font: .systemFont(ofSize: 28, weight: .bold), textColor: .black, numberOfLines: 1)
     private let labelSearch = UILabel.makeLabel(text: "Search", font: .systemFont(ofSize: 16, weight: .regular), textColor: .systemGray, numberOfLines: 1)
+    
+    private let searchTextField: UITextField = {
+        let textField = UITextField()
+        textField.backgroundColor = .systemGray4
+        textField.layer.cornerRadius = 18
+        textField.placeholder = "Search"
+        textField.translatesAutoresizingMaskIntoConstraints = false
+        let leftPaddingView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: textField.frame.height))
+        textField.leftView = leftPaddingView
+        textField.leftViewMode = .always
+        textField.clearButtonMode = .always
+        return textField
+    }()
+    var searchedText = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,6 +40,7 @@ final class WishlistViewController: UIViewController {
         setupNavigationBar()
         setupFinderView()
         setupLayout()
+        searchTextField.delegate = self
         
         DispatchQueue.main.async {
             self.reloadFavorite()
@@ -66,7 +79,7 @@ final class WishlistViewController: UIViewController {
     
     func setupFinderView() {
         view.addSubview(labelSearch)
-        view.addSubview(finderBar.view)
+        view.addSubview(searchTextField)
     }
 }
 
@@ -74,7 +87,7 @@ final class WishlistViewController: UIViewController {
 private extension WishlistViewController {
     func setupView() {
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
-        collectionView.register(ShopCollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
+        collectionView.register(ShopCollectionViewCell.self, forCellWithReuseIdentifier: ShopCollectionViewCell.identifier)
         collectionView.backgroundColor = .white
         collectionView.dataSource = self
         collectionView.delegate = self
@@ -118,14 +131,12 @@ private extension WishlistViewController {
 extension WishlistViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        //favoriteManager.favoriteArray.count
         product.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as? ShopCollectionViewCell else {return UICollectionViewCell()}
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ShopCollectionViewCell.identifier, for: indexPath) as? ShopCollectionViewCell else {return UICollectionViewCell()}
         
-        // let content = favoriteManager.favoriteArray[indexPath.row]
         let content = product[indexPath.row]
         cell.configure(model: content)
         return cell
@@ -149,7 +160,7 @@ private extension WishlistViewController {
         navigation.translatesAutoresizingMaskIntoConstraints = false
         titleOfLabel.translatesAutoresizingMaskIntoConstraints = false
         collectionView.translatesAutoresizingMaskIntoConstraints = false
-        finderBar.view.translatesAutoresizingMaskIntoConstraints = false
+        searchTextField.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             navigation.topAnchor.constraint(equalTo: view.topAnchor, constant: 80),
@@ -160,18 +171,39 @@ private extension WishlistViewController {
             titleOfLabel.centerXAnchor.constraint(equalTo: navigation.centerXAnchor),
             titleOfLabel.bottomAnchor.constraint(equalTo: navigation.bottomAnchor, constant: -8),
             
-            labelSearch.centerYAnchor.constraint(equalTo: finderBar.view.centerYAnchor),
+            labelSearch.centerYAnchor.constraint(equalTo: searchTextField.centerYAnchor),
             labelSearch.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 12),
+            labelSearch.widthAnchor.constraint(equalToConstant: 60),
             
-            finderBar.view.topAnchor.constraint(equalTo: navigation.bottomAnchor, constant: 10),
-            finderBar.view.leadingAnchor.constraint(equalTo: labelSearch.trailingAnchor, constant: 8),
-            finderBar.view.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -12),
-            finderBar.view.heightAnchor.constraint(equalToConstant: 40),
+            searchTextField.topAnchor.constraint(equalTo: navigation.bottomAnchor, constant: 12),
+            searchTextField.leadingAnchor.constraint(equalTo: labelSearch.trailingAnchor, constant: 8),
+            searchTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            searchTextField.heightAnchor.constraint(equalToConstant: 44),
             
-            collectionView.topAnchor.constraint(equalTo: finderBar.view.bottomAnchor, constant: 10),
+            collectionView.topAnchor.constraint(equalTo: searchTextField.bottomAnchor, constant: 10),
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
+    }
+}
+
+
+extension WishlistViewController: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        doSearch(textField.text)
+        return true
+    }
+    
+    private func doSearch(_ text: String?) {
+        searchedText = text?.lowercased() ?? ""
+        
+        if searchedText.isEmpty {
+            product = favoriteManager.loadFavoriteProducts()
+        } else {
+            product = favoriteManager.loadFavoriteProducts().filter{ $0.title.lowercased().contains(searchedText.lowercased()) }
+        }
+        collectionView.reloadData()
     }
 }

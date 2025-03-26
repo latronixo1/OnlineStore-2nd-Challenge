@@ -16,7 +16,6 @@ class HomeViewController: UIViewController {
     private var sortedPopularItems: [Product] = []
     private var favoriteItems: [Product] = []
     private var makeImageForCategory: [String: [String]] = [:]
-    private let finderBar = SearchView()
     private let labelShop = UILabel.makeLabel(text: "Shop", font: .systemFont(ofSize: 20, weight: .black), textColor: .black, numberOfLines: 1)
     private let labelDelivery = UILabel.makeLabel(text: "Delivery address", font: .systemFont(ofSize: 14, weight: .light), textColor: .systemGray, numberOfLines: 1)
     private let labelAdress = UILabel.makeLabel(text: "Salatiga City, Central Java", font: .systemFont(ofSize: 16, weight: .regular), textColor: .black, numberOfLines: 1)
@@ -31,6 +30,19 @@ class HomeViewController: UIViewController {
         return button
     }()
     
+    private let searchTextField: UITextField = {
+        let textField = UITextField()
+        textField.backgroundColor = .systemGray4
+        textField.layer.cornerRadius = 18
+        textField.placeholder = "Search"
+        textField.translatesAutoresizingMaskIntoConstraints = false
+        let leftPaddingView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: textField.frame.height))
+        textField.leftView = leftPaddingView
+        textField.leftViewMode = .always
+        textField.clearButtonMode = .always
+        return textField
+    }()
+    
     private let favoriteManager = FavoriteManager.shared
     
     override func loadView() {
@@ -40,6 +52,7 @@ class HomeViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationController?.setNavigationBarHidden(true, animated: false)
+        searchTextField.delegate = self
         mainView.backgroundColor = .white
         setupCollectionViews()
         makeProduct()
@@ -49,9 +62,21 @@ class HomeViewController: UIViewController {
         chekCart()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        mainView.categoryCollectionView.reloadData()
+        mainView.popularCollectionView.reloadData()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        print("mainView.categoryCollectionView.frame = \(mainView.categoryCollectionView.frame)") // Проверьте размеры
+        print("mainView.popularCollectionView.frame = \(mainView.popularCollectionView.frame)")
+    }
+    
     private func setupView() {
         view.addSubview(labelShop)
-        view.addSubview(finderBar.view)
+        view.addSubview(searchTextField)
         view.addSubview(labelDelivery)
         view.addSubview(labelAdress)
         view.addSubview(basketButton)
@@ -87,10 +112,10 @@ class HomeViewController: UIViewController {
     
     private func setupLayout() {
         labelShop.translatesAutoresizingMaskIntoConstraints = false
-        finderBar.view.translatesAutoresizingMaskIntoConstraints = false
         labelDelivery.translatesAutoresizingMaskIntoConstraints = false
         labelAdress.translatesAutoresizingMaskIntoConstraints = false
         basketButton.translatesAutoresizingMaskIntoConstraints = false
+      
         
         NSLayoutConstraint.activate([
             
@@ -105,13 +130,15 @@ class HomeViewController: UIViewController {
             basketButton.heightAnchor.constraint(equalToConstant: 32),
             basketButton.widthAnchor.constraint(equalToConstant: 32),
             
-            labelShop.centerYAnchor.constraint(equalTo: finderBar.view.centerYAnchor),
-            labelShop.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 12),
+            labelShop.centerYAnchor.constraint(equalTo: searchTextField.centerYAnchor),
+            labelShop.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            labelShop.widthAnchor.constraint(equalToConstant: 60),
             
-            finderBar.view.topAnchor.constraint(equalTo: basketButton.bottomAnchor, constant: 12),
-            finderBar.view.leadingAnchor.constraint(equalTo: labelShop.trailingAnchor, constant: 8),
-            finderBar.view.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            finderBar.view.heightAnchor.constraint(equalToConstant: 44),
+            searchTextField.topAnchor.constraint(equalTo: basketButton.bottomAnchor, constant: 12),
+            searchTextField.leadingAnchor.constraint(equalTo: labelShop.trailingAnchor, constant: 8),
+            searchTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            searchTextField.heightAnchor.constraint(equalToConstant: 44),
+
         ])
     }
     
@@ -180,8 +207,8 @@ class HomeViewController: UIViewController {
         tapBar.selectedIndex = 2
     }
     @objc func searchAndPopularButton() {
-        let vc = FinderViewController() //заменить на экран поиска
-        navigationController?.pushViewController(vc, animated: true)
+        let searchVC = ShopViewController()
+        navigationController?.pushViewController(searchVC, animated: true)
     }
 }
 
@@ -259,7 +286,6 @@ extension HomeViewController: UICollectionViewDataSource {
                     }
                 }
             }
-                
             return cell
             
         default:
@@ -274,10 +300,55 @@ extension HomeViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let spacing: CGFloat = 8
-        let itemsPerRow: CGFloat = 2
-        let totalSpacing = (itemsPerRow - 1) * spacing
-        let itemWidth = (collectionView.bounds.width - totalSpacing) / itemsPerRow
-        return CGSize(width: itemWidth, height: 190)
+        switch collectionView {
+        case mainView.categoryCollectionView:
+            
+            let width = (collectionView.frame.width - 36) / 2
+            
+            print("для categoryCollectionView CGSize(width: \(width), height: 190)")
+            return CGSize(width: width, height: 190)
+        case mainView.popularCollectionView:
+            print("для popularCollectionView CGSize(width: 160, height: 250)")
+
+            return CGSize(width: 160, height: 250)
+        default:
+            print("для default CGSize(width: 100, height: 100)")
+            return CGSize(width: 100, height: 100)
+
+        }
+        
+        //        let spacing: CGFloat = 8
+//        let itemsPerRow: CGFloat = 2
+//        let totalSpacing = (itemsPerRow - 1) * spacing
+//        let itemWidth = (collectionView.bounds.width - totalSpacing) / itemsPerRow
+//        return CGSize(width: itemWidth, height: 190)
+    }
+}
+
+
+extension HomeViewController: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        guard let text = textField.text, !text.isEmpty else {
+            return false
+        }
+        
+        let filtered = items.filter { $0.title.lowercased().contains(text.lowercased())
+            
+        }
+        let historyManager = HistoryManager()
+        historyManager.addSearchQuery(text)
+        
+        let vc = ShopViewController()
+        vc.searchedText = text
+        vc.products = items
+        vc.filteredProducts = filtered
+        textField.text = ""
+        vc.hidesBottomBarWhenPushed = true
+        navigationController?.pushViewController(vc, animated: true)
+        navigationController?.isNavigationBarHidden = false
+        navigationItem.backButtonTitle = ""
+        
+        textField.resignFirstResponder()
+        return true
     }
 }

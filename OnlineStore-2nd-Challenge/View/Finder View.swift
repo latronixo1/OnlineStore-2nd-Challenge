@@ -77,7 +77,7 @@ final class FinderView: UIView {
     
     lazy var searchHistoryLabel: UILabel = {
         let searchHistoryLabel = UILabel()
-        searchHistoryLabel.text = "Search history"
+        //searchHistoryLabel.text = "Search history"
         searchHistoryLabel.textColor = .black
         searchHistoryLabel.font = .systemFont(ofSize: 18)
         searchHistoryLabel.translatesAutoresizingMaskIntoConstraints = false

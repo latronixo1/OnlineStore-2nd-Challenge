@@ -3,13 +3,13 @@ import UIKit
 final class CartViewController: UIViewController {
     
     
-    private var cartItems: [Product] = FavoriteManager.shared.loadCartProducts()
+    private var cartItems: [Product] = SaveToCartManager.shared.loadCartProducts()
     //    var cartItems: [CartItem] = [
     //        CartItem(imageName: "blousePink", title: "Fitted cotton blouse with short sleeves and high waist", price: "$17,00", quantity: 2),
     //        CartItem(imageName: "dressRed", title: "Strapless Satin Evening Dress with Full Skirt", price: "$25,00", quantity: 1)
     //    ]
     
-    private let favoriteManager = FavoriteManager.shared
+    private let saveToCartManager = SaveToCartManager.shared
     var sum = 0.00
     
     private let titleLabel: UILabel = {
@@ -116,7 +116,7 @@ final class CartViewController: UIViewController {
     
     
     func reloadCartProducts() {
-        cartItems = favoriteManager.cartArray
+        cartItems = saveToCartManager.cartArray
         print("добавленные товары \(cartItems.count)")
         tableView.reloadData()
     }
@@ -211,7 +211,7 @@ extension CartViewController: CartCellDelegate {
         guard let indexPath = tableView.indexPath(for: cell) else { return }
         let product = cartItems[indexPath.row]
         sum += product.price
-        favoriteManager.addToCart(product: product)
+        saveToCartManager.addToCart(product: product)
         updateTotalAmount()
     }
     
@@ -219,7 +219,7 @@ extension CartViewController: CartCellDelegate {
         guard let indexPath = tableView.indexPath(for: cell) else { return }
         let product = cartItems[indexPath.row]
         sum -= product.price
-        favoriteManager.removeProductsFromCart(product: product)
+        saveToCartManager.removeProductsFromCart(product: product)
         updateTotalAmount()
     }
     
@@ -230,7 +230,7 @@ extension CartViewController: CartCellDelegate {
         
         cartItems.remove(at: indexPath.row)
         tableView.deleteRows(at: [indexPath], with: .automatic)
-        favoriteManager.removeProductsFromCart(product: product)
+        saveToCartManager.removeProductsFromCart(product: product)
         updateTotalAmount()
     }
     
