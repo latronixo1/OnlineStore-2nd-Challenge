@@ -1,5 +1,4 @@
-
-![image](https://github.com/ElShtolts13/Bomb-Game-1-Challenge/blob/main/mainImage.jpg)
+![2025-03-17 Картинка для Readme](https://github.com/user-attachments/assets/2c5f156d-2ff3-4bef-a170-eb6e71c8afe9)
 
 
 
