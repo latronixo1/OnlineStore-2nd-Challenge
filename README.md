@@ -8,11 +8,11 @@
 ![Swift Version](https://img.shields.io/badge/Swift-5.5-orange?style=flat&logo=swift)
  [![latronixo](https://img.shields.io/badge/latronixo1-181717?style=flat&logo=github&logoColor=white)](https://github.com/latronixo1)
  [![Julia4723](https://img.shields.io/badge/Julia4723-181717?style=flat&logo=github&logoColor=white)](https://github.com/Julia4723)
- [![Julia4723](https://img.shields.io/badge/boytik-181717?style=flat&logo=github&logoColor=white)](https://github.com/boytik)
+ [![boytik](https://img.shields.io/badge/boytik-181717?style=flat&logo=github&logoColor=white)](https://github.com/boytik)
  [![AlexCoder13](https://img.shields.io/badge/AlexCoder13-181717?style=flat&logo=github&logoColor=white)](https://github.com/AlexCoder13)
  [![vvp-off](https://img.shields.io/badge/vvp--off-181717?style=flat&logo=github&logoColor=white)](https://github.com/vvp-off)
  
-«OnlineStore» — онлайн-магазин, где пользователи могут искать и заказывать товары, добавлять их в избранное и оформлять покупки..
+«OnlineStore» — онлайн-магазин, где пользователи могут искать и заказывать товары, добавлять их в избранное и оформлять покупки.
 
 ---
 
@@ -25,10 +25,10 @@
 - Добавление товара в корзину
 - Изменение количества товаров в корзине
 - Выбор способа доставки
-- Профиль пользователя:
+- Профиль пользователя
 - Возможность изменить личные данные
 - Логаут
 
 ---
-Сделано с командой №1 в рамках второго челленджа Swift Maraphone 11  https://t.me/dev_rush:
+Сделано с командой №1 в рамках второго челленджа Swift Maraphone 11  https://t.me/dev_rush с использованием беслатного API https://fakestoreapi.com/docs
 
