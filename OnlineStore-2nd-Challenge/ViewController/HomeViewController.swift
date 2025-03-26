@@ -62,6 +62,18 @@ class HomeViewController: UIViewController {
         chekCart()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        mainView.categoryCollectionView.reloadData()
+        mainView.popularCollectionView.reloadData()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        print("mainView.categoryCollectionView.frame = \(mainView.categoryCollectionView.frame)") // Проверьте размеры
+        print("mainView.popularCollectionView.frame = \(mainView.popularCollectionView.frame)")
+    }
+    
     private func setupView() {
         view.addSubview(labelShop)
         view.addSubview(searchTextField)
@@ -273,7 +285,6 @@ extension HomeViewController: UICollectionViewDataSource {
                     }
                 }
             }
-                
             return cell
             
         default:
@@ -288,11 +299,28 @@ extension HomeViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let spacing: CGFloat = 8
-        let itemsPerRow: CGFloat = 2
-        let totalSpacing = (itemsPerRow - 1) * spacing
-        let itemWidth = (collectionView.bounds.width - totalSpacing) / itemsPerRow
-        return CGSize(width: itemWidth, height: 190)
+        switch collectionView {
+        case mainView.categoryCollectionView:
+            
+            let width = (collectionView.frame.width - 36) / 2
+            
+            print("для categoryCollectionView CGSize(width: \(width), height: 190)")
+            return CGSize(width: width, height: 190)
+        case mainView.popularCollectionView:
+            print("для popularCollectionView CGSize(width: 160, height: 250)")
+
+            return CGSize(width: 160, height: 250)
+        default:
+            print("для default CGSize(width: 100, height: 100)")
+            return CGSize(width: 100, height: 100)
+
+        }
+        
+        //        let spacing: CGFloat = 8
+//        let itemsPerRow: CGFloat = 2
+//        let totalSpacing = (itemsPerRow - 1) * spacing
+//        let itemWidth = (collectionView.bounds.width - totalSpacing) / itemsPerRow
+//        return CGSize(width: itemWidth, height: 190)
     }
 }
 
